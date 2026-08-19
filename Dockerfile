@@ -30,12 +30,12 @@ COPY docker/entrypoint.sh ./entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh
 
-# Expose port 80 for Nginx
-EXPOSE 80
+# Expose ports 80 and 443 for Nginx
+EXPOSE 80 443
 
-# Healthcheck testing through Nginx reverse proxy on port 80
+# Healthcheck testing through Nginx HTTPS reverse proxy
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost/ || exit 1
+    CMD curl -k -f https://localhost/ || exit 1
 
 # Start both Nginx and Uvicorn
 ENTRYPOINT ["/app/entrypoint.sh"]
