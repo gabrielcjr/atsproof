@@ -125,12 +125,31 @@ MAX_CONCURRENT_REQUESTS=3
 
 ### 3. Launch Local Server
 
+Using `make`:
 ```bash
-uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+make dev
+```
+Or directly with `uvicorn`:
+```bash
+uvicorn main:app --host 127.0.0.1 --port 8001 --reload
 ```
 
 Open your browser and navigate to:
-👉 **`http://127.0.0.1:8000`**
+👉 **`http://127.0.0.1:8001`**
+
+---
+
+## ⚡ Quick Make Commands
+
+| Command | Action |
+| :--- | :--- |
+| **`make install`** | Set up virtualenv and install dependencies |
+| **`make dev`** | Start local dev server with auto-reload (`http://127.0.0.1:8001`) |
+| **`make test`** | Run automated test suite with `pytest` |
+| **`make stop`** | Terminate all running local uvicorn instances |
+| **`make clean`** | Clear cache, `.pyc`, and temporary test artifacts |
+| **`make docker-build`** | Build production Docker image |
+| **`make docker-run`** | Run containerized app on port 8000 |
 
 ---
 
@@ -182,31 +201,41 @@ atsproof/
 
 ---
 
-## 🚢 Production Deployment
+## 🚢 Production Deployment (Nginx + FastAPI on Port 80)
 
-### Docker Deployment
+The application includes a unified Docker setup that runs **Nginx reverse proxy** and **Uvicorn/FastAPI** inside the **same container**, exposing port 80 directly with gzip compression and client rate header forwarding.
 
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 8000
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
-```
-
-Build and run:
+### Quick Start with Docker Compose
 
 ```bash
-docker build -t ats-matcher .
-docker run -d -p 8000:8000 --env-file .env ats-matcher
+# Build and launch on port 80
+make compose-up
+
+# View live container logs
+make compose-logs
+
+# Stop deployment
+make compose-down
 ```
+
+Or using `docker compose` directly:
+
+```bash
+docker compose up -d --build
+```
+
+### Standalone Docker Deployment
+
+```bash
+# Build the unified image
+make docker-build
+
+# Run container on port 80 with .env configuration
+make docker-run
+```
+
+Visit:
+👉 **`http://localhost`** (Port 80)
 
 ---
 
