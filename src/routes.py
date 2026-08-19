@@ -1,9 +1,10 @@
 """
 FastAPI route definitions for the ATS Matcher application.
 """
+import os
 from typing import Optional
 from fastapi import APIRouter, File, Form, Request, UploadFile, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -36,6 +37,18 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 "max_pages": MAX_PDF_PAGES,
                 "max_chars": MAX_TEXT_CHARS,
             },
+        )
+
+    @router.get("/download-template")
+    async def download_template():
+        """Allows users to download the free ATS-optimized resume template (.docx)."""
+        template_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "resume_template.docx")
+        if not os.path.exists(template_path):
+            template_path = "static/resume_template.docx"
+        return FileResponse(
+            path=template_path,
+            filename="ATS_Resume_Template.docx",
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         )
 
     @router.post("/analyze", response_class=HTMLResponse)

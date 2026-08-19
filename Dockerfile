@@ -24,6 +24,7 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 # Copy application source code
 COPY src/ ./src/
 COPY templates/ ./templates/
+COPY static/ ./static/
 COPY main.py .
 COPY pytest.ini .
 COPY docker/entrypoint.sh ./entrypoint.sh

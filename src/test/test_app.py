@@ -131,6 +131,17 @@ class ATSMatcherTests(unittest.TestCase):
                 return
         self.assertTrue(resp.status_code in [400, 429, 500])
 
+    def test_download_resume_template(self):
+        """Ensure GET /download-template returns 200 and the docx attachment."""
+        response = client.get("/download-template")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers.get("content-type"),
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        )
+        self.assertIn("attachment", response.headers.get("content-disposition", ""))
+        self.assertGreater(len(response.content), 1000)
+
 
 if __name__ == "__main__":
     unittest.main()
