@@ -504,24 +504,24 @@ def build_pt_doc_xml() -> str:
     </w:tbl>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Acelerou a velocidade de configuração de telas em 90% através da criação de mixins reutilizáveis em Python/Django para clonagem profunda automatizada de entidades relacionais.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Aceleração de 90% na velocidade de configuração de telas com mixins reutilizáveis em Python/Django para clonagem profunda de entidades relacionais.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Evitou 100% de desperdício em consumo de tokens de APIs de IA em clientes com planos desativados através de feature flags granulares com controle administrativo.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Eliminação de 100% do desperdício de tokens de APIs de IA em planos inativos via feature flags granulares com controle administrativo.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Eliminou 100% do trabalho manual de avaliação de código ao arquitetar um pipeline de webhooks integrado a um microsserviço de correção automática por IA.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Automação integral da avaliação de código com pipeline de webhooks e microsserviço de correção automática por IA.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Reduziu o tempo de emissão de credenciais em 90% criando uma API com regras automáticas de validação de domínio e geração de certificados.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Redução de 90% no tempo de emissão de credenciais via API de validação de domínio e geração de certificados.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="200"/><w:spacing w:before="20" w:after="80"/></w:pPr>
       <w:r><w:rPr><w:b/><w:sz w:val="19"/><w:color w:val="374151"/></w:rPr><w:t>• Contexto: </w:t></w:r>
-      <w:r><w:rPr><w:i/><w:sz w:val="19"/><w:color w:val="4B5563"/></w:rPr><w:t>Plataforma SaaS corporativa focada em microsserviços de alto volume. Construiu ferramentas internas e integrações que eliminaram operações manuais no ecossistema.</w:t></w:r>
+      <w:r><w:rPr><w:i/><w:sz w:val="19"/><w:color w:val="4B5563"/></w:rPr><w:t>Plataforma SaaS corporativa focada em microsserviços de alto volume. Construção de ferramentas internas e integrações que eliminaram operações manuais no ecossistema.</w:t></w:r>
     </w:p>
 
     <!-- JOB 2 -->
@@ -548,19 +548,19 @@ def build_pt_doc_xml() -> str:
     </w:tbl>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Aumentou a performance das aplicações em 15% por meio de otimizações no framework, pool de conexões de banco de dados e modernização de dependências.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Aumento de 15% na performance dos servidores por meio de otimizações de framework, pool de conexões de banco de dados e modernização de dependências.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Reduziu o tempo de feedback da esteira de CI/CD em 20% paralelizando a execução de testes automatizados com pytest-xdist em containers Docker.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Redução de 20% no tempo de feedback da esteira de CI/CD com paralelização de testes automatizados via pytest-xdist em containers Docker.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Diminuiu o tempo de resposta de endpoints críticos em 20x otimizando queries SQL, eliminando gargalos de N+1 e aplicando paginação indexada.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Diminuição de 20x no tempo de resposta de endpoints críticos através de otimização de queries SQL, eliminação de gargalos N+1 e paginação indexada.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Reduziu custos de infraestrutura em R$ 60 mil anuais ao desativar pods de workers ociosos e substituí-los por arquitetura de API sob demanda.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Economia de R$ 60 mil anuais em infraestrutura com desativação de workers ociosos e migração para arquitetura de API sob demanda.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="200"/><w:spacing w:before="20" w:after="80"/></w:pPr>
@@ -592,15 +592,15 @@ def build_pt_doc_xml() -> str:
     </w:tbl>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Protegeu a superfície de ataque da aplicação bloqueando robôs maliciosos e varreduras de vulnerabilidades diretamente na camada do proxy reverso Nginx.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Blindagem da superfície de ataque da aplicação com bloqueio de robôs maliciosos e varreduras de vulnerabilidades na camada do proxy reverso Nginx.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Eliminou perdas de dados de leads por instabilidade de rede ao desacoplar sincronizações com CRM em workers assíncronos Celery com retry exponencial.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Mitigação de 100% das perdas de leads por instabilidade de rede via desacoplamento de sincronizações de CRM em workers assíncronos Celery com retry exponencial.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="360" w:hanging="240"/><w:spacing w:before="0" w:after="30"/></w:pPr>
-      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Reduziu a latência de carregamento do feed em 80% implementando cache de resultados com Redis.</w:t></w:r>
+      <w:r><w:rPr><w:sz w:val="20"/></w:rPr><w:t>• Redução de 80% na latência de resposta do feed por meio de cache de resultados com Redis.</w:t></w:r>
     </w:p>
     <w:p>
       <w:pPr><w:ind w:left="200"/><w:spacing w:before="20" w:after="80"/></w:pPr>
