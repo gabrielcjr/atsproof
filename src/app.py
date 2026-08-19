@@ -1,6 +1,5 @@
-"""
-FastAPI application factory and configuration.
-"""
+import os
+import logfire
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from slowapi import Limiter
@@ -10,6 +9,13 @@ from slowapi.util import get_remote_address
 from src.config import RATE_LIMIT_POLICY
 from src.middleware import add_security_headers, create_rate_limit_handler
 from src.routes import create_router
+
+# Configure Pydantic Logfire for observability
+logfire_token = os.getenv("LOGFIRE_TOKEN", "").strip()
+if logfire_token:
+    logfire.configure(token=logfire_token, send_to_logfire=True)
+else:
+    logfire.configure(send_to_logfire=False)
 
 
 def create_app() -> FastAPI:
@@ -21,6 +27,10 @@ def create_app() -> FastAPI:
         description="100% Free, zero-account ATS Resume & Job Matcher with Multi-AI failover and prompt injection defense.",
         version="1.0.0",
     )
+
+    # Instrument FastAPI & Pydantic models with Logfire
+    logfire.instrument_fastapi(app)
+    logfire.instrument_pydantic()
 
     # Initialize rate limiter
     limiter = Limiter(key_func=get_remote_address, default_limits=[RATE_LIMIT_POLICY])

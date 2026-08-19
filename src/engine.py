@@ -7,6 +7,8 @@ import asyncio
 import json
 from typing import Tuple
 
+import logfire
+
 from src.config import (
     MAX_CONCURRENT_REQUESTS,
     get_gemini_api_key,
@@ -39,28 +41,32 @@ async def call_gemini_primary(resume_text: str, job_desc: str) -> ATSMatchResult
     candidate_models = ["gemini-3.6-flash", "gemini-flash-latest", "gemini-2.5-flash-lite"]
     last_err = None
 
-    for model_name in candidate_models:
-        try:
-            def _run_gemini(m=model_name):
-                return client.models.generate_content(
-                    model=m,
-                    contents=prompt_content,
-                    config=types.GenerateContentConfig(
-                        system_instruction=SYSTEM_INSTRUCTION,
-                        response_mime_type="application/json",
-                        response_schema=ATSMatchResult,
-                        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
-                        temperature=0.2,
-                    )
-                )
+    with logfire.span("Gemini Primary Engine"):
+        for model_name in candidate_models:
+            try:
+                with logfire.span("Gemini Call", model=model_name):
+                    def _run_gemini(m=model_name):
+                        return client.models.generate_content(
+                            model=m,
+                            contents=prompt_content,
+                            config=types.GenerateContentConfig(
+                                system_instruction=SYSTEM_INSTRUCTION,
+                                response_mime_type="application/json",
+                                response_schema=ATSMatchResult,
+                                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+                                temperature=0.2,
+                            )
+                        )
 
-            response = await asyncio.to_thread(_run_gemini)
-            if response and response.text:
-                data = json.loads(response.text)
-                return ATSMatchResult.model_validate(data)
-        except Exception as e:
-            last_err = e
-            logger.warning(f"Gemini model {model_name} failed: {e}. Trying next candidate...")
+                    response = await asyncio.to_thread(_run_gemini)
+                    if response and response.text:
+                        data = json.loads(response.text)
+                        logfire.info("Gemini analysis succeeded", model=model_name)
+                        return ATSMatchResult.model_validate(data)
+            except Exception as e:
+                last_err = e
+                logfire.warn("Gemini model candidate failed", model=model_name, error=str(e))
+                logger.warning(f"Gemini model {model_name} failed: {e}. Trying next candidate...")
 
     raise last_err or ValueError("Failed to obtain response from Gemini flash models.")
 
@@ -80,27 +86,31 @@ async def call_groq_fallback(resume_text: str, job_desc: str) -> Tuple[ATSMatchR
     candidate_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
     last_err = None
 
-    for model_name in candidate_models:
-        try:
-            def _run_groq(m=model_name):
-                return client.chat.completions.create(
-                    model=m,
-                    messages=[
-                        {"role": "system", "content": system_content},
-                        {"role": "user", "content": prompt_content},
-                    ],
-                    response_format={"type": "json_object"},
-                    temperature=0.2,
-                )
+    with logfire.span("Groq Failover Engine"):
+        for model_name in candidate_models:
+            try:
+                with logfire.span("Groq Call", model=model_name):
+                    def _run_groq(m=model_name):
+                        return client.chat.completions.create(
+                            model=m,
+                            messages=[
+                                {"role": "system", "content": system_content},
+                                {"role": "user", "content": prompt_content},
+                            ],
+                            response_format={"type": "json_object"},
+                            temperature=0.2,
+                        )
 
-            response = await asyncio.to_thread(_run_groq)
-            raw_content = response.choices[0].message.content
-            if raw_content:
-                data = json.loads(raw_content)
-                return ATSMatchResult.model_validate(data), f"ATS DeepScan Engine ({model_name})"
-        except Exception as e:
-            last_err = e
-            logger.warning(f"Groq model {model_name} failed: {e}. Trying next open model...")
+                    response = await asyncio.to_thread(_run_groq)
+                    raw_content = response.choices[0].message.content
+                    if raw_content:
+                        data = json.loads(raw_content)
+                        logfire.info("Groq failover analysis succeeded", model=model_name)
+                        return ATSMatchResult.model_validate(data), f"ATS DeepScan Engine ({model_name})"
+            except Exception as e:
+                last_err = e
+                logfire.warn("Groq model candidate failed", model=model_name, error=str(e))
+                logger.warning(f"Groq model {model_name} failed: {e}. Trying next open model...")
 
     raise last_err or ValueError("Failed to obtain response from Groq models.")
 
@@ -111,24 +121,24 @@ async def analyze_with_fallback(resume_text: str, job_desc: str) -> Tuple[ATSMat
     Enforces concurrency limits and returns (ATSMatchResult, white_label_engine_name).
     """
     async with concurrency_semaphore:
-        gemini_error = None
+        with logfire.span("Dual Engine Match Analysis"):
+            # 1. Attempt Primary Engine (Google Gemini)
+            try:
+                logger.info("Dispatching analysis to primary engine...")
+                result = await call_gemini_primary(resume_text, job_desc)
+                return result, "ATS DeepScan Engine • Active"
+            except Exception as e:
+                logger.warning(f"Primary engine call failed: {e}. Routing to failover engine...")
+                logfire.warn("Primary engine failed, triggering failover", error=str(e))
 
-        # 1. Attempt Primary Engine (Google Gemini)
-        try:
-            logger.info("Dispatching analysis to primary engine...")
-            result = await call_gemini_primary(resume_text, job_desc)
-            return result, "ATS DeepScan Engine • Active"
-        except Exception as e:
-            gemini_error = str(e)
-            logger.warning(f"Primary engine call failed: {e}. Routing to failover engine...")
-
-        # 2. Attempt Secondary Failover Engine (Groq Open-Weight)
-        try:
-            logger.info("Dispatching analysis to secondary failover engine...")
-            result, _ = await call_groq_fallback(resume_text, job_desc)
-            return result, "ATS DeepScan Engine (Failover Mode)"
-        except Exception as groq_e:
-            logger.error(f"Secondary failover engine call also failed: {groq_e}")
-            raise RuntimeError(
-                "ATS verification services temporarily unavailable. Please try again shortly."
-            )
+            # 2. Attempt Secondary Failover Engine (Groq Open-Weight)
+            try:
+                logger.info("Dispatching analysis to secondary failover engine...")
+                result, _ = await call_groq_fallback(resume_text, job_desc)
+                return result, "ATS DeepScan Engine (Failover Mode)"
+            except Exception as groq_e:
+                logger.error(f"Secondary failover engine call also failed: {groq_e}")
+                logfire.error("Secondary failover engine also failed", error=str(groq_e))
+                raise RuntimeError(
+                    "ATS verification services temporarily unavailable. Please try again shortly."
+                )
