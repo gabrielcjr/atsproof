@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<html lang="{{ lang }}" class="h-full bg-slate-950 text-slate-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free ATS Resume & Job Matcher | Instant Match Score</title>
-    <meta name="description" content="100% Free, zero-account ATS Resume & Job Matcher. Compare your resume against any job description with instant AI feedback and score.">
+    <title>{{ t.title }}</title>
+    <meta name="description" content="{{ t.meta_description }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
@@ -29,6 +29,15 @@
                         sans: ['Inter', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
                     },
+                    animation: {
+                        'fade-in': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(8px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
                     colors: {
                         brand: {
                             50: '#eef2ff',
@@ -44,15 +53,17 @@
     </script>
 
     <!-- HTMX (via CDN) -->
-    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.11"></script>
 
     <style>
         .htmx-indicator {
-            display: none !important;
+            display: none;
         }
-        .htmx-request .htmx-indicator,
+        .htmx-request .htmx-indicator {
+            display: flex;
+        }
         .htmx-request.htmx-indicator {
-            display: flex !important;
+            display: flex;
         }
         /* Custom scrollbars */
         ::-webkit-scrollbar {
@@ -84,31 +95,51 @@
                 </div>
                 <div>
                     <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">ATS MatchProof</span>
-                    <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">100% Free</span>
+                    <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{{ t.badge_free }}</span>
                 </div>
             </div>
             
             <!-- Right Nav Actions -->
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- Language Switcher Toggle -->
+                <div class="flex items-center bg-slate-900/90 p-0.5 rounded-full border border-slate-800 text-xs font-semibold shadow-sm">
+                    <a 
+                        href="/?lang=en" 
+                        title="English"
+                        class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang != 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}"
+                    >
+                        <span>🇺🇸</span>
+                        <span class="hidden sm:inline">EN</span>
+                    </a>
+                    <a 
+                        href="/?lang=pt" 
+                        title="Português"
+                        class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang == 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}"
+                    >
+                        <span>🇧🇷</span>
+                        <span class="hidden sm:inline">PT</span>
+                    </a>
+                </div>
+
                 <!-- Download Template Button -->
                 <a 
-                    href="/download-template" 
-                    download="ATS_Resume_Template.docx"
-                    title="Download ATS-Optimized Word Resume Template"
-                    class="flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition shadow-sm"
+                    href="/download-template?lang={{ lang }}" 
+                    download="{% if lang == 'pt' %}Modelo_Curriculo_ATS.docx{% else %}ATS_Resume_Template.docx{% endif %}"
+                    title="{{ t.btn_download_template }}"
+                    class="hidden md:flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition shadow-sm whitespace-nowrap"
                 >
                     <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
-                    <span>Download Template (.docx)</span>
+                    <span>{{ t.btn_download_template }}</span>
                 </a>
 
                 <!-- Privacy Badge -->
-                <div class="hidden sm:flex items-center space-x-1.5 text-xs text-slate-300 bg-slate-900/90 px-3 py-1.5 rounded-full border border-slate-800 shadow-sm">
+                <div class="hidden lg:flex items-center space-x-1.5 text-xs text-slate-300 bg-slate-900/90 px-3 py-1.5 rounded-full border border-slate-800 shadow-sm whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                     </svg>
-                    <span>100% Private • Resumes Never Stored</span>
+                    <span>{{ t.badge_privacy }}</span>
                 </div>
             </div>
         </div>
@@ -123,10 +154,10 @@
             <!-- Hero Title -->
             <div class="text-center max-w-3xl mx-auto mb-8">
                 <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
-                    Beat the ATS. Land More <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400">Interviews</span>.
+                    {{ t.hero_title_prefix }}<span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400">{{ t.hero_title_highlight }}</span>{{ t.hero_title_suffix }}
                 </h1>
                 <p class="text-slate-400 text-sm sm:text-base">
-                    Upload your resume PDF and paste the job description. Our dual-engine ATS simulator analyzes skill gaps, keyword matching, and crafts instant bullet point optimizations.
+                    {{ t.hero_subtitle }}
                 </p>
             </div>
 
@@ -139,7 +170,8 @@
                 hx-indicator="#loading"
                 class="space-y-6"
             >
-                <!-- Honeypot anti-bot trap (hidden) -->
+                <!-- Hidden language & honeypot fields -->
+                <input type="hidden" name="lang" id="lang-field" value="{{ lang }}">
                 <input type="text" name="honeypot" id="honeypot" style="display:none !important;" tabindex="-1" autocomplete="off">
 
                 <!-- Dual-Column Inputs -->
@@ -150,9 +182,9 @@
                         <div>
                             <div class="flex items-center justify-between mb-4">
                                 <label class="block text-sm font-semibold text-slate-200">
-                                    1. Upload Resume (PDF)
+                                    {{ t.upload_col_title }}
                                 </label>
-                                <span class="text-xs text-slate-400 font-mono">Max {{ max_pdf_kb }}KB • Max {{ max_pages }} pages</span>
+                                <span class="text-xs text-slate-400 font-mono">{{ t.upload_col_limits.format(max_pdf_kb=max_pdf_kb, max_pages=max_pages) }}</span>
                             </div>
 
                             <!-- Drag & Drop Zone -->
@@ -168,7 +200,7 @@
                                     required 
                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                 >
-                                
+                                    
                                 <!-- Empty State -->
                                 <div id="drop-empty-state" class="flex flex-col items-center space-y-3">
                                     <div class="w-12 h-12 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20">
@@ -178,9 +210,9 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-medium text-slate-300">
-                                            <span class="text-indigo-400 hover:underline">Click to upload</span> or drag and drop
+                                            <span class="text-indigo-400 hover:underline">{{ t.dropzone_prompt }}</span>
                                         </p>
-                                        <p class="text-xs text-slate-500 mt-1">Standard PDF files only</p>
+                                        <p class="text-xs text-slate-500 mt-1">{{ t.dropzone_subprompt }}</p>
                                     </div>
                                 </div>
 
@@ -194,7 +226,7 @@
                                     <p id="file-name" class="text-sm font-semibold text-emerald-300 truncate max-w-[260px]"></p>
                                     <p id="file-size" class="text-xs text-slate-400 font-mono"></p>
                                     <button type="button" id="remove-file-btn" class="mt-2 text-xs text-rose-400 hover:text-rose-300 underline z-10">
-                                        Remove & Choose Another
+                                        {{ t.dropzone_change_btn }}
                                     </button>
                                 </div>
                             </div>
@@ -205,10 +237,10 @@
 
                         <!-- Security Notice -->
                         <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center text-xs text-slate-400 space-x-2">
-                            <svg class="w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                             </svg>
-                            <span>Parsed securely in-memory. Never indexed or stored.</span>
+                            <span>{{ t.upload_security_notice }}</span>
                         </div>
                     </div>
 
@@ -217,10 +249,10 @@
                         <div>
                             <div class="flex items-center justify-between mb-4">
                                 <label for="job_description" class="block text-sm font-semibold text-slate-200">
-                                    2. Paste Job Description (JD)
+                                    {{ t.jd_col_title }}
                                 </label>
                                 <div>
-                                    <span id="char-counter" class="text-xs text-slate-400 font-mono">0 / {{ max_chars }} chars</span>
+                                    <span id="char-counter" class="text-xs text-slate-400 font-mono">0 / {{ max_chars }} {% if lang == 'pt' %}caracteres{% else %}chars{% endif %}</span>
                                 </div>
                             </div>
 
@@ -231,15 +263,15 @@
                                     rows="8" 
                                     required
                                     maxlength="{{ max_chars }}"
-                                    placeholder="Paste the target job requirements, qualifications, and responsibilities here..."
+                                    placeholder="{{ t.jd_placeholder }}"
                                     class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition font-sans resize-y min-h-[220px]"
                                 ></textarea>
                             </div>
                         </div>
 
                         <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                            <span>Includes keywords, required experience, and tech stack.</span>
-                            <button type="button" id="clear-jd-btn" class="text-slate-500 hover:text-slate-400">Clear</button>
+                            <span>{{ t.jd_tip }}</span>
+                            <button type="button" id="clear-jd-btn" class="text-slate-500 hover:text-slate-400">{{ t.jd_clear_btn }}</button>
                         </div>
                     </div>
                 </div>
@@ -255,7 +287,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span>Run ATS Match Analysis</span>
+                        <span>{{ t.btn_analyze }}</span>
                     </button>
                 </div>
             </form>
@@ -266,8 +298,8 @@
                     <div class="absolute inset-0 rounded-full border-4 border-indigo-500/20"></div>
                     <div class="absolute inset-0 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
                 </div>
-                <h3 class="text-lg font-bold text-white mb-1">Analyzing ATS Match Compatibility</h3>
-                <p class="text-xs text-slate-400 animate-pulse">Extracting text &bull; Benchmarking keywords &bull; Running dual-engine failover</p>
+                <h3 class="text-lg font-bold text-white mb-1">{{ t.btn_analyzing }}</h3>
+                <p class="text-xs text-slate-400 animate-pulse">{{ t.loading_step_3 }}</p>
             </div>
 
             <!-- Target Container for Results / Errors (HTMX Target) -->
@@ -280,17 +312,16 @@
     <!-- Footer -->
     <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>&copy; 2026 ATS MatchProof. 100% Free ATS verification engine.</p>
+            <p>&copy; 2026 ATS MatchProof. {{ t.badge_free }} ATS verification engine.</p>
             <div class="flex items-center space-x-4">
-                <span>Privacy-First Architecture</span>
-                <span>•</span>
-                <span>Dual-Engine Verification</span>
+                <span>{{ t.footer_privacy }}</span>
             </div>
         </div>
     </footer>
 
     <!-- Client-Side UI Scripts (Drag-and-Drop + Counters + Validation + HTMX Events) -->
     <script>
+        const CURRENT_LANG = "{{ lang }}";
         const MAX_BYTES = 120 * 1024;
         const form = document.getElementById('ats-form');
         const submitBtn = document.getElementById('submit-btn');
@@ -311,13 +342,16 @@
             if (!file) return;
 
             if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-                showFileError('Please select a valid PDF file.');
+                showFileError(CURRENT_LANG === 'pt' ? 'Por favor, selecione um arquivo PDF válido.' : 'Please select a valid PDF file.');
                 fileInput.value = '';
                 return;
             }
 
             if (file.size > MAX_BYTES) {
-                showFileError(`File size (${(file.size / 1024).toFixed(1)} KB) exceeds the maximum limit of 120 KB.`);
+                showFileError(CURRENT_LANG === 'pt' 
+                    ? `Tamanho do arquivo (${(file.size / 1024).toFixed(1)} KB) excede o limite máximo de 120 KB.` 
+                    : `File size (${(file.size / 1024).toFixed(1)} KB) exceeds the maximum limit of 120 KB.`
+                );
                 fileInput.value = '';
                 return;
             }
@@ -381,12 +415,14 @@
 
         // Character counter for Job Description
         jdTextarea.addEventListener('input', function() {
-            charCounter.textContent = `${this.value.length} / 10000 chars`;
+            const label = CURRENT_LANG === 'pt' ? 'caracteres' : 'chars';
+            charCounter.textContent = `${this.value.length} / 10000 ${label}`;
         });
 
         clearJdBtn.addEventListener('click', function() {
             jdTextarea.value = '';
-            charCounter.textContent = `0 / 10000 chars`;
+            const label = CURRENT_LANG === 'pt' ? 'caracteres' : 'chars';
+            charCounter.textContent = `0 / 10000 ${label}`;
         });
 
         // Copy Helper for Optimized Bullets
@@ -396,26 +432,26 @@
             if (textEl) {
                 navigator.clipboard.writeText(textEl.textContent.trim()).then(() => {
                     const orig = btn.textContent;
-                    btn.textContent = 'Copied!';
+                    btn.textContent = CURRENT_LANG === 'pt' ? 'Copiado!' : 'Copied!';
                     setTimeout(() => { btn.textContent = orig; }, 2000);
                 });
             }
         }
 
-        // Direct Async Submission Handler (Works with and without HTMX)
+        // Direct Async Submission Handler
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             hideFileError();
 
             if (!fileInput.files || fileInput.files.length === 0) {
-                showFileError('Please select or drop a PDF resume file first.');
+                showFileError(CURRENT_LANG === 'pt' ? 'Por favor, selecione ou arraste um currículo em PDF primeiro.' : 'Please select or drop a PDF resume file first.');
                 dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
             }
 
             const jdVal = (jdTextarea.value || '').trim();
             if (!jdVal) {
-                alert('Please paste the Job Description before running the ATS analysis.');
+                alert(CURRENT_LANG === 'pt' ? 'Por favor, cole a descrição da vaga antes de rodar a análise.' : 'Please paste the Job Description before running the ATS analysis.');
                 jdTextarea.focus();
                 return;
             }
@@ -449,8 +485,8 @@
             } catch (err) {
                 resultsContainer.innerHTML = `
                     <div class="rounded-2xl bg-rose-950/40 border border-rose-500/30 p-6 backdrop-blur-md shadow-2xl">
-                        <h3 class="text-lg font-bold text-rose-200">Request Failed</h3>
-                        <p class="text-sm text-rose-300 mt-2">${err.message || 'Connection failed'}. Please check your connection and try again.</p>
+                        <h3 class="text-lg font-bold text-rose-200">${CURRENT_LANG === 'pt' ? 'Falha na Requisição' : 'Request Failed'}</h3>
+                        <p class="text-sm text-rose-300 mt-2">${err.message || 'Connection failed'}.</p>
                     </div>
                 `;
                 resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });

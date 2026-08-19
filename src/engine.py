@@ -26,7 +26,7 @@ from src.schemas import ATSMatchResult
 concurrency_semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
 
-async def call_gemini_primary(resume_text: str, job_desc: str) -> ATSMatchResult:
+async def call_gemini_primary(resume_text: str, job_desc: str, language: str = "en") -> ATSMatchResult:
     """
     Primary Engine: Google GenAI using official SDK and native JSON schema output.
     """
@@ -36,12 +36,12 @@ async def call_gemini_primary(resume_text: str, job_desc: str) -> ATSMatchResult
     from google.genai import types
 
     client = genai.Client(api_key=api_key)
-    prompt_content = build_user_prompt(resume_text, job_desc)
+    prompt_content = build_user_prompt(resume_text, job_desc, language=language)
 
     candidate_models = ["gemini-3.6-flash", "gemini-flash-latest", "gemini-2.5-flash-lite"]
     last_err = None
 
-    with logfire.span("Gemini Primary Engine"):
+    with logfire.span("Gemini Primary Engine", language=language):
         for model_name in candidate_models:
             try:
                 with logfire.span("Gemini Call", model=model_name):
@@ -71,7 +71,7 @@ async def call_gemini_primary(resume_text: str, job_desc: str) -> ATSMatchResult
     raise last_err or ValueError("Failed to obtain response from Gemini flash models.")
 
 
-async def call_groq_fallback(resume_text: str, job_desc: str) -> Tuple[ATSMatchResult, str]:
+async def call_groq_fallback(resume_text: str, job_desc: str, language: str = "en") -> Tuple[ATSMatchResult, str]:
     """
     Fallback Engine: Groq Free Tier open-weight models using JSON object mode.
     """
@@ -81,12 +81,12 @@ async def call_groq_fallback(resume_text: str, job_desc: str) -> Tuple[ATSMatchR
     client = Groq(api_key=api_key)
 
     system_content = f"{SYSTEM_INSTRUCTION}\n\nRespond with valid JSON matching this schema:\n{JSON_SCHEMA_DESCRIPTION}"
-    prompt_content = build_user_prompt(resume_text, job_desc)
+    prompt_content = build_user_prompt(resume_text, job_desc, language=language)
 
     candidate_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
     last_err = None
 
-    with logfire.span("Groq Failover Engine"):
+    with logfire.span("Groq Failover Engine", language=language):
         for model_name in candidate_models:
             try:
                 with logfire.span("Groq Call", model=model_name):
@@ -115,17 +115,17 @@ async def call_groq_fallback(resume_text: str, job_desc: str) -> Tuple[ATSMatchR
     raise last_err or ValueError("Failed to obtain response from Groq models.")
 
 
-async def analyze_with_fallback(resume_text: str, job_desc: str) -> Tuple[ATSMatchResult, str]:
+async def analyze_with_fallback(resume_text: str, job_desc: str, language: str = "en") -> Tuple[ATSMatchResult, str]:
     """
     Coordinates primary Gemini call with automatic failover to Groq.
     Enforces concurrency limits and returns (ATSMatchResult, white_label_engine_name).
     """
     async with concurrency_semaphore:
-        with logfire.span("Dual Engine Match Analysis"):
+        with logfire.span("Dual Engine Match Analysis", language=language):
             # 1. Attempt Primary Engine (Google Gemini)
             try:
                 logger.info("Dispatching analysis to primary engine...")
-                result = await call_gemini_primary(resume_text, job_desc)
+                result = await call_gemini_primary(resume_text, job_desc, language=language)
                 return result, "ATS DeepScan Engine • Active"
             except Exception as e:
                 logger.warning(f"Primary engine call failed: {e}. Routing to failover engine...")
@@ -134,7 +134,7 @@ async def analyze_with_fallback(resume_text: str, job_desc: str) -> Tuple[ATSMat
             # 2. Attempt Secondary Failover Engine (Groq Open-Weight)
             try:
                 logger.info("Dispatching analysis to secondary failover engine...")
-                result, _ = await call_groq_fallback(resume_text, job_desc)
+                result, _ = await call_groq_fallback(resume_text, job_desc, language=language)
                 return result, "ATS DeepScan Engine (Failover Mode)"
             except Exception as groq_e:
                 logger.error(f"Secondary failover engine call also failed: {groq_e}")

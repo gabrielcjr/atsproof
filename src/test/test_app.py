@@ -122,12 +122,13 @@ class ATSMatcherTests(unittest.TestCase):
 
     def test_rate_limit_exceeded(self):
         """Ensure exceeding rate limit returns 429 partial template."""
+        client.cookies.clear()
         for _ in range(6):
             files = {"resume": ("resume.pdf", create_dummy_pdf(1), "application/pdf")}
             data = {"job_description": "Test job description", "honeypot": ""}
             resp = client.post("/analyze", files=files, data=data)
             if resp.status_code == 429:
-                self.assertIn("Rate Limit Exceeded", resp.text)
+                self.assertTrue("Rate Limit Exceeded" in resp.text or "Limite de Requisições" in resp.text)
                 return
         self.assertTrue(resp.status_code in [400, 429, 500])
 
@@ -141,6 +142,22 @@ class ATSMatcherTests(unittest.TestCase):
         )
         self.assertIn("attachment", response.headers.get("content-disposition", ""))
         self.assertGreater(len(response.content), 1000)
+
+    def test_portuguese_language_toggle(self):
+        """Ensure GET /?lang=pt returns Portuguese UI strings and sets lang cookie."""
+        response = client.get("/?lang=pt")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Vença o ATS", response.text)
+        self.assertIn("Enviar Currículo", response.text)
+        self.assertIn("Descrição da Vaga", response.text)
+        self.assertIn("100% Grátis", response.text)
+        self.assertEqual(response.cookies.get("lang"), "pt")
+
+    def test_portuguese_template_download(self):
+        """Ensure downloading template in Portuguese returns Modelo_Curriculo_ATS.docx."""
+        response = client.get("/download-template?lang=pt")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Modelo_Curriculo_ATS.docx", response.headers.get("content-disposition", ""))
 
 
 if __name__ == "__main__":

@@ -7,7 +7,6 @@ from fastapi import APIRouter, File, Form, Request, UploadFile, status
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from slowapi import Limiter
-from slowapi.util import get_remote_address
 
 from src.config import (
     MAX_PDF_PAGES,
@@ -18,6 +17,7 @@ from src.config import (
 )
 from src.engine import analyze_with_fallback
 from src.extractor import extract_text_from_pdf_bytes
+from src.i18n import get_translations
 
 
 def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
@@ -27,27 +27,40 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     router = APIRouter()
 
     @router.get("/", response_class=HTMLResponse)
-    async def index(request: Request):
-        """Serves the main ATS matcher single page application."""
-        return templates.TemplateResponse(
+    async def index(request: Request, lang: Optional[str] = None):
+        """Serves the main ATS matcher single page application in chosen language."""
+        req_lang = lang or request.cookies.get("lang", "en")
+        resolved_lang = "pt" if req_lang.lower().startswith("pt") else "en"
+        t = get_translations(resolved_lang)
+
+        response = templates.TemplateResponse(
             request=request,
             name="index.html",
             context={
+                "t": t,
+                "lang": resolved_lang,
                 "max_pdf_kb": MAX_PDF_SIZE_BYTES // 1024,
                 "max_pages": MAX_PDF_PAGES,
                 "max_chars": MAX_TEXT_CHARS,
             },
         )
+        response.set_cookie(key="lang", value=resolved_lang, max_age=31536000, samesite="lax")
+        return response
 
     @router.get("/download-template")
-    async def download_template():
+    async def download_template(request: Request, lang: Optional[str] = None):
         """Allows users to download the free ATS-optimized resume template (.docx)."""
+        req_lang = lang or request.cookies.get("lang", "en")
+        is_pt = req_lang.lower().startswith("pt")
+
         template_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "resume_template.docx")
         if not os.path.exists(template_path):
             template_path = "static/resume_template.docx"
+
+        filename = "Modelo_Curriculo_ATS.docx" if is_pt else "ATS_Resume_Template.docx"
         return FileResponse(
             path=template_path,
-            filename="ATS_Resume_Template.docx",
+            filename=filename,
             media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         )
 
@@ -75,11 +88,16 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         resume: UploadFile = File(...),
         job_description: str = Form(...),
         honeypot: Optional[str] = Form(None),
+        lang: Optional[str] = Form(None),
     ):
         """
         Analyzes uploaded resume against job description.
-        Enforces honeypot check, in-memory PDF extraction, and dual-LLM fallback.
+        Enforces honeypot check, in-memory PDF extraction, dual-LLM fallback, and i18n.
         """
+        req_lang = lang or request.cookies.get("lang", "en")
+        resolved_lang = "pt" if req_lang.lower().startswith("pt") else "en"
+        t = get_translations(resolved_lang)
+
         # 1. Anti-bot honeypot check
         if honeypot and honeypot.strip():
             logger.warning("Bot honeypot triggered on /analyze submission.")
@@ -87,8 +105,10 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 request=request,
                 name="partials/error.html",
                 context={
-                    "error_title": "Submission Rejected",
-                    "error_message": "Automated submission rejected. If you are a human user, please try again.",
+                    "t": t,
+                    "lang": resolved_lang,
+                    "error_title": t["error_default_title"],
+                    "error_message": t["error_bot_msg"],
                     "error_type": "client",
                 },
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -101,8 +121,10 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 request=request,
                 name="partials/error.html",
                 context={
-                    "error_title": "Job Description Missing",
-                    "error_message": "Job Description cannot be empty. Please paste the job requirements and responsibilities in the text box.",
+                    "t": t,
+                    "lang": resolved_lang,
+                    "error_title": t["jd_col_title"],
+                    "error_message": t["error_jd_empty"],
                     "error_type": "validation",
                 },
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -119,8 +141,10 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                     request=request,
                     name="partials/error.html",
                     context={
-                        "error_title": "Empty File",
-                        "error_message": "Uploaded resume file is empty. Please select a valid PDF file.",
+                        "t": t,
+                        "lang": resolved_lang,
+                        "error_title": t["upload_col_title"],
+                        "error_message": t["error_pdf_empty"],
                         "error_type": "validation",
                     },
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -132,7 +156,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 request=request,
                 name="partials/error.html",
                 context={
-                    "error_title": "PDF Document Issue",
+                    "t": t,
+                    "lang": resolved_lang,
+                    "error_title": t["upload_col_title"],
                     "error_message": str(ve),
                     "error_type": "validation",
                 },
@@ -144,20 +170,24 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 request=request,
                 name="partials/error.html",
                 context={
-                    "error_title": "File Read Error",
-                    "error_message": "Unable to read the uploaded resume. Please make sure the PDF is text-based (not a scanned image) and under 120KB.",
+                    "t": t,
+                    "lang": resolved_lang,
+                    "error_title": t["upload_col_title"],
+                    "error_message": t["error_pdf_read"],
                     "error_type": "validation",
                 },
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-        # 4. Run AI Analysis with Fallback
+        # 4. Run AI Analysis with Fallback & Language Target
         try:
-            result, provider_name = await analyze_with_fallback(resume_text, sanitized_jd)
+            result, provider_name = await analyze_with_fallback(resume_text, sanitized_jd, language=resolved_lang)
             return templates.TemplateResponse(
                 request=request,
                 name="partials/results.html",
                 context={
+                    "t": t,
+                    "lang": resolved_lang,
                     "result": result,
                     "provider": provider_name,
                 },
@@ -168,10 +198,12 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 request=request,
                 name="partials/error.html",
                 context={
-                    "error_title": "AI Service Temporarily Busy",
-                    "error_message": "Our AI analysis service is experiencing temporary high demand. Your file was processed safely in-memory, but the analysis timed out.",
+                    "t": t,
+                    "lang": resolved_lang,
+                    "error_title": t["error_high_demand_title"],
+                    "error_message": t["error_high_demand_msg"],
                     "error_type": "server",
-                    "suggestion": "Please wait a moment and click 'Try Again' below to re-submit.",
+                    "suggestion": t["error_suggestion_retry"],
                 },
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

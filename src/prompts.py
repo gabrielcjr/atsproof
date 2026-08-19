@@ -32,12 +32,17 @@ JSON_SCHEMA_DESCRIPTION: str = """{
 }"""
 
 
-def build_user_prompt(resume_text: str, job_description: str) -> str:
+def build_user_prompt(resume_text: str, job_description: str, language: str = "en") -> str:
     """
     Constructs an adversarial-resistant user prompt isolating untrusted inputs
-    within strict XML boundaries.
+    within strict XML boundaries, with language targeting.
     """
-    return f"""Analyze the candidate resume against the target job description.
+    if language and language.lower().startswith("pt"):
+        lang_directive = "\nLANGUAGE DIRECTIVE: Output all written commentary, summary_verdict, experience_gap_feedback, and suggested_optimized_bullet texts in Portuguese (pt-BR)."
+    else:
+        lang_directive = "\nLANGUAGE DIRECTIVE: Output all written commentary, summary_verdict, experience_gap_feedback, and suggested_optimized_bullet texts in English."
+
+    return f"""Analyze the candidate resume against the target job description.{lang_directive}
 
 Evaluate:
 1. Overall ATS match score (0-100)
