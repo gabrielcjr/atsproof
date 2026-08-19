@@ -175,22 +175,22 @@
                 <input type="text" name="honeypot" id="honeypot" style="display:none !important;" tabindex="-1" autocomplete="off">
 
                 <!-- Dual-Column Inputs -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                     
                     <!-- Left Column: Resume PDF Upload -->
                     <div class="bg-slate-900/70 backdrop-blur-md rounded-2xl p-6 border border-slate-800/80 flex flex-col justify-between shadow-xl">
                         <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <label class="block text-sm font-semibold text-slate-200">
+                            <div class="flex items-center justify-between gap-2 mb-4 min-h-[28px]">
+                                <label class="block text-sm font-semibold text-slate-200 truncate">
                                     {{ t.upload_col_title }}
                                 </label>
-                                <span class="text-xs text-slate-400 font-mono">{{ t.upload_col_limits.format(max_pdf_kb=max_pdf_kb, max_pages=max_pages) }}</span>
+                                <span class="text-xs text-slate-400 font-mono whitespace-nowrap flex-shrink-0">{{ t.upload_col_limits.format(max_pdf_kb=max_pdf_kb, max_pages=max_pages) }}</span>
                             </div>
 
                             <!-- Drag & Drop Zone -->
                             <div 
                                 id="drop-zone"
-                                class="relative border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-xl p-6 text-center cursor-pointer transition bg-slate-950/40 hover:bg-slate-950/80 flex flex-col items-center justify-center min-h-[220px]"
+                                class="relative border-2 border-dashed border-slate-700 hover:border-indigo-500 rounded-xl p-6 text-center cursor-pointer transition bg-slate-950/40 hover:bg-slate-950/80 flex flex-col items-center justify-center h-[230px]"
                             >
                                 <input 
                                     type="file" 
@@ -236,23 +236,23 @@
                         </div>
 
                         <!-- Security Notice -->
-                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center text-xs text-slate-400 space-x-2">
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center text-xs text-slate-400 space-x-2 min-h-[38px]">
                             <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                             </svg>
-                            <span>{{ t.upload_security_notice }}</span>
+                            <span class="truncate sm:whitespace-normal">{{ t.upload_security_notice }}</span>
                         </div>
                     </div>
 
                     <!-- Right Column: Job Description Text -->
                     <div class="bg-slate-900/70 backdrop-blur-md rounded-2xl p-6 border border-slate-800/80 flex flex-col justify-between shadow-xl">
                         <div>
-                            <div class="flex items-center justify-between mb-4">
-                                <label for="job_description" class="block text-sm font-semibold text-slate-200">
+                            <div class="flex items-center justify-between gap-2 mb-4 min-h-[28px]">
+                                <label for="job_description" class="block text-sm font-semibold text-slate-200 truncate">
                                     {{ t.jd_col_title }}
                                 </label>
-                                <div>
-                                    <span id="char-counter" class="text-xs text-slate-400 font-mono">0 / {{ max_chars }} {% if lang == 'pt' %}caracteres{% else %}chars{% endif %}</span>
+                                <div class="flex-shrink-0">
+                                    <span id="char-counter" class="text-xs text-slate-400 font-mono whitespace-nowrap">0 / {{ max_chars }} {% if lang == 'pt' %}carac.{% else %}chars{% endif %}</span>
                                 </div>
                             </div>
 
@@ -264,14 +264,14 @@
                                     required
                                     maxlength="{{ max_chars }}"
                                     placeholder="{{ t.jd_placeholder }}"
-                                    class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition font-sans resize-y min-h-[220px]"
+                                    class="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition font-sans h-[230px] resize-none"
                                 ></textarea>
                             </div>
                         </div>
 
-                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-                            <span>{{ t.jd_tip }}</span>
-                            <button type="button" id="clear-jd-btn" class="text-slate-500 hover:text-slate-400">{{ t.jd_clear_btn }}</button>
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs text-slate-400 min-h-[38px]">
+                            <span class="truncate sm:whitespace-normal">{{ t.jd_tip }}</span>
+                            <button type="button" id="clear-jd-btn" class="text-slate-500 hover:text-slate-300 font-medium whitespace-nowrap flex-shrink-0">{{ t.jd_clear_btn }}</button>
                         </div>
                     </div>
                 </div>
@@ -415,13 +415,13 @@
 
         // Character counter for Job Description
         jdTextarea.addEventListener('input', function() {
-            const label = CURRENT_LANG === 'pt' ? 'caracteres' : 'chars';
+            const label = CURRENT_LANG === 'pt' ? 'carac.' : 'chars';
             charCounter.textContent = `${this.value.length} / 10000 ${label}`;
         });
 
         clearJdBtn.addEventListener('click', function() {
             jdTextarea.value = '';
-            const label = CURRENT_LANG === 'pt' ? 'caracteres' : 'chars';
+            const label = CURRENT_LANG === 'pt' ? 'carac.' : 'chars';
             charCounter.textContent = `0 / 10000 ${label}`;
         });
 

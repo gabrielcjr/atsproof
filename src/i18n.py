@@ -19,16 +19,16 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "hero_subtitle": "Upload your resume PDF and paste the job description. Our dual-engine ATS simulator analyzes skill gaps, keyword matching, and crafts instant bullet point optimizations.",
         
         "upload_col_title": "1. Upload Resume (PDF)",
-        "upload_col_limits": "Max {max_pdf_kb}KB • Max {max_pages} pages",
+        "upload_col_limits": "Max {max_pdf_kb}KB • {max_pages} pages",
         "dropzone_prompt": "Click to upload or drag and drop",
         "dropzone_subprompt": "Standard PDF files only",
         "dropzone_change_btn": "Remove & Choose Another",
-        "upload_security_notice": "Parsed securely in-memory. Never indexed or stored.",
+        "upload_security_notice": "Parsed securely in-memory. Resumes are never stored.",
         
-        "jd_col_title": "2. Paste Job Description (JD)",
+        "jd_col_title": "2. Job Description (JD)",
         "jd_col_counter": "{chars} / {max_chars} chars",
         "jd_placeholder": "Paste the target job requirements, qualifications, and responsibilities here...",
-        "jd_tip": "Includes keywords, required experience, and tech stack.",
+        "jd_tip": "Includes keywords, requirements, and tech stack.",
         "jd_clear_btn": "Clear",
         
         "btn_analyze": "Run ATS DeepScan Analysis",
@@ -91,16 +91,16 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "hero_subtitle": "Envie seu currículo em PDF e cole a descrição da vaga. Nosso simulador ATS com IA analisa lacunas de habilidades, correspondência de palavras-chave e cria melhorias imediatas para suas experiências.",
         
         "upload_col_title": "1. Enviar Currículo (PDF)",
-        "upload_col_limits": "Máx {max_pdf_kb}KB • Máx {max_pages} páginas",
+        "upload_col_limits": "Máx {max_pdf_kb}KB • {max_pages} págs",
         "dropzone_prompt": "Clique para enviar ou arraste o arquivo",
         "dropzone_subprompt": "Apenas arquivos PDF padrão",
         "dropzone_change_btn": "Remover e Escolher Outro",
-        "upload_security_notice": "Processado com segurança em memória. Nunca indexado ou armazenado.",
+        "upload_security_notice": "Processado em memória. Currículos nunca salvos.",
         
-        "jd_col_title": "2. Colar Descrição da Vaga (JD)",
-        "jd_col_counter": "{chars} / {max_chars} caracteres",
+        "jd_col_title": "2. Descrição da Vaga (JD)",
+        "jd_col_counter": "{chars} / {max_chars} carac.",
         "jd_placeholder": "Cole aqui os requisitos, qualificações e responsabilidades da vaga desejada...",
-        "jd_tip": "Inclui palavras-chave, experiência necessária e stack tecnológica.",
+        "jd_tip": "Palavras-chave, requisitos e stack técnica.",
         "jd_clear_btn": "Limpar",
         
         "btn_analyze": "Executar Análise Completa ATS",
