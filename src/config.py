@@ -14,7 +14,8 @@ MAX_PDF_PAGES: int = 3                 # 3 pages max
 MAX_TEXT_CHARS: int = 10000            # 10,000 characters with spaces max
 
 # Rate Limiting & Concurrency Policies
-RATE_LIMIT_POLICY: str = os.getenv("RATE_LIMIT_POLICY", "5/minute")
+rate_per_min = os.getenv("RATE_LIMIT_PER_MINUTE", "2")
+RATE_LIMIT_POLICY: str = os.getenv("RATE_LIMIT_POLICY", f"{rate_per_min}/minute")
 MAX_CONCURRENT_REQUESTS: int = int(os.getenv("MAX_CONCURRENT_REQUESTS", "3"))
 
 # API Keys (Loaded from environment)

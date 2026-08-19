@@ -18,6 +18,19 @@ else:
     logfire.configure(send_to_logfire=False)
 
 
+def get_client_ip(request) -> str:
+    """Extracts the true client IP address behind reverse proxies."""
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    real_ip = request.headers.get("X-Real-IP")
+    if real_ip:
+        return real_ip.strip()
+    if request.client and request.client.host:
+        return request.client.host
+    return "127.0.0.1"
+
+
 def create_app() -> FastAPI:
     """
     Creates and configures the main FastAPI application instance.
@@ -32,8 +45,8 @@ def create_app() -> FastAPI:
     logfire.instrument_fastapi(app)
     logfire.instrument_pydantic()
 
-    # Initialize rate limiter
-    limiter = Limiter(key_func=get_remote_address, default_limits=[RATE_LIMIT_POLICY])
+    # Initialize rate limiter keyed by true client IP
+    limiter = Limiter(key_func=get_client_ip, default_limits=[RATE_LIMIT_POLICY])
     app.state.limiter = limiter
 
     # Template renderer
