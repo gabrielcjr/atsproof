@@ -49,15 +49,21 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
 
     @router.get("/download-template")
     async def download_template(request: Request, lang: Optional[str] = None):
-        """Allows users to download the free ATS-optimized resume template (.docx)."""
+        """Allows users to download the free ATS-optimized resume template (.docx) in EN or PT."""
         req_lang = lang or request.cookies.get("lang", "en")
         is_pt = req_lang.lower().startswith("pt")
 
-        template_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "resume_template.docx")
-        if not os.path.exists(template_path):
-            template_path = "static/resume_template.docx"
+        static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+        if is_pt:
+            template_path = os.path.join(static_dir, "resume_template_pt.docx")
+            filename = "Modelo_Curriculo_ATS.docx"
+        else:
+            template_path = os.path.join(static_dir, "resume_template.docx")
+            filename = "ATS_Resume_Template.docx"
 
-        filename = "Modelo_Curriculo_ATS.docx" if is_pt else "ATS_Resume_Template.docx"
+        if not os.path.exists(template_path):
+            template_path = os.path.join(static_dir, "resume_template.docx")
+
         return FileResponse(
             path=template_path,
             filename=filename,
