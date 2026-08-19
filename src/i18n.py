@@ -58,6 +58,11 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "optimized_bullet_label": "ATS-Optimized Recommended Bullet:",
         "copy_btn": "Copy",
         "copied_btn": "Copied!",
+        "export_toolbar_title": "Export & Share Analysis",
+        "export_pdf_btn": "Print / Save PDF",
+        "export_copy_btn": "Copy Full Report",
+        "export_download_btn": "Download (.txt)",
+        "export_copied": "Full Report Copied!",
         
         "rate_limit_title": "Rate Limit Exceeded (Free Tier Protection)",
         "rate_limit_desc": "To keep this service 100% free and fast for everyone, requests are limited to 2 analyses per minute per user.",
@@ -130,6 +135,11 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "optimized_bullet_label": "Frase Otimizada Recomendada:",
         "copy_btn": "Copiar",
         "copied_btn": "Copiado!",
+        "export_toolbar_title": "Exportar e Compartilhar Relatório",
+        "export_pdf_btn": "Salvar / Imprimir PDF",
+        "export_copy_btn": "Copiar Relatório",
+        "export_download_btn": "Baixar (.txt)",
+        "export_copied": "Relatório Copiado!",
         
         "rate_limit_title": "Limite de Requisições Atingido (Proteção Gratuita)",
         "rate_limit_desc": "Para manter este serviço 100% gratuito e rápido para todos, o limite é de 2 análises por minuto por usuário.",

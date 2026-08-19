@@ -1,6 +1,7 @@
 import os
 import logfire
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
@@ -51,6 +52,12 @@ def create_app() -> FastAPI:
 
     # Template renderer
     templates = Jinja2Templates(directory="templates")
+
+    # Static Assets (CSS, JS, Favicon, Docx Templates)
+    static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+    if not os.path.exists(static_dir):
+        static_dir = "static"
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
     # Exception Handlers
     rate_limit_handler = create_rate_limit_handler(templates)

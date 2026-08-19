@@ -1,0 +1,132 @@
+/* ==========================================================================
+   ATS MatchProof - Main Application Stylesheet
+   ========================================================================== */
+
+/* HTMX Request Indicator Handling */
+.htmx-indicator {
+    display: none;
+}
+.htmx-request .htmx-indicator {
+    display: flex;
+}
+.htmx-request.htmx-indicator {
+    display: flex;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* Smooth Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.35s ease-out forwards;
+}
+
+/* ==========================================================================
+   Print / PDF Export Styles
+   ========================================================================== */
+@media print {
+    body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+    }
+    
+    /* Hide non-printable interface elements */
+    header, 
+    form, 
+    footer, 
+    #loading, 
+    .no-print {
+        display: none !important;
+    }
+    
+    main {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    #results {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Clean white background and high contrast borders for printable report cards */
+    .bg-slate-900\/80, 
+    .bg-slate-900\/70, 
+    .bg-slate-950, 
+    .bg-slate-950\/60, 
+    .bg-slate-950\/70, 
+    .bg-slate-950\/40 {
+        background: #ffffff !important;
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
+    }
+    
+    .text-white, 
+    .text-slate-200, 
+    .text-slate-300 {
+        color: #0f172a !important;
+    }
+    
+    .text-slate-400, 
+    .text-slate-500 {
+        color: #475569 !important;
+    }
+    
+    .border-slate-800, 
+    .border-slate-800\/80,
+    .border-slate-800\/90 {
+        border-color: #e2e8f0 !important;
+    }
+    
+    /* Matched Keywords in Print */
+    .bg-emerald-950\/20, 
+    .bg-emerald-500\/10 {
+        background: #f0fdf4 !important;
+        border-color: #86efac !important;
+    }
+    .text-emerald-400, 
+    .text-emerald-300, 
+    .text-emerald-200 {
+        color: #166534 !important;
+    }
+    
+    /* Missing Keywords in Print */
+    .bg-rose-500\/10 {
+        background: #fef2f2 !important;
+        border-color: #fca5a5 !important;
+    }
+    .text-rose-400, 
+    .text-rose-300 {
+        color: #991b1b !important;
+    }
+    
+    /* Tailored Bullets in Print */
+    .bullet-text {
+        color: #14532d !important;
+    }
+}

@@ -159,6 +159,18 @@ class ATSMatcherTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Modelo_Curriculo_ATS.docx", response.headers.get("content-disposition", ""))
 
+    def test_static_css_and_js_served(self):
+        """Ensure modular static CSS and JS files are served with status 200."""
+        css_resp = client.get("/static/css/style.css")
+        self.assertEqual(css_resp.status_code, 200)
+        self.assertIn("htmx-indicator", css_resp.text)
+        self.assertIn("@media print", css_resp.text)
+
+        js_resp = client.get("/static/js/app.js")
+        self.assertEqual(js_resp.status_code, 200)
+        self.assertIn("exportFullReport", js_resp.text)
+        self.assertIn("handleSelectedFile", js_resp.text)
+
 
 if __name__ == "__main__":
     unittest.main()
