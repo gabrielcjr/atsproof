@@ -60,6 +60,14 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             favicon_path = "static/favicon.svg"
         return FileResponse(path=favicon_path, media_type="image/svg+xml")
 
+    @router.get("/ads.txt", include_in_schema=False)
+    async def ads_txt():
+        """Serves ads.txt for Google AdSense verification."""
+        ads_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "ads.txt")
+        if not os.path.exists(ads_path):
+            ads_path = "static/ads.txt"
+        return FileResponse(path=ads_path, media_type="text/plain")
+
     @router.post("/analyze", response_class=HTMLResponse)
     @limiter.limit(RATE_LIMIT_POLICY)
     async def analyze_match(
