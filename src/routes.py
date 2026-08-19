@@ -51,6 +51,15 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         )
 
+    @router.get("/favicon.ico", include_in_schema=False)
+    @router.get("/static/favicon.svg", include_in_schema=False)
+    async def favicon():
+        """Serves the SVG favicon for browser tabs."""
+        favicon_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "favicon.svg")
+        if not os.path.exists(favicon_path):
+            favicon_path = "static/favicon.svg"
+        return FileResponse(path=favicon_path, media_type="image/svg+xml")
+
     @router.post("/analyze", response_class=HTMLResponse)
     @limiter.limit(RATE_LIMIT_POLICY)
     async def analyze_match(
