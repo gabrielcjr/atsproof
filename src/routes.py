@@ -80,13 +80,17 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         Analyzes uploaded resume against job description.
         Enforces honeypot check, in-memory PDF extraction, and dual-LLM fallback.
         """
-        # 1. Honeypot check (anti-bot trap)
+        # 1. Anti-bot honeypot check
         if honeypot and honeypot.strip():
-            logger.warning(f"Bot detected via honeypot trap from {get_remote_address(request)}")
+            logger.warning("Bot honeypot triggered on /analyze submission.")
             return templates.TemplateResponse(
                 request=request,
                 name="partials/error.html",
-                context={"error_message": "Automated submission rejected."},
+                context={
+                    "error_title": "Submission Rejected",
+                    "error_message": "Automated submission rejected. If you are a human user, please try again.",
+                    "error_type": "client",
+                },
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -96,7 +100,11 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             return templates.TemplateResponse(
                 request=request,
                 name="partials/error.html",
-                context={"error_message": "Job Description cannot be empty. Please paste the job listing text."},
+                context={
+                    "error_title": "Job Description Missing",
+                    "error_message": "Job Description cannot be empty. Please paste the job requirements and responsibilities in the text box.",
+                    "error_type": "validation",
+                },
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -110,7 +118,11 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 return templates.TemplateResponse(
                     request=request,
                     name="partials/error.html",
-                    context={"error_message": "Uploaded resume file is empty."},
+                    context={
+                        "error_title": "Empty File",
+                        "error_message": "Uploaded resume file is empty. Please select a valid PDF file.",
+                        "error_type": "validation",
+                    },
                     status_code=status.HTTP_400_BAD_REQUEST,
                 )
 
@@ -119,7 +131,11 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             return templates.TemplateResponse(
                 request=request,
                 name="partials/error.html",
-                context={"error_message": str(ve)},
+                context={
+                    "error_title": "PDF Document Issue",
+                    "error_message": str(ve),
+                    "error_type": "validation",
+                },
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
@@ -127,7 +143,11 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             return templates.TemplateResponse(
                 request=request,
                 name="partials/error.html",
-                context={"error_message": "Failed to read the uploaded resume file. Please ensure it is a valid PDF."},
+                context={
+                    "error_title": "File Read Error",
+                    "error_message": "Unable to read the uploaded resume. Please make sure the PDF is text-based (not a scanned image) and under 120KB.",
+                    "error_type": "validation",
+                },
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -148,7 +168,10 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 request=request,
                 name="partials/error.html",
                 context={
-                    "error_message": f"AI ATS Engine temporarily unavailable: {str(e)}. Please check your API keys or try again shortly."
+                    "error_title": "AI Service Temporarily Busy",
+                    "error_message": "Our AI analysis service is experiencing temporary high demand. Your file was processed safely in-memory, but the analysis timed out.",
+                    "error_type": "server",
+                    "suggestion": "Please wait a moment and click 'Try Again' below to re-submit.",
                 },
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
