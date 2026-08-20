@@ -7,9 +7,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Install Nginx and curl for healthchecks
+# Install curl for healthchecks
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nginx \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -18,25 +17,20 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Configure Nginx
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-
 # Copy application source code
 COPY src/ ./src/
 COPY templates/ ./templates/
 COPY static/ ./static/
 COPY main.py .
 COPY pytest.ini .
-COPY docker/entrypoint.sh ./entrypoint.sh
 
-RUN chmod +x /app/entrypoint.sh
+# Expose port 8000 for FastAPI Uvicorn
+EXPOSE 8000
 
-# Expose ports 80 and 443 for Nginx
-EXPOSE 80 443
+# Healthcheck testing through FastAPI Uvicorn
+HEALTHCHECK --interval=15s --timeout=5s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/ || exit 1
 
-# Healthcheck testing through Nginx HTTPS reverse proxy
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -k -f https://localhost/ || exit 1
+# Start Uvicorn backend
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2", "--proxy-headers", "--forwarded-allow-ips=*"]
 
-# Start both Nginx and Uvicorn
-ENTRYPOINT ["/app/entrypoint.sh"]
