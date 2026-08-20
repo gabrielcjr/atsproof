@@ -8,12 +8,16 @@ PYTHON := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 UVICORN := $(VENV)/bin/uvicorn
 PYTEST := $(VENV)/bin/pytest
+FLAKE8 := $(VENV)/bin/flake8
+BLACK := $(VENV)/bin/black
+ISORT := $(VENV)/bin/isort
+AUTOFLAKE := $(VENV)/bin/autoflake
 
 APP_NAME := ats_matcher
 DOCKER_IMAGE := ats-matcher:latest
 PORT ?= 8001
 
-.PHONY: help install dev start prod test test-unit clean stop docker-build docker-run docker-stop compose-up compose-down compose-logs
+.PHONY: help install dev start prod test test-unit clean stop docker-build docker-run docker-stop compose-up compose-down compose-logs run-check-flake8 run-check-black run-fix-black run-check-isort run-fix-isort run-fix-autoflake run-check-linters run-fix-linters
 
 # Default target: display colorized help
 help:
@@ -22,22 +26,24 @@ help:
 	@echo "  \033[0;34m==========================================\033[0m"
 	@echo ""
 	@echo "  \033[1;32mLocal Development:\033[0m"
-	@echo "    \033[1;33mmake install\033[0m       Create virtualenv & install dependencies"
-	@echo "    \033[1;33mmake dev\033[0m           Start local dev server with auto-reload (port $(PORT))"
-	@echo "    \033[1;33mmake stop\033[0m          Stop all running local uvicorn processes"
+	@echo "    \033[1;33mmake install\033[0m          Create virtualenv & install dependencies"
+	@echo "    \033[1;33mmake dev\033[0m              Start local dev server with auto-reload (port $(PORT))"
+	@echo "    \033[1;33mmake stop\033[0m             Stop all running local uvicorn processes"
 	@echo ""
 	@echo "  \033[1;32mTesting & Quality:\033[0m"
-	@echo "    \033[1;33mmake test\033[0m          Run test suite using pytest"
-	@echo "    \033[1;33mmake test-unit\033[0m     Run tests using standard Python unittest runner"
-	@echo "    \033[1;33mmake clean\033[0m         Remove cache, pyc, and temp files"
+	@echo "    \033[1;33mmake test\033[0m             Run test suite using pytest"
+	@echo "    \033[1;33mmake test-unit\033[0m        Run tests using standard Python unittest runner"
+	@echo "    \033[1;33mmake run-check-linters\033[0m   Run flake8, black, and isort checks"
+	@echo "    \033[1;33mmake run-fix-linters\033[0m     Run black, isort, and autoflake auto-fixes"
+	@echo "    \033[1;33mmake clean\033[0m            Remove cache, pyc, and temp files"
 	@echo ""
 	@echo "  \033[1;32mProduction & Docker Compose (Port 80/443 with Nginx & SSL):\033[0m"
-	@echo "    \033[1;33mmake compose-up\033[0m    Build & start production container (Nginx + FastAPI) with SSL"
-	@echo "    \033[1;33mmake compose-down\033[0m  Stop and remove compose deployment"
-	@echo "    \033[1;33mmake compose-logs\033[0m  Follow live production container logs"
-	@echo "    \033[1;33mmake docker-build\033[0m  Build standalone Docker image"
-	@echo "    \033[1;33mmake docker-run\033[0m    Run standalone container on port 80/443"
-	@echo "    \033[1;33mmake docker-stop\033[0m   Stop running Docker container"
+	@echo "    \033[1;33mmake compose-up\033[0m       Build & start production container (Nginx + FastAPI) with SSL"
+	@echo "    \033[1;33mmake compose-down\033[0m     Stop and remove compose deployment"
+	@echo "    \033[1;33mmake compose-logs\033[0m     Follow live production container logs"
+	@echo "    \033[1;33mmake docker-build\033[0m     Build standalone Docker image"
+	@echo "    \033[1;33mmake docker-run\033[0m       Run standalone container on port 80/443"
+	@echo "    \033[1;33mmake docker-stop\033[0m      Stop running Docker container"
 	@echo ""
 
 # Setup environment
@@ -70,6 +76,34 @@ test:
 test-unit:
 	@echo "==> Running unit tests via unittest runner..."
 	@$(PYTHON) -m unittest discover -s src/test -p "test_*.py" -v
+
+run-check-flake8:
+	@$(FLAKE8) . --config .flake8 --count --show-source --statistics
+
+run-check-black:
+	@$(BLACK) --check . --config pyproject.toml
+
+run-fix-black:
+	@$(BLACK) . --config pyproject.toml
+
+run-check-isort:
+	@$(ISORT) . --check-only --settings-file pyproject.toml
+
+run-fix-isort:
+	@$(ISORT) . --settings-file pyproject.toml
+
+run-fix-autoflake:
+	@$(AUTOFLAKE) --remove-all-unused-imports --recursive --in-place . --exclude=apps.py,.venv,.docker
+
+run-check-linters:
+	make run-check-flake8
+	make run-check-black
+	make run-check-isort
+
+run-fix-linters:
+	make run-fix-autoflake
+	make run-fix-isort
+	make run-fix-black
 
 # Clean caches and temporary artifacts
 clean:
