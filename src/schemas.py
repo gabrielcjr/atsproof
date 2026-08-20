@@ -2,9 +2,9 @@
 Pydantic data models and schemas for structured ATS verification outputs.
 """
 
-from typing import List
+from typing import List, Set
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class TailoringSuggestion(BaseModel):
@@ -39,3 +39,38 @@ class ATSMatchResult(BaseModel):
     summary_verdict: str = Field(
         description="A 2-3 sentence strategic verdict on the candidate's interview odds and top action items."
     )
+
+    @model_validator(mode="after")
+    def sanitize_and_deduplicate_keywords(self) -> "ATSMatchResult":
+        """
+        Enforces strict mutual exclusivity and case-insensitive deduplication between
+        matched_keywords and missing_critical_keywords.
+        """
+        # 1. Deduplicate matched_keywords preserving original casing and order
+        seen_matched: Set[str] = set()
+        clean_matched: List[str] = []
+        for kw in self.matched_keywords or []:
+            trimmed = kw.strip() if isinstance(kw, str) else str(kw).strip()
+            if trimmed and trimmed.lower() not in seen_matched:
+                seen_matched.add(trimmed.lower())
+                clean_matched.append(trimmed)
+        self.matched_keywords = clean_matched
+
+        # 2. Deduplicate missing_critical_keywords and remove any present in matched_keywords
+        seen_missing: Set[str] = set()
+        clean_missing: List[str] = []
+        for kw in self.missing_critical_keywords or []:
+            trimmed = kw.strip() if isinstance(kw, str) else str(kw).strip()
+            if (
+                trimmed
+                and trimmed.lower() not in seen_matched
+                and trimmed.lower() not in seen_missing
+            ):
+                seen_missing.add(trimmed.lower())
+                clean_missing.append(trimmed)
+        self.missing_critical_keywords = clean_missing
+
+        # 3. Ensure match_score is clamped between 0 and 100
+        self.match_score = max(0, min(100, int(self.match_score)))
+
+        return self
