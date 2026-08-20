@@ -39,11 +39,11 @@ async def call_gemini_primary(resume_text: str, job_desc: str, language: str = "
     prompt_content = build_user_prompt(resume_text, job_desc, language=language)
 
     candidate_models = [
-        "gemini-3.5-flash",
-        "gemini-3.1-flash-lite",
-        "gemini-3.6-flash",
-        "gemini-flash-lite-latest",
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-lite",
         "gemini-flash-latest",
+        "gemini-flash-lite-latest",
+        "gemini-2.0-flash",
     ]
     last_err = None
 
@@ -89,7 +89,7 @@ async def call_groq_fallback(resume_text: str, job_desc: str, language: str = "e
     system_content = f"{SYSTEM_INSTRUCTION}\n\nRespond strictly with a single valid JSON object matching this schema:\n{JSON_SCHEMA_DESCRIPTION}"
     prompt_content = build_user_prompt(resume_text, job_desc, language=language)
 
-    candidate_models = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.6-27b"]
+    candidate_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"]
     last_err = None
 
     with logfire.span("Groq Failover Engine", language=language):

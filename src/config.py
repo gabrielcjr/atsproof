@@ -11,7 +11,7 @@ load_dotenv()
 # System Constraints & Boundaries
 MAX_PDF_SIZE_BYTES: int = 120 * 1024  # 120 KB max
 MAX_PDF_PAGES: int = 3                 # 3 pages max
-MAX_TEXT_CHARS: int = 10000            # 10,000 characters with spaces max
+MAX_TEXT_CHARS: int = 7000             # 7,000 characters with spaces max
 
 # Rate Limiting & Concurrency Policies
 rate_per_min = os.getenv("RATE_LIMIT_PER_MINUTE", "2")

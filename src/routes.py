@@ -138,7 +138,18 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             )
 
         if len(sanitized_jd) > MAX_TEXT_CHARS:
-            sanitized_jd = sanitized_jd[:MAX_TEXT_CHARS]
+            return templates.TemplateResponse(
+                request=request,
+                name="partials/error.html",
+                context={
+                    "t": t,
+                    "lang": resolved_lang,
+                    "error_title": t["jd_col_title"],
+                    "error_message": t["error_jd_too_long"].format(max_chars=MAX_TEXT_CHARS),
+                    "error_type": "validation",
+                },
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
 
         # 3. Read & Validate Uploaded Resume PDF (strictly in-memory)
         try:

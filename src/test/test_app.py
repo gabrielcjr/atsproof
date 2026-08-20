@@ -96,7 +96,7 @@ class ATSMatcherTests(unittest.TestCase):
         self.assertIn("ATS MatchProof", response.text)
         self.assertIn("120KB", response.text)
         self.assertIn("3 pages", response.text)
-        self.assertIn("10000 chars", response.text)
+        self.assertIn("7000 chars", response.text)
 
     def test_analyze_honeypot_rejection(self):
         """Ensure automated bot submissions with honeypots are rejected."""
@@ -119,6 +119,17 @@ class ATSMatcherTests(unittest.TestCase):
         response = client.post("/analyze", files=files, data=data)
         self.assertEqual(response.status_code, 400)
         self.assertIn("Job Description cannot be empty", response.text)
+
+    def test_analyze_oversized_job_description(self):
+        """Ensure job description exceeding 7000 chars is rejected."""
+        files = {"resume": ("resume.pdf", create_dummy_pdf(1), "application/pdf")}
+        data = {
+            "job_description": "A" * (MAX_TEXT_CHARS + 100),
+            "honeypot": ""
+        }
+        response = client.post("/analyze", files=files, data=data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("exceeds the maximum limit of 7000 characters", response.text)
 
     def test_rate_limit_exceeded(self):
         """Ensure exceeding rate limit returns 429 partial template."""
