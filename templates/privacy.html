@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t.page_privacy_title }}</title>
+    <meta name="description" content="{% if lang == 'pt' %}Política de Privacidade do ATS MatchProof. Saiba como protegemos seus dados com processamento 100% em memória RAM e em total conformidade com LGPD, GDPR e Google AdSense.{% else %}Privacy Policy for ATS MatchProof. Learn how we protect your privacy with 100% ephemeral in-memory processing in full compliance with GDPR, LGPD, and Google AdSense.{% endif %}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{% if lang == 'pt' %}https://atsproof.website/privacidade{% else %}https://atsproof.website/privacy{% endif %}">
+    <link rel="alternate" hreflang="en" href="https://atsproof.website/privacy">
+    <link rel="alternate" hreflang="pt" href="https://atsproof.website/privacidade">
+    <link rel="alternate" hreflang="x-default" href="https://atsproof.website/privacy">
+
+    <!-- Open Graph / LinkedIn / Facebook -->
+    <meta property="og:site_name" content="{{ t.site_name }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% if lang == 'pt' %}https://atsproof.website/privacidade{% else %}https://atsproof.website/privacy{% endif %}">
+    <meta property="og:title" content="{{ t.page_privacy_title }}">
+    <meta property="og:description" content="{% if lang == 'pt' %}Política de Privacidade do ATS MatchProof. Processamento 100% seguro em memória RAM.{% else %}Privacy Policy for ATS MatchProof. 100% ephemeral in-memory processing.{% endif %}">
+    <meta property="og:image" content="https://atsproof.website/static/og-image.png">
+    <meta property="og:image:secure_url" content="https://atsproof.website/static/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ t.og_image_alt }}">
+    <meta property="og:locale" content="{% if lang == 'pt' %}pt_BR{% else %}en_US{% endif %}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{% if lang == 'pt' %}https://atsproof.website/privacidade{% else %}https://atsproof.website/privacy{% endif %}">
+    <meta name="twitter:title" content="{{ t.page_privacy_title }}">
+    <meta name="twitter:description" content="{% if lang == 'pt' %}Política de Privacidade do ATS MatchProof.{% else %}Privacy Policy for ATS MatchProof.{% endif %}">
+    <meta name="twitter:image" content="https://atsproof.website/static/og-image.png">
+    <meta name="twitter:image:alt" content="{{ t.og_image_alt }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6883104711604671"
+         crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="min-h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800/80 backdrop-blur-md bg-slate-950/60 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">ATS MatchProof</span>
+                    </div>
+                </a>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a>
+            </nav>
+
+            <!-- Right Nav Actions -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center bg-slate-900/90 p-0.5 rounded-full border border-slate-800 text-xs font-semibold shadow-sm">
+                    <a href="/privacy?lang=en" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang != 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇺🇸</span><span class="hidden sm:inline">EN</span>
+                    </a>
+                    <a href="/privacidade?lang=pt" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang == 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇧🇷</span><span class="hidden sm:inline">PT</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-6 sm:p-10 border border-slate-800 shadow-2xl space-y-8">
+            
+            <!-- Title Header -->
+            <div class="border-b border-slate-800 pb-6">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+                    {% if lang == 'pt' %}Conformidade & Privacidade{% else %}Compliance & Privacy{% endif %}
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mt-3">
+                    {% if lang == 'pt' %}Política de Privacidade{% else %}Privacy Policy{% endif %}
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-400 mt-2 font-mono">
+                    {% if lang == 'pt' %}Última atualização: Agosto de 2026{% else %}Last updated: August 2026{% endif %}
+                </p>
+            </div>
+
+            {% if lang == 'pt' %}
+            <!-- Portuguese Privacy Policy -->
+            <article class="space-y-6 text-sm sm:text-base text-slate-300 leading-relaxed">
+                
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        1. Nosso Compromisso com a sua Privacidade (Zero Retenção)
+                    </h2>
+                    <p>
+                        O <strong>ATS MatchProof</strong> foi projetado e construído com base no princípio de <em>Privacy by Design</em> (Privacidade desde a Concepção). Compreendemos que um currículo contém informações pessoais altamente confidenciais, incluindo histórico profissional, contato e formação educacional.
+                    </p>
+                    <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm">
+                        <strong>Garantia de Processamento em Memória RAM:</strong> Todos os arquivos PDF enviados e descrições de vagas são processados exclusivamente na memória volátil (RAM) do servidor durante o tempo de execução da análise. Nenhum arquivo de currículo, texto ou dado pessoal é salvo em disco rígido, em bancos de dados relacionais ou em armazenamento em nuvem.
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        2. Dados que Coletamos e Como são Utilizados
+                    </h2>
+                    <p>Ao utilizar nossos serviços gratuitos, as seguintes interações técnicas ocorrem:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li><strong>Conteúdo do Currículo e Descrição da Vaga:</strong> Utilizados unicamente durante os segundos necessários para comparar competências via Inteligência Artificial e formatar os resultados. Imediatamente após a geração do relatório, esses dados são destruídos da memória do servidor.</li>
+                        <li><strong>Logs Técnicos e Métricas de Segurança:</strong> Coletamos endereços IP de forma temporária e ofuscada exclusivamente para prevenir ataques de negação de serviço (DDoS), abusos automatizados e aplicação de taxa limite (máximo de requisições por minuto).</li>
+                        <li><strong>Preferência de Idioma:</strong> Um cookie técnico simples (<code>lang</code>) é armazenado no seu navegador para lembrar se você prefere navegar em Português ou Inglês.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        3. Google AdSense e Cookies de Terceiros
+                    </h2>
+                    <p>
+                        Para manter este serviço 100% gratuito e disponível para todos os candidatos sem a cobrança de assinaturas, veiculamos anúncios fornecidos pelo <strong>Google AdSense</strong>.
+                    </p>
+                    <p>
+                        O Google, como fornecedor terceiro, utiliza cookies para exibir anúncios neste site:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li>O uso do cookie DART pelo Google permite a veiculação de anúncios para os usuários com base em suas visitas anteriores a este e a outros sites na Internet.</li>
+                        <li>Os usuários podem optar por desativar o uso do cookie DART visitando a <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline hover:text-indigo-300">Política de Privacidade da rede de conteúdo e anúncios do Google</a>.</li>
+                        <li>Fornecedores e redes de anúncios de terceiros também podem usar cookies para coletar dados anônimos de navegação para medição de eficácia e personalização de publicidade.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        4. Conformidade com LGPD (Brasil) e GDPR (Europa)
+                    </h2>
+                    <p>
+                        Em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 - LGPD) e o Regulamento Geral sobre a Proteção de Dados (GDPR da União Europeia):
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li>Você não precisa criar conta ou fornecer nome, e-mail ou dados cadastrais para utilizar o ATS MatchProof.</li>
+                        <li>Não realizamos enriquecimento de dados, cruzamento com bases de terceiros ou comercialização de informações pessoais com recrutadores ou anunciantes.</li>
+                        <li>Como não armazenamos seus dados, não há histórico persistente de currículos a ser solicitado para exclusão — a exclusão ocorre instantaneamente a cada análise.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        5. Segurança da Informação
+                    </h2>
+                    <p>
+                        Implementamos padrões rígidos de segurança, incluindo tráfego criptografado via HTTPS (SSL/TLS), isolamento de boundaries de prompt para impedir injeções maliciosas, limites estritos de tamanho de arquivo (máx. 120KB) e proteção contra robôs automatizados via Honeypot.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        6. Informações e Dúvidas sobre Privacidade
+                    </h2>
+                    <p>
+                        Como operamos em um modelo 100% automatizado, sem cadastro e sem persistência de dados em disco ou banco de dados, todas as análises são processadas e descartadas instantaneamente na memória RAM. Para entender a tecnologia empregada, consulte nossa página <a href="/sobre?lang=pt" class="text-indigo-400 underline hover:text-indigo-300">Sobre Nós</a> ou as <a href="/?lang=pt#faq" class="text-indigo-400 underline hover:text-indigo-300">Perguntas Frequentes</a>.
+                    </p>
+                </section>
+
+            </article>
+
+            {% else %}
+            <!-- English Privacy Policy -->
+            <article class="space-y-6 text-sm sm:text-base text-slate-300 leading-relaxed">
+                
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        1. Our Zero-Data Retention Guarantee
+                    </h2>
+                    <p>
+                        At <strong>ATS MatchProof</strong>, your privacy is our foundational architecture. We recognize that resumes contain sensitive personal identifiers, employment history, and contact details.
+                    </p>
+                    <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm">
+                        <strong>100% In-Memory Ephemeral Processing:</strong> Uploaded PDF files and pasted job descriptions are processed exclusively within volatile server memory (RAM) during analysis execution. No resume files, text snippets, or candidate data are ever written to disk, databases, or cloud storage buckets.
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        2. Information Collected & How It Is Used
+                    </h2>
+                    <p>When you use our free verification engine, the following data interactions occur:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li><strong>Resume & Job Description Content:</strong> Used solely to benchmark keyword overlap, assess seniority gaps, and output tailoring suggestions via AI models. All inputs are immediately purged from RAM upon response rendering.</li>
+                        <li><strong>Technical Logs & Anti-Abuse Metrics:</strong> We collect temporary, obfuscated IP addresses strictly to enforce rate limits (requests per minute) and protect against distributed denial-of-service (DDoS) attacks.</li>
+                        <li><strong>Language Preference Cookie:</strong> A lightweight functional cookie (<code>lang</code>) is stored locally on your device to remember your preferred language selection (EN or PT).</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        3. Google AdSense & Third-Party Advertising
+                    </h2>
+                    <p>
+                        To keep this career optimization service 100% free with zero paywalls, we serve contextual advertisements via <strong>Google AdSense</strong>.
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li>Google, as a third-party vendor, uses cookies to serve ads on this website.</li>
+                        <li>Google's use of advertising cookies enables it and its partners to serve ads to users based on their visit to this site and/or other sites on the Internet.</li>
+                        <li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline hover:text-indigo-300">Google Ads Settings</a> or <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" class="text-indigo-400 underline hover:text-indigo-300">AboutAds.info</a>.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        4. GDPR, CCPA, & Global Privacy Rights
+                    </h2>
+                    <p>
+                        In accordance with the European Union General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA):
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li>No account registration or personal identity submission is required to access our tools.</li>
+                        <li>We do not sell, rent, trade, or distribute your personal data to recruiters, employers, or third-party brokers.</li>
+                        <li>Because all resume data is discarded immediately after execution, no persistent user records exist to export or erase.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        5. Security Measures
+                    </h2>
+                    <p>
+                        All transmissions are protected with end-to-end HTTPS (TLS encryption). We enforce strict security headers (<code>X-Content-Type-Options: nosniff</code>, <code>X-Frame-Options: SAMEORIGIN</code>), strict file size limits (120KB max), and XML tag isolation to prevent adversarial prompt injection.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        6. Automated Operation & Privacy Inquiries
+                    </h2>
+                    <p>
+                        As an automated, zero-account web utility with zero persistent database storage, no user data is retained after generation of your analysis. For architecture details, please consult our <a href="/about" class="text-indigo-400 underline hover:text-indigo-300">About Us</a> page or the <a href="/#faq" class="text-indigo-400 underline hover:text-indigo-300">FAQ Section</a>.
+                    </p>
+                </section>
+
+            </article>
+            {% endif %}
+
+            <!-- Back to Analyzer Call to Action -->
+            <div class="pt-6 border-t border-slate-800 flex justify-between items-center">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="inline-flex items-center space-x-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>{% if lang == 'pt' %}Voltar para o Analisador ATS{% else %}Return to ATS Analyzer{% endif %}</span>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 ATS MatchProof. {{ t.badge_free }} ATS verification engine.</p>
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400">{{ t.nav_about }}</a>
+                <a href="{% if lang == 'pt' %}/privacidade?lang=pt{% else %}/privacy{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_privacy }}</a>
+                <a href="{% if lang == 'pt' %}/termos?lang=pt{% else %}/terms{% endif %}" class="hover:text-indigo-400">{{ t.nav_terms }}</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

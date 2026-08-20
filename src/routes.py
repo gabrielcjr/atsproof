@@ -28,12 +28,25 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     Router factory configured with template rendering and rate limiting.
     """
     router = APIRouter()
+    static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 
-    @router.get("/", response_class=HTMLResponse)
+    def _resolve_language(request: Request, lang: Optional[str] = None, default_lang: Optional[str] = None) -> str:
+        """Helper to resolve active language preference from query param, path default, or cookie."""
+        if lang:
+            return "pt" if lang.lower().startswith("pt") else "en"
+        if default_lang:
+            return default_lang
+        req_cookie = request.cookies.get("lang", "en")
+        return "pt" if req_cookie.lower().startswith("pt") else "en"
+
+    # -------------------------------------------------------------
+    # Core Application Routes
+    # -------------------------------------------------------------
+
+    @router.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
     async def index(request: Request, lang: Optional[str] = None):
-        """Serves the main ATS matcher single page application in chosen language."""
-        req_lang = lang or request.cookies.get("lang", "en")
-        resolved_lang = "pt" if req_lang.lower().startswith("pt") else "en"
+        """Serves the main ATS matcher application in chosen language."""
+        resolved_lang = _resolve_language(request, lang)
         t = get_translations(resolved_lang)
 
         response = templates.TemplateResponse(
@@ -52,13 +65,104 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         )
         return response
 
+    @router.api_route("/guide", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    @router.api_route("/guia-ats", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    @router.api_route("/como-funciona", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    async def guide(request: Request, lang: Optional[str] = None):
+        """Serves the comprehensive educational ATS Resume Optimization Master Guide."""
+        path_hint = "pt" if "guia" in request.url.path or "como-funciona" in request.url.path else None
+        resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
+        t = get_translations(resolved_lang)
+
+        response = templates.TemplateResponse(
+            request=request,
+            name="guide.html",
+            context={
+                "t": t,
+                "lang": resolved_lang,
+                "max_pdf_kb": MAX_PDF_SIZE_BYTES // 1024,
+                "max_pages": MAX_PDF_PAGES,
+                "max_chars": MAX_TEXT_CHARS,
+            },
+        )
+        response.set_cookie(
+            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
+        )
+        return response
+
+    @router.api_route("/about", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    @router.api_route("/sobre", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    async def about(request: Request, lang: Optional[str] = None):
+        """Serves the About Us and Mission page."""
+        path_hint = "pt" if "sobre" in request.url.path else None
+        resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
+        t = get_translations(resolved_lang)
+
+        response = templates.TemplateResponse(
+            request=request,
+            name="about.html",
+            context={
+                "t": t,
+                "lang": resolved_lang,
+            },
+        )
+        response.set_cookie(
+            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
+        )
+        return response
+
+    @router.api_route("/privacy", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    @router.api_route("/privacidade", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    async def privacy(request: Request, lang: Optional[str] = None):
+        """Serves the Privacy Policy page compliant with Google AdSense and LGPD/GDPR."""
+        path_hint = "pt" if "privacidade" in request.url.path else None
+        resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
+        t = get_translations(resolved_lang)
+
+        response = templates.TemplateResponse(
+            request=request,
+            name="privacy.html",
+            context={
+                "t": t,
+                "lang": resolved_lang,
+            },
+        )
+        response.set_cookie(
+            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
+        )
+        return response
+
+    @router.api_route("/terms", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    @router.api_route("/termos", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    async def terms(request: Request, lang: Optional[str] = None):
+        """Serves the Terms of Service page."""
+        path_hint = "pt" if "termos" in request.url.path else None
+        resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
+        t = get_translations(resolved_lang)
+
+        response = templates.TemplateResponse(
+            request=request,
+            name="terms.html",
+            context={
+                "t": t,
+                "lang": resolved_lang,
+            },
+        )
+        response.set_cookie(
+            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
+        )
+        return response
+
+    # -------------------------------------------------------------
+    # Static & Verification Assets
+    # -------------------------------------------------------------
+
     @router.get("/download-template")
     async def download_template(request: Request, lang: Optional[str] = None):
         """Allows users to download the free ATS-optimized resume template (.docx) in EN or PT."""
-        req_lang = lang or request.cookies.get("lang", "en")
-        is_pt = req_lang.lower().startswith("pt")
+        resolved_lang = _resolve_language(request, lang)
+        is_pt = resolved_lang == "pt"
 
-        static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
         if is_pt:
             template_path = os.path.join(static_dir, "resume_template_pt.docx")
             filename = "Modelo_Curriculo_ATS.docx"
@@ -75,26 +179,34 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         )
 
-    @router.get("/favicon.ico", include_in_schema=False)
-    @router.get("/static/favicon.svg", include_in_schema=False)
+    @router.api_route("/favicon.ico", methods=["GET", "HEAD"], include_in_schema=False)
+    @router.api_route("/static/favicon.svg", methods=["GET", "HEAD"], include_in_schema=False)
     async def favicon():
         """Serves the SVG favicon for browser tabs."""
-        favicon_path = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), "static", "favicon.svg"
-        )
-        if not os.path.exists(favicon_path):
-            favicon_path = "static/favicon.svg"
+        favicon_path = os.path.join(static_dir, "favicon.svg")
         return FileResponse(path=favicon_path, media_type="image/svg+xml")
 
-    @router.get("/ads.txt", include_in_schema=False)
+    @router.api_route("/ads.txt", methods=["GET", "HEAD"], include_in_schema=False)
     async def ads_txt():
         """Serves ads.txt for Google AdSense verification."""
-        ads_path = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), "static", "ads.txt"
-        )
-        if not os.path.exists(ads_path):
-            ads_path = "static/ads.txt"
+        ads_path = os.path.join(static_dir, "ads.txt")
         return FileResponse(path=ads_path, media_type="text/plain")
+
+    @router.api_route("/robots.txt", methods=["GET", "HEAD"], include_in_schema=False)
+    async def robots_txt():
+        """Serves robots.txt for search engines and crawlers."""
+        robots_path = os.path.join(static_dir, "robots.txt")
+        return FileResponse(path=robots_path, media_type="text/plain")
+
+    @router.api_route("/sitemap.xml", methods=["GET", "HEAD"], include_in_schema=False)
+    async def sitemap_xml():
+        """Serves sitemap.xml for search engines."""
+        sitemap_path = os.path.join(static_dir, "sitemap.xml")
+        return FileResponse(path=sitemap_path, media_type="application/xml")
+
+    # -------------------------------------------------------------
+    # Analysis Endpoint
+    # -------------------------------------------------------------
 
     @router.post("/analyze", response_class=HTMLResponse)
     @limiter.limit(RATE_LIMIT_POLICY)
@@ -109,8 +221,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         Analyzes uploaded resume against job description.
         Enforces honeypot check, in-memory PDF extraction, dual-LLM fallback, and i18n.
         """
-        req_lang = lang or request.cookies.get("lang", "en")
-        resolved_lang = "pt" if req_lang.lower().startswith("pt") else "en"
+        resolved_lang = _resolve_language(request, lang)
         t = get_translations(resolved_lang)
 
         # 1. Anti-bot honeypot check

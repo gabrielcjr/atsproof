@@ -34,6 +34,9 @@ def create_dummy_pdf(num_pages: int = 1) -> bytes:
 
 class ATSMatcherTests(unittest.TestCase):
 
+    def setUp(self):
+        client.cookies.clear()
+
     def test_schema_parsing(self):
         """Ensure ATSMatchResult parses structured JSON correctly."""
         sample_json = {
@@ -102,6 +105,15 @@ class ATSMatcherTests(unittest.TestCase):
         self.assertIn("3 pages", response.text)
         self.assertIn("7000 chars", response.text)
 
+    def test_educational_homepage_content(self):
+        """Ensure the homepage contains rich educational sections and FAQ."""
+        response = client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("How ATS Algorithms Work", response.text)
+        self.assertIn("The Google XYZ Formula", response.text)
+        self.assertIn("Essential ATS Compliance Checklist", response.text)
+        self.assertIn("Frequently Asked Questions", response.text)
+
     def test_analyze_honeypot_rejection(self):
         """Ensure automated bot submissions with honeypots are rejected."""
         files = {"resume": ("resume.pdf", create_dummy_pdf(1), "application/pdf")}
@@ -163,6 +175,7 @@ class ATSMatcherTests(unittest.TestCase):
         self.assertIn("Enviar Currículo", response.text)
         self.assertIn("Descrição da Vaga", response.text)
         self.assertIn("100% Grátis", response.text)
+        self.assertIn("Como Dominar os Sistemas de Triagem ATS", response.text)
         self.assertEqual(response.cookies.get("lang"), "pt")
 
     def test_portuguese_template_download(self):
@@ -172,6 +185,93 @@ class ATSMatcherTests(unittest.TestCase):
         self.assertIn(
             "Modelo_Curriculo_ATS.docx", response.headers.get("content-disposition", "")
         )
+
+    def test_privacy_pages(self):
+        """Ensure /privacy and /privacidade return 200 with appropriate text."""
+        resp_en = client.get("/privacy")
+        self.assertEqual(resp_en.status_code, 200)
+        self.assertIn("Privacy Policy", resp_en.text)
+        self.assertIn("Google AdSense", resp_en.text)
+
+        resp_pt = client.get("/privacidade")
+        self.assertEqual(resp_pt.status_code, 200)
+        self.assertIn("Política de Privacidade", resp_pt.text)
+        self.assertIn("LGPD", resp_pt.text)
+
+    def test_terms_pages(self):
+        """Ensure /terms and /termos return 200 with appropriate text."""
+        resp_en = client.get("/terms")
+        self.assertEqual(resp_en.status_code, 200)
+        self.assertIn("Terms of Service", resp_en.text)
+
+        resp_pt = client.get("/termos")
+        self.assertEqual(resp_pt.status_code, 200)
+        self.assertIn("Termos de Uso", resp_pt.text)
+
+    def test_about_pages(self):
+        """Ensure /about and /sobre return 200 with appropriate text."""
+        resp_en = client.get("/about")
+        self.assertEqual(resp_en.status_code, 200)
+        self.assertIn("About ATS MatchProof", resp_en.text)
+
+        resp_pt = client.get("/sobre")
+        self.assertEqual(resp_pt.status_code, 200)
+        self.assertIn("Sobre o ATS MatchProof", resp_pt.text)
+
+    def test_guide_pages(self):
+        """Ensure /guide and /guia-ats return 200 with comprehensive guide content."""
+        resp_en = client.get("/guide")
+        self.assertEqual(resp_en.status_code, 200)
+        self.assertIn("The Complete Resume Optimization Guide", resp_en.text)
+
+        resp_pt = client.get("/guia-ats")
+        self.assertEqual(resp_pt.status_code, 200)
+        self.assertIn("Como Fazer seu Currículo Passar nos Robôs", resp_pt.text)
+
+    def test_seo_files(self):
+        """Ensure /robots.txt and /sitemap.xml are served with 200 status."""
+        resp_robots = client.get("/robots.txt")
+        self.assertEqual(resp_robots.status_code, 200)
+        self.assertIn("User-agent: *", resp_robots.text)
+        self.assertIn("sitemap.xml", resp_robots.text)
+        self.assertIn("https://atsproof.website/sitemap.xml", resp_robots.text)
+
+        resp_sitemap = client.get("/sitemap.xml")
+        self.assertEqual(resp_sitemap.status_code, 200)
+        self.assertIn("<urlset", resp_sitemap.text)
+        self.assertIn("https://atsproof.website/", resp_sitemap.text)
+
+    def test_opengraph_meta_tags_index(self):
+        """Ensure homepage includes correct OpenGraph and Twitter card branding."""
+        resp_en = client.get("/")
+        self.assertEqual(resp_en.status_code, 200)
+        self.assertIn('<meta property="og:site_name" content="ATS MatchProof">', resp_en.text)
+        self.assertIn('<meta property="og:type" content="website">', resp_en.text)
+        self.assertIn('<meta property="og:image" content="https://atsproof.website/static/og-image.png">', resp_en.text)
+        self.assertIn('<meta name="twitter:card" content="summary_large_image">', resp_en.text)
+        self.assertIn("ATS MatchProof | Free ATS Resume", resp_en.text)
+
+        resp_pt = client.get("/?lang=pt")
+        self.assertEqual(resp_pt.status_code, 200)
+        self.assertIn('<meta property="og:site_name" content="ATS MatchProof">', resp_pt.text)
+        self.assertIn("ATS MatchProof | Verificador de Currículo ATS Gratuito", resp_pt.text)
+
+    def test_opengraph_meta_tags_subpages(self):
+        """Ensure subpages contain valid OpenGraph, canonical, and branded titles."""
+        for path in ["/guide", "/guia-ats", "/about", "/sobre", "/privacy", "/privacidade", "/terms", "/termos"]:
+            resp = client.get(path)
+            self.assertEqual(resp.status_code, 200, f"Path {path} returned status {resp.status_code}")
+            self.assertIn('property="og:site_name" content="ATS MatchProof"', resp.text)
+            self.assertIn('property="og:image" content="https://atsproof.website/static/og-image.png"', resp.text)
+            self.assertIn('name="twitter:card" content="summary_large_image"', resp.text)
+            self.assertIn('rel="canonical"', resp.text)
+
+    def test_og_image_static_asset(self):
+        """Ensure static/og-image.png is served correctly."""
+        resp = client.get("/static/og-image.png")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.headers.get("content-type"), "image/png")
+        self.assertGreater(len(resp.content), 5000)
 
     def test_static_css_and_js_served(self):
         """Ensure modular static CSS and JS files are served with status 200."""

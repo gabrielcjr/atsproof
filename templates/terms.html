@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t.page_terms_title }}</title>
+    <meta name="description" content="{% if lang == 'pt' %}Termos de Uso e Serviço do ATS MatchProof. Conheça as condições gerais de utilização do nosso analisador gratuito de currículos.{% else %}Terms of Service for ATS MatchProof. Review the terms and conditions for using our free ATS resume matcher.{% endif %}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{% if lang == 'pt' %}https://atsproof.website/termos{% else %}https://atsproof.website/terms{% endif %}">
+    <link rel="alternate" hreflang="en" href="https://atsproof.website/terms">
+    <link rel="alternate" hreflang="pt" href="https://atsproof.website/termos">
+    <link rel="alternate" hreflang="x-default" href="https://atsproof.website/terms">
+
+    <!-- Open Graph / LinkedIn / Facebook -->
+    <meta property="og:site_name" content="{{ t.site_name }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% if lang == 'pt' %}https://atsproof.website/termos{% else %}https://atsproof.website/terms{% endif %}">
+    <meta property="og:title" content="{{ t.page_terms_title }}">
+    <meta property="og:description" content="{% if lang == 'pt' %}Termos de Uso e Serviço do ATS MatchProof.{% else %}Terms of Service for ATS MatchProof.{% endif %}">
+    <meta property="og:image" content="https://atsproof.website/static/og-image.png">
+    <meta property="og:image:secure_url" content="https://atsproof.website/static/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ t.og_image_alt }}">
+    <meta property="og:locale" content="{% if lang == 'pt' %}pt_BR{% else %}en_US{% endif %}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{% if lang == 'pt' %}https://atsproof.website/termos{% else %}https://atsproof.website/terms{% endif %}">
+    <meta name="twitter:title" content="{{ t.page_terms_title }}">
+    <meta name="twitter:description" content="{% if lang == 'pt' %}Termos de Uso do ATS MatchProof.{% else %}Terms of Service for ATS MatchProof.{% endif %}">
+    <meta name="twitter:image" content="https://atsproof.website/static/og-image.png">
+    <meta name="twitter:image:alt" content="{{ t.og_image_alt }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6883104711604671"
+         crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="min-h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800/80 backdrop-blur-md bg-slate-950/60 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">ATS MatchProof</span>
+                    </div>
+                </a>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a>
+            </nav>
+
+            <!-- Right Nav Actions -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center bg-slate-900/90 p-0.5 rounded-full border border-slate-800 text-xs font-semibold shadow-sm">
+                    <a href="/terms?lang=en" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang != 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇺🇸</span><span class="hidden sm:inline">EN</span>
+                    </a>
+                    <a href="/termos?lang=pt" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang == 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇧🇷</span><span class="hidden sm:inline">PT</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-6 sm:p-10 border border-slate-800 shadow-2xl space-y-8">
+            
+            <!-- Title Header -->
+            <div class="border-b border-slate-800 pb-6">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+                    {% if lang == 'pt' %}Legal & Condições{% else %}Legal & Terms{% endif %}
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mt-3">
+                    {% if lang == 'pt' %}Termos de Uso e Serviço{% else %}Terms of Service{% endif %}
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-400 mt-2 font-mono">
+                    {% if lang == 'pt' %}Última atualização: Agosto de 2026{% else %}Last updated: August 2026{% endif %}
+                </p>
+            </div>
+
+            {% if lang == 'pt' %}
+            <!-- Portuguese Terms of Service -->
+            <article class="space-y-6 text-sm sm:text-base text-slate-300 leading-relaxed">
+                
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        1. Aceitação dos Termos
+                    </h2>
+                    <p>
+                        Ao acessar e utilizar o website <strong>ATS MatchProof</strong> (disponível em atsproof.website e seus subdomínios), você concorda expressamente em cumprir e estar vinculado a estes Termos de Uso. Caso não concorde com qualquer uma das condições estabelecidas, solicitamos que não utilize nossos serviços.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        2. Descrição e Finalidade do Serviço
+                    </h2>
+                    <p>
+                        O ATS MatchProof é uma ferramenta de apoio educacional e de otimização de carreira que simula algoritmos de triagem de sistemas ATS (Applicant Tracking Systems) utilizando modelos avançados de Inteligência Artificial. O serviço é oferecido gratuitamente e sem exigência de cadastro para fins estritamente informativos.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        3. Uso Aceitável e Conduta do Usuário
+                    </h2>
+                    <p>Ao utilizar o ATS MatchProof, você concorda em:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li>Não utilizar robôs, scrapers, scripts automatizados ou sobrecarregar a infraestrutura com requisições abusivas.</li>
+                        <li>Não tentar injetar instruções maliciosas (<em>prompt injection</em>) ou carregar arquivos com códigos maliciosos ou vírus.</li>
+                        <li>Enviar apenas arquivos de currículo que você tenha o direito legal e consentimento para processar.</li>
+                        <li>Respeitar o limite de taxa de requisições estabelecido para garantir a disponibilidade do serviço para todos os usuários.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        4. Isenção de Garantias e Resultados de Emprego
+                    </h2>
+                    <p>
+                        Embora o ATS MatchProof utilize métodos baseados nas melhores práticas de mercado e na Fórmula Google XYZ, <strong>não garantimos a aprovação, contratação ou agendamento de entrevistas</strong> em nenhuma empresa ou processo seletivo específico.
+                    </p>
+                    <p>
+                        Os relatórios, scores e sugestões gerados pela Inteligência Artificial devem ser revisados criteriosamente pelo usuário. O usuário é o único responsável pela veracidade e exatidão das informações contidas em seu currículo final.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        5. Propriedade Intelectual
+                    </h2>
+                    <p>
+                        Todo o código-fonte, layout visual, identidade visual, logotipos e textos explicativos do ATS MatchProof são protegidos por direitos autorais e leis de propriedade intelectual. Você mantém integralmente todos os direitos sobre o conteúdo original do seu currículo.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        6. Limitação de Responsabilidade
+                    </h2>
+                    <p>
+                        Em nenhuma circunstância o ATS MatchProof, seus mantenedores ou desenvolvedores serão responsáveis por quaisquer danos diretos, indiretos, incidentais ou consequentes resultantes do uso ou da incapacidade de uso do serviço.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        7. Modificações dos Termos
+                    </h2>
+                    <p>
+                        Reservamo-nos o direito de atualizar estes termos a qualquer momento. A data da última revisão sempre estará disponível no topo desta página. O uso continuado após alterações implica aceitação dos novos termos.
+                    </p>
+                </section>
+
+            </article>
+
+            {% else %}
+            <!-- English Terms of Service -->
+            <article class="space-y-6 text-sm sm:text-base text-slate-300 leading-relaxed">
+                
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        1. Acceptance of Terms
+                    </h2>
+                    <p>
+                        By accessing and using <strong>ATS MatchProof</strong> (accessible at atsproof.website and affiliated subdomains), you agree to be bound by these Terms of Service. If you do not agree to all terms and conditions, please discontinue use immediately.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        2. Description and Scope of Service
+                    </h2>
+                    <p>
+                        ATS MatchProof is an educational career-enablement utility that simulates Applicant Tracking System (ATS) parsers using dual-engine AI models. The platform is provided 100% free of charge without mandatory user registration for informational and tailoring purposes.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        3. Acceptable Use Policy
+                    </h2>
+                    <p>You agree to use ATS MatchProof in a lawful manner and not to:</p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li>Deploy automated scripts, bots, or scrapers that exceed reasonable per-minute rate limits.</li>
+                        <li>Attempt adversarial prompt injection attacks or upload malicious PDF payloads.</li>
+                        <li>Upload documents or personally identifiable information for which you do not hold explicit authorization.</li>
+                        <li>Attempt to reverse-engineer, decompile, or disrupt server infrastructure.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        4. Disclaimer of Warranties & Employment Outcomes
+                    </h2>
+                    <p>
+                        While ATS MatchProof utilizes state-of-the-art AI and Google XYZ best practices, <strong>we do not warrant or guarantee that utilizing our tool will result in job offers, interviews, or hiring success</strong>.
+                    </p>
+                    <p>
+                        All AI-generated scores and tailoring suggestions are advisory. The user retains sole responsibility for verifying the truthfulness, accuracy, and professional presentation of their final submitted resume.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        5. Intellectual Property
+                    </h2>
+                    <p>
+                        All platform code, design assets, algorithms, and documentation are the intellectual property of ATS MatchProof. Users maintain full and exclusive ownership of their original resume content and work history.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        6. Limitation of Liability
+                    </h2>
+                    <p>
+                        In no event shall ATS MatchProof or its maintainers be liable for any direct, indirect, consequential, or punitive damages arising from the use or inability to use this free service.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        7. Changes to Terms
+                    </h2>
+                    <p>
+                        We reserve the right to modify these terms at any time. Updates are reflected via the 'Last Updated' timestamp above. Continued use of the platform constitutes acceptance of revised terms.
+                    </p>
+                </section>
+
+            </article>
+            {% endif %}
+
+            <!-- Back to Analyzer Call to Action -->
+            <div class="pt-6 border-t border-slate-800 flex justify-between items-center">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="inline-flex items-center space-x-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>{% if lang == 'pt' %}Voltar para o Analisador ATS{% else %}Return to ATS Analyzer{% endif %}</span>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 ATS MatchProof. {{ t.badge_free }} ATS verification engine.</p>
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400">{{ t.nav_about }}</a>
+                <a href="{% if lang == 'pt' %}/privacidade?lang=pt{% else %}/privacy{% endif %}" class="hover:text-indigo-400">{{ t.nav_privacy }}</a>
+                <a href="{% if lang == 'pt' %}/termos?lang=pt{% else %}/terms{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_terms }}</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

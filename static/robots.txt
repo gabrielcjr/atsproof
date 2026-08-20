@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /analyze
+
+Sitemap: https://atsproof.website/sitemap.xml

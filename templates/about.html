@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t.page_about_title }}</title>
+    <meta name="description" content="{% if lang == 'pt' %}Sobre o ATS MatchProof. Nossa missão de democratizar a aprovação em processos seletivos e dar transparência algorítmica aos candidatos.{% else %}About ATS MatchProof. Our mission to democratize job search success and provide algorithmic transparency for candidates.{% endif %}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{% if lang == 'pt' %}https://atsproof.website/sobre{% else %}https://atsproof.website/about{% endif %}">
+    <link rel="alternate" hreflang="en" href="https://atsproof.website/about">
+    <link rel="alternate" hreflang="pt" href="https://atsproof.website/sobre">
+    <link rel="alternate" hreflang="x-default" href="https://atsproof.website/about">
+
+    <!-- Open Graph / LinkedIn / Facebook -->
+    <meta property="og:site_name" content="{{ t.site_name }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% if lang == 'pt' %}https://atsproof.website/sobre{% else %}https://atsproof.website/about{% endif %}">
+    <meta property="og:title" content="{{ t.page_about_title }}">
+    <meta property="og:description" content="{% if lang == 'pt' %}Conheça a missão do ATS MatchProof de trazer transparência e democratização para o processo seletivo.{% else %}Learn about ATS MatchProof's mission to provide algorithmic transparency and free career tools.{% endif %}">
+    <meta property="og:image" content="https://atsproof.website/static/og-image.png">
+    <meta property="og:image:secure_url" content="https://atsproof.website/static/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ t.og_image_alt }}">
+    <meta property="og:locale" content="{% if lang == 'pt' %}pt_BR{% else %}en_US{% endif %}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{% if lang == 'pt' %}https://atsproof.website/sobre{% else %}https://atsproof.website/about{% endif %}">
+    <meta name="twitter:title" content="{{ t.page_about_title }}">
+    <meta name="twitter:description" content="{% if lang == 'pt' %}Conheça a missão do ATS MatchProof.{% else %}Learn about ATS MatchProof's mission and team.{% endif %}">
+    <meta name="twitter:image" content="https://atsproof.website/static/og-image.png">
+    <meta name="twitter:image:alt" content="{{ t.og_image_alt }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6883104711604671"
+         crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="min-h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800/80 backdrop-blur-md bg-slate-950/60 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">ATS MatchProof</span>
+                    </div>
+                </a>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_about }}</a>
+            </nav>
+
+            <!-- Right Nav Actions -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center bg-slate-900/90 p-0.5 rounded-full border border-slate-800 text-xs font-semibold shadow-sm">
+                    <a href="/about?lang=en" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang != 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇺🇸</span><span class="hidden sm:inline">EN</span>
+                    </a>
+                    <a href="/sobre?lang=pt" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang == 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇧🇷</span><span class="hidden sm:inline">PT</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-6 sm:p-10 border border-slate-800 shadow-2xl space-y-8">
+            
+            <!-- Title Header -->
+            <div class="border-b border-slate-800 pb-6">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+                    {% if lang == 'pt' %}Nossa Missão & Engenharia{% else %}Our Mission & Engineering{% endif %}
+                </span>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mt-3">
+                    {% if lang == 'pt' %}Sobre o ATS MatchProof{% else %}About ATS MatchProof{% endif %}
+                </h1>
+                <p class="text-sm sm:text-base text-slate-400 mt-2">
+                    {% if lang == 'pt' %}Democratizando o acesso a vagas com transparência algorítmica e IA de ponta.{% else %}Democratizing job search success with algorithmic transparency and cutting-edge AI.{% endif %}
+                </p>
+            </div>
+
+            {% if lang == 'pt' %}
+            <!-- Portuguese About Content -->
+            <article class="space-y-6 text-sm sm:text-base text-slate-300 leading-relaxed">
+                
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        1. Por que o ATS MatchProof foi Criado?
+                    </h2>
+                    <p>
+                        No mercado de trabalho atual, mais de <strong>75% dos currículos enviados são rejeitados automaticamente</strong> por softwares de triagem ATS (Applicant Tracking Systems) antes mesmo de serem lidos por uma pessoa de Recursos Humanos.
+                    </p>
+                    <p>
+                        Candidatos extremamente qualificados acabam sendo eliminados não por falta de competência, mas por detalhes de formatação, falta de correspondência exata de palavras-chave ou frases de experiência sem quantificação de resultados. O <strong>ATS MatchProof</strong> nasceu para nivelar o jogo e dar aos candidatos as mesmas ferramentas analíticas que as grandes corporações utilizam.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        2. Nossos Três Pilares Fundamentais
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm mb-2">100%</div>
+                            <h3 class="font-bold text-white text-base">Gratuito & Sem Cadastro</h3>
+                            <p class="text-xs text-slate-400 mt-1">Sem paywalls, sem cartões de crédito e sem necessidade de criar contas para acessar todas as funcionalidades.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mb-2">0-DB</div>
+                            <h3 class="font-bold text-white text-base">Privacidade Absoluta</h3>
+                            <p class="text-xs text-slate-400 mt-1">Processamento estritamente em memória RAM. Nenhum currículo ou histórico profissional é salvo em disco ou banco de dados.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm mb-2">XYZ</div>
+                            <h3 class="font-bold text-white text-base">Fórmula Google XYZ</h3>
+                            <p class="text-xs text-slate-400 mt-1">Sugestões de bullet points estruturadas na metodologia comprovada de recrutamento de elite global.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        3. Arquitetura Técnica & Inteligência Artificial
+                    </h2>
+                    <p>
+                        O motor do ATS MatchProof é construído com <strong>Python FastAPI</strong> de alta performance e um pipeline resiliente com failover automático de Inteligência Artificial:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li><strong>Motor Primário:</strong> Google Gemini 3.6 Flash com Structured Output Schema para benchmarking semântico e extração determinística de competências.</li>
+                        <li><strong>Motor de Failover:</strong> Groq LLaMA 3.3 70B para redundância instantânea com latência ultrabaixa em caso de alta demanda.</li>
+                        <li><strong>Segurança:</strong> Defesa ativa contra injeção de instruções (XML Boundary Isolation) e rate limiting por IP para proteger os recursos gratuitos da comunidade.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        4. Sustentabilidade e Transparência
+                    </h2>
+                    <p>
+                        Para manter os servidores ativos e a ferramenta gratuita para milhares de candidatos diariamente, veiculamos anúncios não-invasivos através do Google AdSense. Agradecemos o apoio de todos os usuários que compartilham nossa ferramenta com amigos e redes de busca de emprego.
+                    </p>
+                </section>
+
+            </article>
+
+            {% else %}
+            <!-- English About Content -->
+            <article class="space-y-6 text-sm sm:text-base text-slate-300 leading-relaxed">
+                
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        1. Why We Built ATS MatchProof
+                    </h2>
+                    <p>
+                        In today's competitive job market, over <strong>75% of submitted resumes are discarded by Applicant Tracking Systems (ATS)</strong> before a human recruiter ever sees them.
+                    </p>
+                    <p>
+                        Highly capable candidates are frequently rejected due to minor formatting discrepancies, missing target keywords, or bullet points lacking quantifiable business metrics. <strong>ATS MatchProof</strong> was built to level the playing field, giving everyday job seekers the exact parsing transparency used by enterprise recruitment teams.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        2. Our Core Principles
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm mb-2">100%</div>
+                            <h3 class="font-bold text-white text-base">Free & No Accounts</h3>
+                            <p class="text-xs text-slate-400 mt-1">Zero paywalls, no credit cards, and no signup hurdles to run unlimited match assessments.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mb-2">0-DB</div>
+                            <h3 class="font-bold text-white text-base">Privacy-First Architecture</h3>
+                            <p class="text-xs text-slate-400 mt-1">Strict in-memory execution. Resumes and candidate data are never saved to disk or persistent databases.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm mb-2">XYZ</div>
+                            <h3 class="font-bold text-white text-base">Google XYZ Method</h3>
+                            <p class="text-xs text-slate-400 mt-1">Rewrites achievements using the premier formula proven by top global tech recruiters.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        3. Technical Infrastructure
+                    </h2>
+                    <p>
+                        ATS MatchProof is powered by a high-throughput <strong>Python FastAPI</strong> service with an automated dual-engine AI failover pipeline:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2 text-slate-300">
+                        <li><strong>Primary Engine:</strong> Google Gemini 3.6 Flash leveraging native structured schemas for semantic skill benchmarking.</li>
+                        <li><strong>Failover Engine:</strong> Groq LLaMA 3.3 70B offering sub-second failover redundancy during peak demand.</li>
+                        <li><strong>Defensive Engineering:</strong> XML boundary isolation prevents prompt injection attacks while IP token buckets maintain service quality.</li>
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        4. Sustainability
+                    </h2>
+                    <p>
+                        To cover high-performance server costs and maintain 100% free access for thousands of daily job applicants, we display contextual ads via Google AdSense. We sincerely appreciate our community's continued support!
+                    </p>
+                </section>
+
+            </article>
+            {% endif %}
+
+            <!-- Back to Analyzer Call to Action -->
+            <div class="pt-6 border-t border-slate-800 flex justify-between items-center">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="inline-flex items-center space-x-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>{% if lang == 'pt' %}Voltar para o Analisador ATS{% else %}Return to ATS Analyzer{% endif %}</span>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 ATS MatchProof. {{ t.badge_free }} ATS verification engine.</p>
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_about }}</a>
+                <a href="{% if lang == 'pt' %}/privacidade?lang=pt{% else %}/privacy{% endif %}" class="hover:text-indigo-400">{{ t.nav_privacy }}</a>
+                <a href="{% if lang == 'pt' %}/termos?lang=pt{% else %}/terms{% endif %}" class="hover:text-indigo-400">{{ t.nav_terms }}</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

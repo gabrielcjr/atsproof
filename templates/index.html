@@ -5,6 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ t.title }}</title>
     <meta name="description" content="{{ t.meta_description }}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://atsproof.website/{% if lang == 'pt' %}?lang=pt{% endif %}">
+    <link rel="alternate" hreflang="en" href="https://atsproof.website/?lang=en">
+    <link rel="alternate" hreflang="pt" href="https://atsproof.website/?lang=pt">
+    <link rel="alternate" hreflang="x-default" href="https://atsproof.website/">
+
+    <!-- Open Graph / LinkedIn / Facebook -->
+    <meta property="og:site_name" content="{{ t.site_name }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://atsproof.website/{% if lang == 'pt' %}?lang=pt{% endif %}">
+    <meta property="og:title" content="{{ t.title }}">
+    <meta property="og:description" content="{{ t.meta_description }}">
+    <meta property="og:image" content="https://atsproof.website/static/og-image.png">
+    <meta property="og:image:secure_url" content="https://atsproof.website/static/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ t.og_image_alt }}">
+    <meta property="og:locale" content="{% if lang == 'pt' %}pt_BR{% else %}en_US{% endif %}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://atsproof.website/{% if lang == 'pt' %}?lang=pt{% endif %}">
+    <meta name="twitter:title" content="{{ t.title }}">
+    <meta name="twitter:description" content="{{ t.meta_description }}">
+    <meta name="twitter:image" content="https://atsproof.website/static/og-image.png">
+    <meta name="twitter:image:alt" content="{{ t.og_image_alt }}">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
@@ -64,16 +91,26 @@
     <header class="border-b border-slate-800/80 backdrop-blur-md bg-slate-950/60 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">ATS MatchProof</span>
-                    <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{{ t.badge_free }}</span>
-                </div>
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">ATS MatchProof</span>
+                        <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{{ t.badge_free }}</span>
+                    </div>
+                </a>
             </div>
+
+            <!-- Main Nav Links (Desktop) -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a>
+                <a href="#faq" class="hover:text-indigo-400 transition">{{ t.nav_faq }}</a>
+            </nav>
             
             <!-- Right Nav Actions -->
             <div class="flex items-center space-x-2 sm:space-x-3">
@@ -102,37 +139,29 @@
                     href="/download-template?lang={{ lang }}" 
                     download="{% if lang == 'pt' %}Modelo_Curriculo_ATS.docx{% else %}ATS_Resume_Template.docx{% endif %}"
                     title="{{ t.btn_download_template }}"
-                    class="hidden md:flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition shadow-sm whitespace-nowrap"
+                    class="hidden lg:flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition shadow-sm whitespace-nowrap"
                 >
                     <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
                     <span>{{ t.btn_download_template }}</span>
                 </a>
-
-                <!-- Privacy Badge -->
-                <div class="hidden lg:flex items-center space-x-1.5 text-xs text-slate-300 bg-slate-900/90 px-3 py-1.5 rounded-full border border-slate-800 shadow-sm whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span>{{ t.badge_privacy }}</span>
-                </div>
             </div>
         </div>
     </header>
 
     <!-- Main Container -->
-    <div class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-center">
+    <div class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col items-center">
 
         <!-- Center Main Column -->
         <main class="w-full">
             
             <!-- Hero Title -->
             <div class="text-center max-w-3xl mx-auto mb-8">
-                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-3">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-3 leading-tight">
                     {{ t.hero_title_prefix }}<span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400">{{ t.hero_title_highlight }}</span>{{ t.hero_title_suffix }}
                 </h1>
-                <p class="text-slate-400 text-sm sm:text-base">
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
                     {{ t.hero_subtitle }}
                 </p>
             </div>
@@ -281,21 +310,279 @@
             <!-- Target Container for Results / Errors (HTMX Target) -->
             <div id="results" class="mt-8"></div>
 
+            <!-- ======================================================= -->
+            <!-- HIGH-VALUE EDITORIAL CONTENT & PUBLISHER KNOWLEDGE HUB  -->
+            <!-- ======================================================= -->
+            <div class="mt-20 space-y-16">
+                
+                <!-- Section 1: Educational Cards -->
+                <section class="space-y-8">
+                    <div class="text-center max-w-3xl mx-auto">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+                            {% if lang == 'pt' %}Educação & Metodologia{% else %}Education & Methodology{% endif %}
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-3">{{ t.edu_title }}</h2>
+                        <p class="text-slate-400 text-sm sm:text-base mt-2">{{ t.edu_subtitle }}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Card 1 -->
+                        <div class="bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 border border-slate-800/80 hover:border-indigo-500/50 transition flex flex-col justify-between space-y-4">
+                            <div>
+                                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center border border-indigo-500/20 mb-4">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mb-2">{{ t.edu_card1_title }}</h3>
+                                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">{{ t.edu_card1_desc }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 border border-slate-800/80 hover:border-indigo-500/50 transition flex flex-col justify-between space-y-4">
+                            <div>
+                                <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center border border-purple-500/20 mb-4">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mb-2">{{ t.edu_card2_title }}</h3>
+                                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">{{ t.edu_card2_desc }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="bg-slate-900/60 backdrop-blur-md rounded-2xl p-6 border border-slate-800/80 hover:border-indigo-500/50 transition flex flex-col justify-between space-y-4">
+                            <div>
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20 mb-4">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-bold text-white mb-2">{{ t.edu_card3_title }}</h3>
+                                <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">{{ t.edu_card3_desc }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Before vs After Examples -->
+                <section class="bg-slate-900/70 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-slate-800/90 shadow-xl space-y-6">
+                    <div>
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase tracking-wider">
+                            {% if lang == 'pt' %}Estudos de Caso{% else %}Case Studies{% endif %}
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-3">{{ t.examples_title }}</h2>
+                        <p class="text-slate-400 text-sm mt-1">{{ t.examples_subtitle }}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 pt-2">
+                        <!-- Example 1 -->
+                        <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                            <span class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-wider">{{ t.example1_role }}</span>
+                            <div class="space-y-2 text-xs sm:text-sm">
+                                <div class="flex items-start gap-2 text-rose-400 bg-rose-950/20 p-3 rounded-xl border border-rose-900/30">
+                                    <span class="font-bold flex-shrink-0">❌ {% if lang == 'pt' %}Antes:{% else %}Before:{% endif %}</span>
+                                    <span class="italic">{{ t.example1_bad }}</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-emerald-300 bg-emerald-950/20 p-3 rounded-xl border border-emerald-900/30">
+                                    <span class="font-bold flex-shrink-0">✔️ {% if lang == 'pt' %}Depois (Fórmula XYZ):{% else %}After (XYZ Format):{% endif %}</span>
+                                    <span>{{ t.example1_good }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example 2 -->
+                        <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                            <span class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-wider">{{ t.example2_role }}</span>
+                            <div class="space-y-2 text-xs sm:text-sm">
+                                <div class="flex items-start gap-2 text-rose-400 bg-rose-950/20 p-3 rounded-xl border border-rose-900/30">
+                                    <span class="font-bold flex-shrink-0">❌ {% if lang == 'pt' %}Antes:{% else %}Before:{% endif %}</span>
+                                    <span class="italic">{{ t.example2_bad }}</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-emerald-300 bg-emerald-950/20 p-3 rounded-xl border border-emerald-900/30">
+                                    <span class="font-bold flex-shrink-0">✔️ {% if lang == 'pt' %}Depois (Fórmula XYZ):{% else %}After (XYZ Format):{% endif %}</span>
+                                    <span>{{ t.example2_good }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example 3 -->
+                        <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3">
+                            <span class="text-xs font-mono font-bold text-indigo-400 uppercase tracking-wider">{{ t.example3_role }}</span>
+                            <div class="space-y-2 text-xs sm:text-sm">
+                                <div class="flex items-start gap-2 text-rose-400 bg-rose-950/20 p-3 rounded-xl border border-rose-900/30">
+                                    <span class="font-bold flex-shrink-0">❌ {% if lang == 'pt' %}Antes:{% else %}Before:{% endif %}</span>
+                                    <span class="italic">{{ t.example3_bad }}</span>
+                                </div>
+                                <div class="flex items-start gap-2 text-emerald-300 bg-emerald-950/20 p-3 rounded-xl border border-emerald-900/30">
+                                    <span class="font-bold flex-shrink-0">✔️ {% if lang == 'pt' %}Depois (Fórmula XYZ):{% else %}After (XYZ Format):{% endif %}</span>
+                                    <span>{{ t.example3_good }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 3: Compliance Checklist -->
+                <section class="space-y-6">
+                    <div class="text-center max-w-3xl mx-auto">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider">
+                            {% if lang == 'pt' %}Validação Pré-Envio{% else %}Pre-Submission Check{% endif %}
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-3">{{ t.checklist_title }}</h2>
+                        <p class="text-slate-400 text-sm mt-1">{{ t.checklist_subtitle }}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start space-x-3">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ t.checklist_item1 }}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start space-x-3">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ t.checklist_item2 }}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start space-x-3">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ t.checklist_item3 }}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start space-x-3">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ t.checklist_item4 }}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start space-x-3">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ t.checklist_item5 }}</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start space-x-3">
+                            <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">{{ t.checklist_item6 }}</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 4: Interactive FAQ Accordion -->
+                <section id="faq" class="space-y-6 pt-6">
+                    <div class="text-center max-w-3xl mx-auto">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+                            {% if lang == 'pt' %}Dúvidas Frequentes{% else %}Got Questions?{% endif %}
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white mt-3">{{ t.faq_title }}</h2>
+                        <p class="text-slate-400 text-sm mt-1">{{ t.faq_subtitle }}</p>
+                    </div>
+
+                    <div class="space-y-3 max-w-3xl mx-auto">
+                        {% for item in t.faqs %}
+                        <div class="border border-slate-800 rounded-2xl bg-slate-900/60 overflow-hidden transition">
+                            <button 
+                                type="button"
+                                onclick="toggleFaq(this)"
+                                class="w-full p-5 text-left flex items-center justify-between gap-4 font-semibold text-white hover:text-indigo-400 transition"
+                            >
+                                <span class="text-sm sm:text-base">{{ item.q }}</span>
+                                <svg class="w-4 h-4 transform transition-transform text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div class="faq-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 pt-3">
+                                {{ item.a }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+
+            </div>
+
         </main>
 
     </div>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p>&copy; 2026 ATS MatchProof. {{ t.badge_free }} ATS verification engine.</p>
-            <div class="flex items-center space-x-4">
-                <span>{{ t.footer_privacy }}</span>
+    <!-- Enhanced Professional Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-12 text-slate-400 mt-20 text-xs sm:text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Col 1: Brand Info -->
+                <div class="md:col-span-2 space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-md shadow-indigo-500/25">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-base font-bold text-white tracking-tight">ATS MatchProof</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed max-w-md">
+                        {{ t.footer_about }}
+                    </p>
+                    <div class="flex items-center space-x-2 text-xs text-emerald-400 bg-emerald-950/40 px-3 py-1.5 rounded-lg border border-emerald-800/30 w-fit">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        <span>{{ t.footer_privacy }}</span>
+                    </div>
+                </div>
+
+                <!-- Col 2: Quick Links -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-200">{{ t.footer_quick_links }}</h4>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a></li>
+                        <li><a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a></li>
+                        <li><a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a></li>
+                        <li><a href="#faq" class="hover:text-indigo-400 transition">{{ t.nav_faq }}</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Legal & Privacy -->
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-200">{{ t.footer_legal }}</h4>
+                    <ul class="space-y-2 text-xs text-slate-400">
+                        <li><a href="{% if lang == 'pt' %}/privacidade?lang=pt{% else %}/privacy{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_privacy }}</a></li>
+                        <li><a href="{% if lang == 'pt' %}/termos?lang=pt{% else %}/terms{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_terms }}</a></li>
+                        <li><a href="/download-template?lang={{ lang }}" class="hover:text-indigo-400 transition">{{ t.btn_download_template }}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                <p>&copy; 2026 ATS MatchProof. {{ t.footer_rights }}</p>
+                <p>{{ t.footer_tagline }}</p>
             </div>
         </div>
     </footer>
 
     <!-- Modular Client-Side UI & Export Logic -->
     <script defer src="/static/js/app.js"></script>
+    <script>
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('svg');
+            const isOpen = !content.classList.contains('hidden');
+            
+            if (isOpen) {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            } else {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            }
+        }
+    </script>
 </body>
 </html>
