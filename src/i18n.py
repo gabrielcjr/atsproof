@@ -2,7 +2,8 @@
 Internationalization (i18n) dictionary and helper for ATS MatchProof.
 Supported languages: English ('en', default) and Portuguese ('pt').
 """
-from typing import Dict, Any
+
+from typing import Any, Dict
 
 TRANSLATIONS: Dict[str, Dict[str, Any]] = {
     "en": {
@@ -17,28 +18,23 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "hero_title_highlight": "Interviews",
         "hero_title_suffix": ".",
         "hero_subtitle": "Upload your resume PDF and paste the job description. Our dual-engine ATS simulator analyzes skill gaps, keyword matching, and crafts instant bullet point optimizations.",
-        
         "upload_col_title": "1. Upload Resume (PDF)",
         "upload_col_limits": "Max {max_pdf_kb}KB • {max_pages} pages",
         "dropzone_prompt": "Click to upload or drag and drop",
         "dropzone_subprompt": "Standard PDF files only",
         "dropzone_change_btn": "Remove & Choose Another",
         "upload_security_notice": "Parsed securely in-memory. Resumes are never stored.",
-        
         "jd_col_title": "2. Job Description (JD)",
         "jd_col_counter": "{chars} / {max_chars} chars",
         "jd_placeholder": "Paste the target job requirements, qualifications, and responsibilities here...",
         "jd_tip": "Includes keywords, requirements, and tech stack.",
         "jd_clear_btn": "Clear",
-        
         "btn_analyze": "Run ATS DeepScan Analysis",
         "btn_analyzing": "Simulating ATS Scanners...",
-        
         "loading_step_1": "Reading and verifying text layers...",
         "loading_step_2": "Simulating ATS parser token extraction...",
         "loading_step_3": "Benchmarking skills and experience with Dual-AI...",
         "loading_step_4": "Crafting Google XYZ bullet point optimizations...",
-        
         "results_title": "ATS Match Verdict & Analysis",
         "results_subtitle": "Benchmarked against target job requirements and ATS keyword filters.",
         "results_score_label": "ATS Score",
@@ -63,14 +59,11 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "export_copy_btn": "Copy Full Report",
         "export_download_btn": "Download (.txt)",
         "export_copied": "Full Report Copied!",
-        
         "rate_limit_title": "Rate Limit Exceeded (Free Tier Protection)",
         "rate_limit_desc": "To keep this service 100% free and fast for everyone, requests are limited to 2 analyses per minute per user.",
         "rate_limit_wait": "Please wait a few moments before submitting another scan.",
-        
         "footer_tagline": "Empowering job seekers with enterprise-grade ATS transparency.",
         "footer_privacy": "Privacy-First (No Data Saved) • In-Memory Processing",
-        
         "error_default_title": "Unable to Complete Analysis",
         "error_high_demand_title": "AI Service Temporarily Busy",
         "error_high_demand_msg": "Our AI analysis service is experiencing temporary high demand. Your file was processed safely in-memory, but the analysis timed out.",
@@ -95,28 +88,23 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "hero_title_highlight": "Entrevistas",
         "hero_title_suffix": ".",
         "hero_subtitle": "Envie seu currículo em PDF e cole a descrição da vaga. Nosso simulador ATS com IA analisa lacunas de habilidades, correspondência de palavras-chave e cria melhorias imediatas para suas experiências.",
-        
         "upload_col_title": "1. Enviar Currículo (PDF)",
         "upload_col_limits": "Máx {max_pdf_kb}KB • {max_pages} págs",
         "dropzone_prompt": "Clique para enviar ou arraste o arquivo",
         "dropzone_subprompt": "Apenas arquivos PDF padrão",
         "dropzone_change_btn": "Remover e Escolher Outro",
         "upload_security_notice": "Processado em memória. Currículos nunca salvos.",
-        
         "jd_col_title": "2. Descrição da Vaga (JD)",
         "jd_col_counter": "{chars} / {max_chars} carac.",
         "jd_placeholder": "Cole aqui os requisitos, qualificações e responsabilidades da vaga desejada...",
         "jd_tip": "Palavras-chave, requisitos e stack técnica.",
         "jd_clear_btn": "Limpar",
-        
         "btn_analyze": "Executar Análise Completa ATS",
         "btn_analyzing": "Simulando Scanners ATS...",
-        
         "loading_step_1": "Lendo e verificando camadas de texto do PDF...",
         "loading_step_2": "Simulando extração de tokens de parser ATS...",
         "loading_step_3": "Cruzando competências e senioridade com IA Dupla...",
         "loading_step_4": "Criando otimizações de bullet points no padrão Google XYZ...",
-        
         "results_title": "Veredito e Análise de Compatibilidade ATS",
         "results_subtitle": "Comparado com os requisitos essenciais da vaga e filtros de triagem ATS.",
         "results_score_label": "Score ATS",
@@ -141,14 +129,11 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "export_copy_btn": "Copiar Relatório",
         "export_download_btn": "Baixar (.txt)",
         "export_copied": "Relatório Copiado!",
-        
         "rate_limit_title": "Limite de Requisições Atingido (Proteção Gratuita)",
         "rate_limit_desc": "Para manter este serviço 100% gratuito e rápido para todos, o limite é de 2 análises por minuto por usuário.",
         "rate_limit_wait": "Por favor, aguarde alguns instantes antes de enviar uma nova análise.",
-        
         "footer_tagline": "Dando aos candidatos transparência de nível corporativo sobre triagens ATS.",
         "footer_privacy": "Privacidade em 1º Lugar (Sem Dados Salvos) • Processamento em Memória",
-        
         "error_default_title": "Não foi possível concluir a análise",
         "error_high_demand_title": "Serviço de IA Temporariamente Ocupado",
         "error_high_demand_msg": "Nosso serviço de IA está com alta demanda momentânea. Seu arquivo foi processado com segurança em memória, mas o tempo limite de análise expirou.",
@@ -160,8 +145,9 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "error_pdf_read": "Não foi possível ler o currículo enviado. Certifique-se de que o PDF contenha texto selecionável (não seja imagem escaneada) e tenha menos de 120KB.",
         "error_footer_note": "O PDF deve ser baseado em texto (máx 120KB, máx 3 páginas).",
         "btn_try_again": "Tentar Novamente",
-    }
+    },
 }
+
 
 def get_translations(lang: str = "en") -> Dict[str, Any]:
     """Returns the translation dictionary for the given language code, defaulting to 'en'."""

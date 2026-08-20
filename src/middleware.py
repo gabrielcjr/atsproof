@@ -1,6 +1,7 @@
 """
 Security middleware and custom exception handlers.
 """
+
 from fastapi import Request, status
 from fastapi.templating import Jinja2Templates
 from slowapi.errors import RateLimitExceeded
@@ -30,6 +31,7 @@ def create_rate_limit_handler(templates: Jinja2Templates):
     """
     Returns an exception handler for RateLimitExceeded that renders a clean HTMX partial.
     """
+
     async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
         lang = request.cookies.get("lang", "en")
         t = get_translations(lang)
@@ -40,4 +42,5 @@ def create_rate_limit_handler(templates: Jinja2Templates):
             context={"retry_after": exc.detail, "t": t, "lang": lang},
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
         )
+
     return custom_rate_limit_handler

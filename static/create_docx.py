@@ -3,6 +3,7 @@
 Generates ATS-Optimized Resume Templates in .docx format in both English and Portuguese
 without external dependencies, using the OpenXML / WordprocessingML standard schema.
 """
+
 import os
 import zipfile
 
@@ -661,12 +662,12 @@ def build_pt_doc_xml() -> str:
 
 
 def generate_docx(doc_xml: str, output_path: str):
-    with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as docx:
-        docx.writestr('[Content_Types].xml', CONTENT_TYPES_XML)
-        docx.writestr('_rels/.rels', PACKAGE_RELS_XML)
-        docx.writestr('word/_rels/document.xml.rels', DOCUMENT_RELS_XML)
-        docx.writestr('word/styles.xml', STYLES_XML)
-        docx.writestr('word/document.xml', doc_xml)
+    with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as docx:
+        docx.writestr("[Content_Types].xml", CONTENT_TYPES_XML)
+        docx.writestr("_rels/.rels", PACKAGE_RELS_XML)
+        docx.writestr("word/_rels/document.xml.rels", DOCUMENT_RELS_XML)
+        docx.writestr("word/styles.xml", STYLES_XML)
+        docx.writestr("word/document.xml", doc_xml)
     print(f"Generated {output_path}")
 
 
@@ -674,6 +675,6 @@ if __name__ == "__main__":
     out_dir = os.path.dirname(os.path.abspath(__file__))
     en_file = os.path.join(out_dir, "resume_template.docx")
     pt_file = os.path.join(out_dir, "resume_template_pt.docx")
-    
+
     generate_docx(build_en_doc_xml(), en_file)
     generate_docx(build_pt_doc_xml(), pt_file)

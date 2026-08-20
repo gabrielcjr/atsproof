@@ -40,7 +40,9 @@ JSON_SCHEMA_DESCRIPTION: str = """{
 }"""
 
 
-def build_user_prompt(resume_text: str, job_description: str, language: str = "en") -> str:
+def build_user_prompt(
+    resume_text: str, job_description: str, language: str = "en"
+) -> str:
     """
     Constructs an adversarial-resistant user prompt isolating untrusted inputs
     within strict XML boundaries, with language targeting, Substantivo de Ação, and mandatory metrification.

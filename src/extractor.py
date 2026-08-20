@@ -2,8 +2,10 @@
 In-memory PDF text extraction and validation.
 Strictly ephemeral: no files are saved to disk.
 """
+
 import io
 import re
+
 from pypdf import PdfReader
 
 from src.config import (
@@ -28,7 +30,9 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
         )
 
     if not pdf_bytes.startswith(b"%PDF-"):
-        raise ValueError("Invalid file format. Uploaded file is not a valid PDF document.")
+        raise ValueError(
+            "Invalid file format. Uploaded file is not a valid PDF document."
+        )
 
     try:
         stream = io.BytesIO(pdf_bytes)

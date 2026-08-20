@@ -1,9 +1,11 @@
 """
 FastAPI route definitions for the ATS Matcher application.
 """
+
 import json
 import os
 from typing import Optional
+
 from fastapi import APIRouter, File, Form, Request, UploadFile, status
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -45,7 +47,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                 "max_chars": MAX_TEXT_CHARS,
             },
         )
-        response.set_cookie(key="lang", value=resolved_lang, max_age=31536000, samesite="lax")
+        response.set_cookie(
+            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
+        )
         return response
 
     @router.get("/download-template")
@@ -75,7 +79,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     @router.get("/static/favicon.svg", include_in_schema=False)
     async def favicon():
         """Serves the SVG favicon for browser tabs."""
-        favicon_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "favicon.svg")
+        favicon_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "static", "favicon.svg"
+        )
         if not os.path.exists(favicon_path):
             favicon_path = "static/favicon.svg"
         return FileResponse(path=favicon_path, media_type="image/svg+xml")
@@ -83,7 +89,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     @router.get("/ads.txt", include_in_schema=False)
     async def ads_txt():
         """Serves ads.txt for Google AdSense verification."""
-        ads_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "ads.txt")
+        ads_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), "static", "ads.txt"
+        )
         if not os.path.exists(ads_path):
             ads_path = "static/ads.txt"
         return FileResponse(path=ads_path, media_type="text/plain")
@@ -145,7 +153,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                     "t": t,
                     "lang": resolved_lang,
                     "error_title": t["jd_col_title"],
-                    "error_message": t["error_jd_too_long"].format(max_chars=MAX_TEXT_CHARS),
+                    "error_message": t["error_jd_too_long"].format(
+                        max_chars=MAX_TEXT_CHARS
+                    ),
                     "error_type": "validation",
                 },
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -199,7 +209,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
 
         # 4. Run AI Analysis with Fallback & Language Target
         try:
-            result, provider_name = await analyze_with_fallback(resume_text, sanitized_jd, language=resolved_lang)
+            result, provider_name = await analyze_with_fallback(
+                resume_text, sanitized_jd, language=resolved_lang
+            )
             result_payload = result.model_dump()
             result_payload["provider"] = provider_name
             return templates.TemplateResponse(

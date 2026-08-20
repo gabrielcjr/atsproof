@@ -1,12 +1,15 @@
 """
 Pydantic data models and schemas for structured ATS verification outputs.
 """
+
 from typing import List
+
 from pydantic import BaseModel, Field
 
 
 class TailoringSuggestion(BaseModel):
     """Represents a before-and-after work experience bullet point enhancement."""
+
     original_bullet: str = Field(
         description="An actual work experience or project achievement bullet point from the candidate's employment history (NEVER a skills list or category header)."
     )
@@ -17,6 +20,7 @@ class TailoringSuggestion(BaseModel):
 
 class ATSMatchResult(BaseModel):
     """Complete ATS benchmark and match evaluation response."""
+
     match_score: int = Field(
         description="Overall match percentage from 0 to 100 based on required skills, tools, and experience level."
     )

@@ -1,11 +1,11 @@
 import os
+
 import logfire
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
 
 from src.config import RATE_LIMIT_POLICY
 from src.middleware import add_security_headers, create_rate_limit_handler
