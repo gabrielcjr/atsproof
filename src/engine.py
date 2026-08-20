@@ -38,7 +38,13 @@ async def call_gemini_primary(resume_text: str, job_desc: str, language: str = "
     client = genai.Client(api_key=api_key)
     prompt_content = build_user_prompt(resume_text, job_desc, language=language)
 
-    candidate_models = ["gemini-3.6-flash", "gemini-flash-latest", "gemini-2.5-flash-lite"]
+    candidate_models = [
+        "gemini-3.5-flash",
+        "gemini-3.1-flash-lite",
+        "gemini-3.6-flash",
+        "gemini-flash-lite-latest",
+        "gemini-flash-latest",
+    ]
     last_err = None
 
     with logfire.span("Gemini Primary Engine", language=language):
@@ -80,10 +86,10 @@ async def call_groq_fallback(resume_text: str, job_desc: str, language: str = "e
     from groq import Groq
     client = Groq(api_key=api_key)
 
-    system_content = f"{SYSTEM_INSTRUCTION}\n\nRespond with valid JSON matching this schema:\n{JSON_SCHEMA_DESCRIPTION}"
+    system_content = f"{SYSTEM_INSTRUCTION}\n\nRespond strictly with a single valid JSON object matching this schema:\n{JSON_SCHEMA_DESCRIPTION}"
     prompt_content = build_user_prompt(resume_text, job_desc, language=language)
 
-    candidate_models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]
+    candidate_models = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.6-27b"]
     last_err = None
 
     with logfire.span("Groq Failover Engine", language=language):
@@ -104,7 +110,17 @@ async def call_groq_fallback(resume_text: str, job_desc: str, language: str = "e
                     response = await asyncio.to_thread(_run_groq)
                     raw_content = response.choices[0].message.content
                     if raw_content:
-                        data = json.loads(raw_content)
+                        clean_text = raw_content.strip()
+                        # Strip reasoning/thinking tags if returned by reasoning models
+                        if "</think>" in clean_text:
+                            clean_text = clean_text.split("</think>")[-1].strip()
+                        if clean_text.startswith("```json"):
+                            clean_text = clean_text[7:]
+                        if clean_text.startswith("```"):
+                            clean_text = clean_text[3:]
+                        if clean_text.endswith("```"):
+                            clean_text = clean_text[:-3]
+                        data = json.loads(clean_text.strip())
                         logfire.info("Groq failover analysis succeeded", model=model_name)
                         return ATSMatchResult.model_validate(data), f"ATS DeepScan Engine ({model_name})"
             except Exception as e:

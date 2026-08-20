@@ -1,6 +1,7 @@
 """
 FastAPI route definitions for the ATS Matcher application.
 """
+import json
 import os
 from typing import Optional
 from fastapi import APIRouter, File, Form, Request, UploadFile, status
@@ -188,6 +189,8 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         # 4. Run AI Analysis with Fallback & Language Target
         try:
             result, provider_name = await analyze_with_fallback(resume_text, sanitized_jd, language=resolved_lang)
+            result_payload = result.model_dump()
+            result_payload["provider"] = provider_name
             return templates.TemplateResponse(
                 request=request,
                 name="partials/results.html",
@@ -195,6 +198,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                     "t": t,
                     "lang": resolved_lang,
                     "result": result,
+                    "result_json": json.dumps(result_payload),
                     "provider": provider_name,
                 },
             )

@@ -245,15 +245,6 @@
 
     <!-- Hidden JSON Payload for Client-Side Report Export -->
     <script id="ats-report-data" type="application/json">
-{{ {
-    "match_score": result.match_score,
-    "summary_verdict": result.summary_verdict,
-    "experience_gap_feedback": result.experience_gap_feedback,
-    "matched_keywords": result.matched_keywords,
-    "missing_critical_keywords": result.missing_critical_keywords,
-    "tailoring_suggestions": result.tailoring_suggestions,
-    "provider": provider
-} | tojson }}
+{{ result_json | safe }}
     </script>
-
 </div>
