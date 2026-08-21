@@ -119,7 +119,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 GROQ_API_KEY=your_groq_api_key_here
 
 # Rate Limiting & Concurrency Configuration
-RATE_LIMIT_POLICY=5/minute
+RATE_LIMIT_POLICY=2/minute
 MAX_CONCURRENT_REQUESTS=3
 ```
 
