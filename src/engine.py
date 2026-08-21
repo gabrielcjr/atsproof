@@ -1,12 +1,7 @@
-"""
-Dual-Engine AI Dispatcher with multi-key failover and concurrency limits.
-Primary: Google GenAI (Gemini 3.6 Flash / 2.5 Flash Lite)
-Failover: Groq (LLaMA 3.3 70B / LLaMA 3.1 8B)
-"""
-
 import asyncio
 import json
-from typing import Tuple
+import re
+from typing import List, Set, Tuple
 
 import logfire
 
@@ -22,6 +17,101 @@ from src.prompts import (
     build_user_prompt,
 )
 from src.schemas import ATSMatchResult
+
+STOP_WORDS: Set[str] = {
+    "and", "the", "or", "in", "on", "at", "to", "for", "with", "by", "of", "a", "an",
+    "e", "o", "a", "os", "as", "em", "de", "do", "da", "dos", "das", "para", "com", "por"
+}
+
+
+def is_keyword_in_text(keyword: str, text: str) -> bool:
+    """
+    Generalized lexical & token presence matcher (zero hardcoded dictionaries).
+    Validates whether a keyword, acronym, or its component tokens exist in the text.
+    Works universally across tech, business, medical, and multi-lingual domains.
+    """
+    if not keyword or not text:
+        return False
+
+    kw_raw = keyword.strip()
+    kw_lower = kw_raw.lower()
+    text_lower = text.lower()
+
+    # 1. Direct whole phrase or regex word boundary check
+    escaped_kw = re.escape(kw_lower)
+    if re.search(r"(?:\b|_)" + escaped_kw + r"(?:\b|_)", text_lower) or kw_lower in text_lower:
+        return True
+
+    # 2. Punctuation stripped check (e.g. Node.js -> nodejs, Nest.js -> nestjs, CI/CD -> cicd)
+    kw_clean = re.sub(r"[^a-zA-Z0-9]", "", kw_lower)
+    text_clean = re.sub(r"[^a-zA-Z0-9]", "", text_lower)
+    if kw_clean and len(kw_clean) >= 3 and kw_clean in text_clean:
+        return True
+
+    # 3. Acronym search (e.g. capitalized acronyms like DDD, GA4, AWS, GCP, SQS, CI/CD)
+    acronym_match = re.findall(r"\b[A-Z0-9]{2,}\b", kw_raw)
+    for acr in acronym_match:
+        if re.search(r"\b" + re.escape(acr.lower()) + r"\b", text_lower):
+            return True
+
+    # 4. Multi-word phrase component check (e.g. "Domain-Driven Design (DDD)", "AWS EC2", "RESTful APIs")
+    parts = [re.sub(r"[^a-zA-Z0-9]", "", p).lower() for p in re.split(r"[\s/(),_\-]+", kw_raw) if len(p) >= 2]
+    meaningful_parts = [p for p in parts if p not in STOP_WORDS and len(p) >= 2]
+
+    for part in meaningful_parts:
+        if len(part) <= 2:
+            if re.search(r"\b" + re.escape(part) + r"\b", text_lower):
+                return True
+        else:
+            if part in text_lower or (len(part) >= 3 and part in text_clean):
+                return True
+
+    return False
+
+
+def sanitize_and_align_keywords(
+    result: ATSMatchResult, resume_text: str, job_desc: str
+) -> ATSMatchResult:
+    """
+    Generalized alignment layer:
+    - matched_keywords: must have evidence in both Job Description AND Resume.
+    - missing_critical_keywords: must have evidence in Job Description AND NOT in Resume.
+    - Eliminates any fabricated, hallucinated, or unrequested resume skills from matched_keywords.
+    """
+    clean_matched: List[str] = []
+    seen_matched: Set[str] = set()
+
+    for kw in result.matched_keywords or []:
+        normalized = kw.strip()
+        norm_lower = normalized.lower()
+        if not normalized or norm_lower in seen_matched:
+            continue
+
+        # Must have lexical or token presence in both Job Description AND Resume
+        if is_keyword_in_text(normalized, job_desc) and is_keyword_in_text(normalized, resume_text):
+            seen_matched.add(norm_lower)
+            clean_matched.append(normalized)
+
+    result.matched_keywords = clean_matched
+
+    clean_missing: List[str] = []
+    seen_missing: Set[str] = set()
+
+    for kw in result.missing_critical_keywords or []:
+        normalized = kw.strip()
+        norm_lower = normalized.lower()
+        if not normalized or norm_lower in seen_missing or norm_lower in seen_matched:
+            continue
+
+        # Must have lexical presence in Job Description and NOT in Resume
+        if is_keyword_in_text(normalized, job_desc) and not is_keyword_in_text(normalized, resume_text):
+            seen_missing.add(norm_lower)
+            clean_missing.append(normalized)
+
+    result.missing_critical_keywords = clean_missing
+
+    return result
+
 
 # Concurrency semaphore to throttle active LLM calls
 concurrency_semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
@@ -163,7 +253,8 @@ async def analyze_with_fallback(
 ) -> Tuple[ATSMatchResult, str]:
     """
     Coordinates primary Gemini call with automatic failover to Groq.
-    Enforces concurrency limits and returns (ATSMatchResult, white_label_engine_name).
+    Enforces concurrency limits, validates keyword presence against the JD,
+    and returns (ATSMatchResult, white_label_engine_name).
     """
     async with concurrency_semaphore:
         with logfire.span("Dual Engine Match Analysis", language=language):
@@ -173,6 +264,7 @@ async def analyze_with_fallback(
                 result = await call_gemini_primary(
                     resume_text, job_desc, language=language
                 )
+                result = sanitize_and_align_keywords(result, resume_text, job_desc)
                 return result, "ATS DeepScan Engine • Active"
             except Exception as e:
                 logger.warning(
@@ -186,6 +278,7 @@ async def analyze_with_fallback(
                 result, _ = await call_groq_fallback(
                     resume_text, job_desc, language=language
                 )
+                result = sanitize_and_align_keywords(result, resume_text, job_desc)
                 return result, "ATS DeepScan Engine (Failover Mode)"
             except Exception as groq_e:
                 logger.error(f"Secondary failover engine call also failed: {groq_e}")

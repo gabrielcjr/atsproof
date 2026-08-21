@@ -13,6 +13,7 @@ from src.config import (
     MAX_PDF_SIZE_BYTES,
     MAX_TEXT_CHARS,
 )
+from src.engine import is_keyword_in_text, sanitize_and_align_keywords
 from src.extractor import extract_text_from_pdf_bytes
 from src.prompts import SYSTEM_INSTRUCTION, build_user_prompt
 from src.schemas import ATSMatchResult
@@ -78,6 +79,74 @@ class ATSMatcherTests(unittest.TestCase):
         self.assertNotIn("grpc", result.missing_critical_keywords)
         self.assertNotIn("Docker", result.missing_critical_keywords)
         self.assertEqual(result.missing_critical_keywords, ["Flask", "Redux"])
+
+    def test_generalized_keyword_presence_multi_domain(self):
+        """Ensure generalized lexical token presence works across tech, business, and medical domains without hardcoded lists."""
+        # Tech domain
+        jd_tech = "Backend services and APIs using Node.js and frameworks such as Express, Fastify, and/or NestJS. Domain-Driven Design (DDD), CI/CD."
+        self.assertTrue(is_keyword_in_text("Node.js", jd_tech))
+        self.assertTrue(is_keyword_in_text("Nest.js", jd_tech))
+        self.assertTrue(is_keyword_in_text("DDD", jd_tech))
+        self.assertTrue(is_keyword_in_text("CI/CD", jd_tech))
+        self.assertFalse(is_keyword_in_text("FastAPI", jd_tech))
+        self.assertFalse(is_keyword_in_text("Django", jd_tech))
+        self.assertFalse(is_keyword_in_text("Python", jd_tech))
+
+        # Marketing / Growth domain
+        jd_mkt = "Growth Lead experienced in HubSpot CRM, Google Analytics 4 (GA4), SEO Copywriting."
+        self.assertTrue(is_keyword_in_text("HubSpot CRM", jd_mkt))
+        self.assertTrue(is_keyword_in_text("Google Analytics 4 (GA4)", jd_mkt))
+        self.assertFalse(is_keyword_in_text("Photoshop", jd_mkt))
+
+        # Medical / Bio domain
+        jd_bio = "Scientist in CRISPR-Cas9 genome editing and Next-Generation Sequencing (NGS)."
+        self.assertTrue(is_keyword_in_text("CRISPR-Cas9", jd_bio))
+        self.assertTrue(is_keyword_in_text("NGS", jd_bio))
+        self.assertFalse(is_keyword_in_text("Ruby on Rails", jd_bio))
+
+    def test_strict_job_description_keyword_filtering(self):
+        """Ensure resume-only skills absent from the job description are stripped from matched_keywords."""
+        jd = (
+            "We are hiring a Backend Engineer proficient in Node.js, NestJS, and Redis. "
+            "Experience with Kubernetes, AWS, and Git required. Missing requirements: MongoDB, RabbitMQ."
+        )
+        resume = (
+            "Skills: Python, Django, FastAPI, React, PostgreSQL, MySQL, Node.js, Nest.js, Redis, "
+            "Kubernetes, AWS EC2, Git."
+        )
+
+        raw_result = ATSMatchResult(
+            match_score=80,
+            matched_keywords=[
+                "Node.js", "Nest.js", "Redis", "Kubernetes", "AWS EC2", "Git",
+                "Python", "FastAPI", "Django", "React", "PostgreSQL", "MySQL"
+            ],
+            missing_critical_keywords=["MongoDB", "RabbitMQ", "Node.js"],
+            experience_gap_feedback="Great fit.",
+            tailoring_suggestions=[],
+            summary_verdict="Strong candidate.",
+        )
+
+        sanitized = sanitize_and_align_keywords(raw_result, resume, jd)
+
+        # Matched keywords must ONLY include skills present in the JD
+        self.assertIn("Node.js", sanitized.matched_keywords)
+        self.assertIn("Nest.js", sanitized.matched_keywords)
+        self.assertIn("Redis", sanitized.matched_keywords)
+        self.assertIn("Kubernetes", sanitized.matched_keywords)
+        self.assertIn("Git", sanitized.matched_keywords)
+
+        # Resume-only skills NOT in the JD must be filtered out
+        self.assertNotIn("FastAPI", sanitized.matched_keywords)
+        self.assertNotIn("Django", sanitized.matched_keywords)
+        self.assertNotIn("Python", sanitized.matched_keywords)
+        self.assertNotIn("React", sanitized.matched_keywords)
+        self.assertNotIn("PostgreSQL", sanitized.matched_keywords)
+        self.assertNotIn("MySQL", sanitized.matched_keywords)
+
+        # Missing keywords must contain items from JD missing in resume, and exclude matched items
+        self.assertEqual(sanitized.missing_critical_keywords, ["MongoDB", "RabbitMQ"])
+        self.assertNotIn("Node.js", sanitized.missing_critical_keywords)
 
     def test_prompt_injection_boundaries(self):
         """Ensure prompt isolation wraps untrusted inputs in XML boundaries."""
