@@ -147,7 +147,7 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
             },
             {
                 "q": "Is my resume private and secure?",
-                "a": "Absolutely. We operate on a strict privacy-first, zero-retention policy. Uploaded PDFs are parsed strictly in server RAM and immediately discarded. We never store, sell, log, or train public AI models on your resume, contact info, or job descriptions."
+                "a": "Yes. ATS MatchProof operates on a strict zero-database, ephemeral architecture: uploaded PDFs are parsed in server RAM and immediately discarded upon response. We never store, sell, or maintain records of your resume. Please note that analysis is performed via third-party AI inference APIs (including Google Gemini and Groq free tiers); under Google's standard free-tier developer terms, prompt content may be processed by Google to train and improve their machine learning models."
             },
             {
                 "q": "Why is my ATS score lower than expected?",
@@ -329,7 +329,7 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
             },
             {
                 "q": "Meus dados e currículo estão seguros e privados?",
-                "a": "Sim, com segurança absoluta. Operamos sob uma política rígida de retenção zero. O PDF enviado é processado exclusivamente na memória RAM do servidor durante a análise e é descartado imediatamente. Não salvamos currículos em disco nem em banco de dados, e não treinamos modelos públicos com seus dados."
+                "a": "Sim. O ATS MatchProof opera sob uma política de retenção zero em banco de dados: o PDF enviado é processado exclusivamente na memória RAM volátil do servidor e descartado imediatamente após a análise. O ATS MatchProof não armazena arquivos, não mantém histórico e não comercializa seus dados. Vale destacar que a análise é realizada por APIs de inteligência artificial de terceiros (como os tiers gratuitos do Google Gemini e Groq); pelos termos padrão do plano gratuito do Google, prompts enviados podem ser utilizados pelo Google para o treinamento e aprimoramento de seus modelos de IA."
             },
             {
                 "q": "Por que minha nota de compatibilidade ATS deu baixa?",
