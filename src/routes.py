@@ -40,6 +40,16 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         return "pt" if req_cookie.lower().startswith("pt") else "en"
 
     # -------------------------------------------------------------
+    # Health Check & Diagnostics
+    # -------------------------------------------------------------
+
+    @router.get("/healthz")
+    @router.get("/health")
+    async def health_check():
+        """Lightweight health check endpoint for container probes."""
+        return {"status": "ok"}
+
+    # -------------------------------------------------------------
     # Core Application Routes
     # -------------------------------------------------------------
 

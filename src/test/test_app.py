@@ -37,6 +37,8 @@ class ATSMatcherTests(unittest.TestCase):
 
     def setUp(self):
         client.cookies.clear()
+        if hasattr(app.state, "limiter"):
+            app.state.limiter.reset()
 
     def test_schema_parsing(self):
         """Ensure ATSMatchResult parses structured JSON correctly."""
@@ -185,6 +187,12 @@ class ATSMatcherTests(unittest.TestCase):
         with self.assertRaises(ValueError) as ctx:
             extract_text_from_pdf_bytes(pdf_4_pages)
         self.assertIn("Maximum allowed is 3 pages", str(ctx.exception))
+
+    def test_health_check_endpoint(self):
+        """Ensure /healthz returns 200 OK with json status."""
+        response = client.get("/healthz")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ok"})
 
     def test_get_index_page(self):
         """Ensure GET / returns 200 and contains key UI elements."""

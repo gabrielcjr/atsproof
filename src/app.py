@@ -42,8 +42,8 @@ def create_app() -> FastAPI:
         version="1.0.0",
     )
 
-    # Instrument FastAPI & Pydantic models with Logfire
-    logfire.instrument_fastapi(app)
+    # Instrument FastAPI & Pydantic models with Logfire (excluding health checks to avoid log noise)
+    logfire.instrument_fastapi(app, excluded_urls="healthz,health,favicon.ico")
     logfire.instrument_pydantic()
 
     # Initialize rate limiter keyed by true client IP
