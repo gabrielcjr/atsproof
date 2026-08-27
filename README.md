@@ -74,8 +74,8 @@ flowchart TD
 | :--- | :--- | :--- |
 | **Max PDF File Size** | **120 KB** (122,880 bytes) | Client-side validation + server-side byte check |
 | **Max PDF Page Count** | **3 pages** | In-memory `pypdf` page iterator |
-| **Max Text Length** | **10,000 characters** (with spaces) | Client counter + server truncation |
-| **IP Rate Limit** | **5 requests / minute** | `slowapi` IP bucket limiter |
+| **Max Text Length** | **7,000 characters** (with spaces) | Client counter + server truncation |
+| **IP Rate Limit** | **2 requests / minute** | `slowapi` IP bucket limiter |
 | **Max Concurrent AI Calls** | **3 requests** | `asyncio.Semaphore` |
 
 ---
