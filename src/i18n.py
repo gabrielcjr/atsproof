@@ -96,6 +96,8 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "error_pdf_read": "Unable to read the uploaded resume. Please make sure the PDF is text-based (not a scanned image) and under 120KB.",
         "error_footer_note": "PDF must be text-based (max 120KB, max 3 pages).",
         "btn_try_again": "Try Again",
+        "error_badge_server": "High Demand",
+        "error_badge_client": "Input Notice",
 
         # Educational Homepage Content
         "edu_title": "How to Master the Applicant Tracking System (ATS)",
@@ -278,6 +280,8 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "error_pdf_read": "Não foi possível ler o currículo enviado. Certifique-se de que o PDF contenha texto selecionável (não seja imagem escaneada) e tenha menos de 120KB.",
         "error_footer_note": "O PDF deve ser baseado em texto (máx 120KB, máx 3 páginas).",
         "btn_try_again": "Tentar Novamente",
+        "error_badge_server": "Alta Demanda",
+        "error_badge_client": "Aviso",
 
         # Educational Homepage Content
         "edu_title": "Como Dominar os Sistemas de Triagem ATS",
