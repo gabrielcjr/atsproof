@@ -126,17 +126,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
 
     if (jdTextarea && charCounter) {
+        const maxLimit = (jdTextarea.maxLength && jdTextarea.maxLength > 0) ? jdTextarea.maxLength : 7000;
         jdTextarea.addEventListener('input', function () {
             const label = CURRENT_LANG === 'pt' ? 'carac.' : 'chars';
-            charCounter.textContent = `${this.value.length} / 10000 ${label}`;
+            charCounter.textContent = `${this.value.length} / ${maxLimit} ${label}`;
         });
     }
 
     if (clearJdBtn && jdTextarea && charCounter) {
+        const maxLimit = (jdTextarea.maxLength && jdTextarea.maxLength > 0) ? jdTextarea.maxLength : 7000;
         clearJdBtn.addEventListener('click', function () {
             jdTextarea.value = '';
             const label = CURRENT_LANG === 'pt' ? 'carac.' : 'chars';
-            charCounter.textContent = `0 / 10000 ${label}`;
+            charCounter.textContent = `0 / ${maxLimit} ${label}`;
         });
     }
 
