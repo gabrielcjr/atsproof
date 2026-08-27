@@ -22,7 +22,7 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
     - Validates %PDF- magic header
     - Enforces maximum file size ceiling (120 KB max)
     - Enforces maximum page ceiling (3 pages max)
-    - Enforces maximum character ceiling (10,000 chars max)
+    - Enforces maximum character ceiling (7,000 chars max)
     """
     if len(pdf_bytes) > MAX_PDF_SIZE_BYTES:
         raise ValueError(
