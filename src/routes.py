@@ -6,11 +6,12 @@ import json
 import os
 from typing import Optional
 
-from fastapi import APIRouter, File, Form, Request, UploadFile, status
+from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from slowapi import Limiter
 
+from src.articles import get_all_articles, get_article_by_slug, get_related_articles
 from src.config import (
     MAX_PDF_PAGES,
     MAX_PDF_SIZE_BYTES,
@@ -30,7 +31,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     router = APIRouter()
     static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 
-    def _resolve_language(request: Request, lang: Optional[str] = None, default_lang: Optional[str] = None) -> str:
+    def _resolve_language(
+        request: Request, lang: Optional[str] = None, default_lang: Optional[str] = None
+    ) -> str:
         """Helper to resolve active language preference from query param, path default, or cookie."""
         if lang:
             return "pt" if lang.lower().startswith("pt") else "en"
@@ -77,10 +80,16 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
 
     @router.api_route("/guide", methods=["GET", "HEAD"], response_class=HTMLResponse)
     @router.api_route("/guia-ats", methods=["GET", "HEAD"], response_class=HTMLResponse)
-    @router.api_route("/como-funciona", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    @router.api_route(
+        "/como-funciona", methods=["GET", "HEAD"], response_class=HTMLResponse
+    )
     async def guide(request: Request, lang: Optional[str] = None):
-        """Serves the comprehensive educational ATS Resume Optimization Master Guide."""
-        path_hint = "pt" if "guia" in request.url.path or "como-funciona" in request.url.path else None
+        """Serves the comprehensive ATS masterclass guide."""
+        path_hint = (
+            "pt"
+            if ("guia" in request.url.path or "como-funciona" in request.url.path)
+            else "en"
+        )
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
         t = get_translations(resolved_lang)
 
@@ -90,9 +99,6 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             context={
                 "t": t,
                 "lang": resolved_lang,
-                "max_pdf_kb": MAX_PDF_SIZE_BYTES // 1024,
-                "max_pages": MAX_PDF_PAGES,
-                "max_chars": MAX_TEXT_CHARS,
             },
         )
         response.set_cookie(
@@ -103,8 +109,8 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     @router.api_route("/about", methods=["GET", "HEAD"], response_class=HTMLResponse)
     @router.api_route("/sobre", methods=["GET", "HEAD"], response_class=HTMLResponse)
     async def about(request: Request, lang: Optional[str] = None):
-        """Serves the About Us and Mission page."""
-        path_hint = "pt" if "sobre" in request.url.path else None
+        """Serves the About Us & Engineering transparency page."""
+        path_hint = "pt" if "sobre" in request.url.path else "en"
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
         t = get_translations(resolved_lang)
 
@@ -122,10 +128,12 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         return response
 
     @router.api_route("/privacy", methods=["GET", "HEAD"], response_class=HTMLResponse)
-    @router.api_route("/privacidade", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    @router.api_route(
+        "/privacidade", methods=["GET", "HEAD"], response_class=HTMLResponse
+    )
     async def privacy(request: Request, lang: Optional[str] = None):
         """Serves the Privacy Policy page compliant with Google AdSense and LGPD/GDPR."""
-        path_hint = "pt" if "privacidade" in request.url.path else None
+        path_hint = "pt" if "privacidade" in request.url.path else "en"
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
         t = get_translations(resolved_lang)
 
@@ -146,7 +154,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     @router.api_route("/termos", methods=["GET", "HEAD"], response_class=HTMLResponse)
     async def terms(request: Request, lang: Optional[str] = None):
         """Serves the Terms of Service page."""
-        path_hint = "pt" if "termos" in request.url.path else None
+        path_hint = "pt" if "termos" in request.url.path else "en"
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
         t = get_translations(resolved_lang)
 
@@ -156,6 +164,62 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             context={
                 "t": t,
                 "lang": resolved_lang,
+            },
+        )
+        response.set_cookie(
+            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
+        )
+        return response
+
+    @router.api_route("/articles", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    @router.api_route("/artigos", methods=["GET", "HEAD"], response_class=HTMLResponse)
+    async def articles_hub(request: Request, lang: Optional[str] = None):
+        """Serves the Career & ATS Knowledge Hub listing page."""
+        path_hint = "pt" if "artigos" in request.url.path else "en"
+        resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
+        t = get_translations(resolved_lang)
+        all_articles = get_all_articles()
+
+        response = templates.TemplateResponse(
+            request=request,
+            name="articles.html",
+            context={
+                "t": t,
+                "lang": resolved_lang,
+                "articles": all_articles,
+            },
+        )
+        response.set_cookie(
+            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
+        )
+        return response
+
+    @router.api_route(
+        "/articles/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse
+    )
+    @router.api_route(
+        "/artigos/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse
+    )
+    async def article_detail(request: Request, slug: str, lang: Optional[str] = None):
+        """Serves an individual in-depth career/ATS article."""
+        path_hint = "pt" if "artigos" in request.url.path else "en"
+        resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
+        t = get_translations(resolved_lang)
+
+        article = get_article_by_slug(slug)
+        if not article:
+            raise HTTPException(status_code=404, detail="Article not found")
+
+        related = get_related_articles(article["id"], limit=3)
+
+        response = templates.TemplateResponse(
+            request=request,
+            name="article_detail.html",
+            context={
+                "t": t,
+                "lang": resolved_lang,
+                "article": article,
+                "related_articles": related,
             },
         )
         response.set_cookie(
@@ -190,7 +254,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         )
 
     @router.api_route("/favicon.ico", methods=["GET", "HEAD"], include_in_schema=False)
-    @router.api_route("/static/favicon.svg", methods=["GET", "HEAD"], include_in_schema=False)
+    @router.api_route(
+        "/static/favicon.svg", methods=["GET", "HEAD"], include_in_schema=False
+    )
     async def favicon():
         """Serves the SVG favicon for browser tabs."""
         favicon_path = os.path.join(static_dir, "favicon.svg")

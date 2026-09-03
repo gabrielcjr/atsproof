@@ -13,27 +13,33 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "title": "ATS MatchProof | Free ATS Resume & Job Matcher • AI Score & Optimization",
         "meta_description": "ATS MatchProof is a 100% free, zero-account ATS Resume & Job Matcher. Compare your resume against any job description with instant AI feedback, keyword extraction, and Google XYZ optimizations.",
         "og_image_alt": "ATS MatchProof - Free ATS Resume & Job Matcher with AI Score",
-
         # Navigation
         "nav_home": "Analyzer",
+        "nav_articles": "Articles & Guides",
         "nav_guide": "ATS Guide",
         "nav_about": "About Us",
-        "nav_contact": "Contact",
         "nav_privacy": "Privacy Policy",
         "nav_terms": "Terms of Service",
         "nav_faq": "FAQ",
-
+        # Articles Hub
+        "articles_hub_title": "Career & ATS Knowledge Hub",
+        "articles_hub_subtitle": "Expert resume strategies, platform-specific parsing breakdowns, and industry templates to beat hiring algorithms.",
+        "articles_filter_all": "All Articles",
+        "btn_read_article": "Read Full Guide",
+        "article_cta_title": "Test Your Resume Against Any Job for Free",
+        "article_cta_subtitle": "Get instant match scores, missing keywords, and Google XYZ bullet point rewrites.",
+        "article_cta_btn": "Analyze My Resume Now",
+        "article_related_title": "Recommended Guides & Articles",
+        "page_articles_title": "Articles & Resume Guides | ATS MatchProof",
         # Badges & Buttons
         "badge_free": "100% Free",
         "btn_download_template": "Download ATS Template (.docx)",
         "badge_privacy": "100% Private • Resumes Never Stored",
-
         # Hero Section
         "hero_title_prefix": "Beat the ATS. Land More ",
         "hero_title_highlight": "Interviews",
         "hero_title_suffix": ".",
         "hero_subtitle": "Upload your resume PDF and paste the job description. Our dual-engine ATS simulator analyzes skill gaps, keyword matching, and crafts instant recruiter-grade bullet points using the Google XYZ formula.",
-
         # Form Fields
         "upload_col_title": "1. Upload Resume (PDF)",
         "upload_col_limits": "Max {max_pdf_kb}KB • {max_pages} pages",
@@ -48,13 +54,11 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "jd_clear_btn": "Clear Text",
         "btn_analyze": "Run ATS DeepScan Analysis",
         "btn_analyzing": "Simulating ATS Scanners...",
-
         # Loading Steps
         "loading_step_1": "Reading and verifying PDF text layer...",
         "loading_step_2": "Simulating ATS parser token extraction...",
         "loading_step_3": "Benchmarking skills and experience with Dual-AI...",
         "loading_step_4": "Crafting Google XYZ bullet point optimizations...",
-
         # Results View
         "results_title": "ATS Match Verdict & Analysis",
         "results_subtitle": "Benchmarked against target job requirements and ATS keyword filters.",
@@ -80,7 +84,6 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "export_copy_btn": "Copy Full Report",
         "export_download_btn": "Download (.txt)",
         "export_copied": "Full Report Copied!",
-
         # Rate Limiting & Errors
         "rate_limit_title": "Rate Limit Exceeded (Free Tier Protection)",
         "rate_limit_desc": "To keep this service 100% free and fast for everyone, requests are limited to 2 analyses per minute per user.",
@@ -98,20 +101,15 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "btn_try_again": "Try Again",
         "error_badge_server": "High Demand",
         "error_badge_client": "Input Notice",
-
         # Educational Homepage Content
         "edu_title": "How to Master the Applicant Tracking System (ATS)",
         "edu_subtitle": "Over 75% of resumes are filtered out before reaching human recruiters. Learn how ATS algorithms score applications and how to optimize your resume effectively.",
-
         "edu_card1_title": "How ATS Algorithms Work",
         "edu_card1_desc": "Applicant Tracking Systems (like Workday, Taleo, Greenhouse, and Lever) parse incoming resumes into structured candidate profiles. They tokenize your text, extract skills, categorize employment dates, and rank candidates based on keyword relevance and semantic similarity to the job description.",
-
         "edu_card2_title": "The Google XYZ Formula",
         "edu_card2_desc": "Top recruiters look for measurable impact, not just a list of daily responsibilities. Formulate every achievement as: 'Accomplished [X], as measured by [Y], by doing [Z]'. This structure proves business value, incorporates target keywords, and immediately elevates your resume above competitors.",
-
         "edu_card3_title": "Formatting for Clean Parsing",
         "edu_card3_desc": "Complex two-column graphics, text boxes, tables, icons, and non-standard fonts cause parsing errors in older ATS parsers. Use a single-column, standard reverse-chronological layout with clean headings and UTF-8 bullet points to guarantee 100% readability.",
-
         # Before/After Examples Section
         "examples_title": "Before vs After: Google XYZ Bullet Points",
         "examples_subtitle": "See how rewriting generic statements into metric-driven XYZ statements dramatically improves ATS keyword scores and recruiter appeal.",
@@ -124,7 +122,6 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "example3_role": "Product Manager",
         "example3_bad": "Led sprint planning and coordinated feature launches with the engineering team.",
         "example3_good": "Spearheaded end-to-end launch of customer onboarding portal across 4 cross-functional squads, cutting user drop-off by 45% in Q3.",
-
         # Checklist Section
         "checklist_title": "Essential ATS Compliance Checklist",
         "checklist_subtitle": "Review these 6 vital rules before submitting your application to any corporate job portal.",
@@ -134,45 +131,43 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "checklist_item4": "Standard Headings: Stick to standard titles like 'Work Experience', 'Education', and 'Skills'.",
         "checklist_item5": "Quantifiable Metrics: Include numbers, percentages, currency, and measurable results in every role.",
         "checklist_item6": "No Keyword Stuffing: Use keywords in natural, contextual sentences rather than hidden blocks.",
-
         # FAQ Section
         "faq_title": "Frequently Asked Questions",
         "faq_subtitle": "Everything you need to know about ATS MatchProof, resume parsing, and hiring algorithms.",
         "faqs": [
             {
                 "q": "What is an ATS (Applicant Tracking System)?",
-                "a": "An Applicant Tracking System (ATS) is software used by employers, recruiters, and HR teams to collect, organize, filter, and rank job applicants. When you submit a resume online, the ATS parses the document to determine if your qualifications match the job description before a human recruiter ever sees it."
+                "a": "An Applicant Tracking System (ATS) is software used by employers, recruiters, and HR teams to collect, organize, filter, and rank job applicants. When you submit a resume online, the ATS parses the document to determine if your qualifications match the job description before a human recruiter ever sees it.",
             },
             {
                 "q": "Is ATS MatchProof completely free to use?",
-                "a": "Yes! ATS MatchProof is 100% free with no account creation, subscription, or payment required. You can scan and tailor your resume against multiple job descriptions without entering credit card information."
+                "a": "Yes! ATS MatchProof is 100% free with no account creation, subscription, or payment required. You can scan and tailor your resume against multiple job descriptions without entering credit card information.",
             },
             {
                 "q": "Is my resume private and secure?",
-                "a": "Yes. ATS MatchProof operates on a strict zero-database, ephemeral architecture: uploaded PDFs are parsed in server RAM and immediately discarded upon response. We never store, sell, or maintain records of your resume. Please note that analysis is performed via third-party AI inference APIs (including Google Gemini and Groq free tiers); under Google's standard free-tier developer terms, prompt content may be processed by Google to train and improve their machine learning models."
+                "a": "Yes. ATS MatchProof operates on a strict zero-database, ephemeral architecture: uploaded PDFs are parsed in server RAM and immediately discarded upon response. We never store, sell, or maintain records of your resume. Please note that analysis is performed via third-party AI inference APIs (including Google Gemini and Groq free tiers); under Google's standard free-tier developer terms, prompt content may be processed by Google to train and improve their machine learning models.",
             },
             {
                 "q": "Why is my ATS score lower than expected?",
-                "a": "A lower score usually means your resume is missing exact keyword matches found in the job description, uses generic bullet points without measurable impact, or lacks the specific technical stack or certifications required. Use our feedback to bridge these gaps."
+                "a": "A lower score usually means your resume is missing exact keyword matches found in the job description, uses generic bullet points without measurable impact, or lacks the specific technical stack or certifications required. Use our feedback to bridge these gaps.",
             },
             {
                 "q": "Can I use creative templates with two columns and graphics?",
-                "a": "While creative multi-column templates may look visually appealing to humans, they often confuse ATS parsers, resulting in scrambled text, missing experience sections, or lost contact details. For corporate applications, a clean single-column format is recommended."
+                "a": "While creative multi-column templates may look visually appealing to humans, they often confuse ATS parsers, resulting in scrambled text, missing experience sections, or lost contact details. For corporate applications, a clean single-column format is recommended.",
             },
             {
                 "q": "What is the Google XYZ formula?",
-                "a": "The Google XYZ formula was popularized by Google's former SVP of People Operations, Laszlo Bock. It structures bullet points as: 'Accomplished [X], as measured by [Y], by doing [Z]'. This format clearly demonstrates your action, the metric used to gauge success, and your unique method."
+                "a": "The Google XYZ formula was popularized by Google's former SVP of People Operations, Laszlo Bock. It structures bullet points as: 'Accomplished [X], as measured by [Y], by doing [Z]'. This format clearly demonstrates your action, the metric used to gauge success, and your unique method.",
             },
             {
                 "q": "How many pages should my resume be?",
-                "a": "For candidates with fewer than 5–7 years of experience, a single page is standard. For senior professionals, researchers, or executives with 10+ years of relevant experience, a 2-page resume is acceptable. Avoid 3+ pages unless submitting an academic CV."
+                "a": "For candidates with fewer than 5–7 years of experience, a single page is standard. For senior professionals, researchers, or executives with 10+ years of relevant experience, a 2-page resume is acceptable. Avoid 3+ pages unless submitting an academic CV.",
             },
             {
                 "q": "What is keyword stuffing and why should I avoid it?",
-                "a": "Keyword stuffing is the practice of unnaturally repeating keywords (or hiding white text in margins) to manipulate ATS scanners. Modern ATS parsers easily detect this, and human recruiters will immediately disqualify applications with artificial keyword blocks."
-            }
+                "a": "Keyword stuffing is the practice of unnaturally repeating keywords (or hiding white text in margins) to manipulate ATS scanners. Modern ATS parsers easily detect this, and human recruiters will immediately disqualify applications with artificial keyword blocks.",
+            },
         ],
-
         # Footer
         "footer_about": "ATS MatchProof is an open, privacy-first career enablement tool designed to give job seekers algorithmic transparency and enterprise-grade resume optimization.",
         "footer_quick_links": "Quick Links",
@@ -181,7 +176,6 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "footer_tagline": "Empowering job seekers with enterprise-grade ATS transparency.",
         "footer_privacy": "Privacy-First (No Data Saved) • In-Memory Processing",
         "footer_rights": "All rights reserved.",
-
         # Dedicated Pages Titles & Meta
         "page_privacy_title": "Privacy Policy | ATS MatchProof",
         "page_terms_title": "Terms of Service | ATS MatchProof",
@@ -189,7 +183,6 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "page_contact_title": "Contact & Support | ATS MatchProof",
         "page_guide_title": "The Ultimate ATS Resume Optimization Guide (2026) | ATS MatchProof",
     },
-
     "pt": {
         "lang_code": "pt",
         "lang_name": "Português",
@@ -197,27 +190,33 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "title": "ATS MatchProof | Verificador de Currículo ATS Gratuito • Score e Otimização com IA",
         "meta_description": "ATS MatchProof é um verificador de currículo ATS 100% gratuito e sem cadastro. Compare seu currículo com qualquer vaga e receba feedback, palavras-chave e otimizações na Fórmula Google XYZ.",
         "og_image_alt": "ATS MatchProof - Verificador de Currículo ATS Gratuito com IA",
-
         # Navigation
         "nav_home": "Analisador",
+        "nav_articles": "Artigos & Guias",
         "nav_guide": "Guia ATS",
         "nav_about": "Sobre Nós",
-        "nav_contact": "Contato",
         "nav_privacy": "Privacidade",
         "nav_terms": "Termos de Uso",
         "nav_faq": "FAQ",
-
+        # Articles Hub
+        "articles_hub_title": "Central de Artigos & Recursos ATS",
+        "articles_hub_subtitle": "Guias completos, modelos de currículo por área e estratégias comprovadas para superar os robôs de Recursos Humanos.",
+        "articles_filter_all": "Todos os Artigos",
+        "btn_read_article": "Ler Guia Completo",
+        "article_cta_title": "Teste seu Currículo Gratuitamente Agora",
+        "article_cta_subtitle": "Descubra seu score de compatibilidade, palavras-chave ausentes e reescrita de conquistas com IA.",
+        "article_cta_btn": "Analisar meu Currículo com IA",
+        "article_related_title": "Guias e Artigos Recomendados",
+        "page_articles_title": "Artigos e Guias de Currículo ATS | ATS MatchProof",
         # Badges & Buttons
         "badge_free": "100% Grátis",
         "btn_download_template": "Baixar Modelo ATS (.docx)",
         "badge_privacy": "100% Privado • Currículos Nunca Salvos",
-
         # Hero Section
         "hero_title_prefix": "Vença o ATS. Conquiste Mais ",
         "hero_title_highlight": "Entrevistas",
         "hero_title_suffix": ".",
         "hero_subtitle": "Envie seu currículo em PDF e cole a descrição da vaga. Nosso simulador ATS com IA analisa lacunas de habilidades, correspondência de palavras-chave e cria melhorias imediatas no padrão de recrutamento Google XYZ.",
-
         # Form Fields
         "upload_col_title": "1. Enviar Currículo (PDF)",
         "upload_col_limits": "Máx {max_pdf_kb}KB • {max_pages} págs",
@@ -232,13 +231,11 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "jd_clear_btn": "Limpar Texto",
         "btn_analyze": "Executar Análise Completa ATS",
         "btn_analyzing": "Simulando Scanners ATS...",
-
         # Loading Steps
         "loading_step_1": "Lendo e verificando camadas de texto do PDF...",
         "loading_step_2": "Simulando extração de tokens de parser ATS...",
         "loading_step_3": "Cruzando competências e senioridade com IA Dupla...",
         "loading_step_4": "Criando otimizações de bullet points no padrão Google XYZ...",
-
         # Results View
         "results_title": "Veredito e Análise de Compatibilidade ATS",
         "results_subtitle": "Comparado com os requisitos essenciais da vaga e filtros de triagem ATS.",
@@ -264,7 +261,6 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "export_copy_btn": "Copiar Relatório",
         "export_download_btn": "Baixar (.txt)",
         "export_copied": "Relatório Copiado!",
-
         # Rate Limiting & Errors
         "rate_limit_title": "Limite de Requisições Atingido (Proteção Gratuita)",
         "rate_limit_desc": "Para manter este serviço 100% gratuito e rápido para todos, o limite é de 2 análises por minuto por usuário.",
@@ -282,20 +278,15 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "btn_try_again": "Tentar Novamente",
         "error_badge_server": "Alta Demanda",
         "error_badge_client": "Aviso",
-
         # Educational Homepage Content
         "edu_title": "Como Dominar os Sistemas de Triagem ATS",
         "edu_subtitle": "Mais de 75% dos currículos são descartados por robôs antes de chegarem aos recrutadores humanos. Descubra como os algoritmos avaliam seu perfil e como otimizar seu currículo.",
-
         "edu_card1_title": "Como Funcionam os Algoritmos de ATS",
         "edu_card1_desc": "Sistemas de Triagem de Candidatos (como Gupy, Workday, Taleo, Greenhouse e Lever) transformam seu arquivo PDF em um perfil de dados estruturado. Eles extraem palavras-chave, analisam a cronologia das suas experiências e calculam uma nota de aderência em relação aos requisitos da vaga.",
-
         "edu_card2_title": "A Fórmula Google XYZ",
         "edu_card2_desc": "Grandes empresas não querem ler listas de tarefas rotineiras, mas sim impacto comprovado. Escreva suas realizações na estrutura: 'Realizei [X], medido por [Y], fazendo [Z]'. Essa fórmula destaca métricas claras, insere palavras-chave essenciais e comprova seu valor para a empresa.",
-
         "edu_card3_title": "Formatação Compatível com Parsers",
         "edu_card3_desc": "Colunas duplas sofisticadas, caixas de texto flutuantes, tabelas e fontes não convencionais confundem os robôs de triagem. Utilize layouts de coluna única, títulos tradicionais ('Experiência', 'Educação', 'Habilidades') e ordem cronológica inversa.",
-
         # Before/After Examples Section
         "examples_title": "Antes vs Depois: Fórmula Google XYZ na Prática",
         "examples_subtitle": "Veja a diferença entre frases de responsabilidade comuns e conquistas otimizadas para ranquear no topo do ATS.",
@@ -308,7 +299,6 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "example3_role": "Gerente de Produto (PM)",
         "example3_bad": "Liderava reuniões de sprint e organizava lançamentos de funcionalidades com os desenvolvedores.",
         "example3_good": "Liderei o lançamento de ponta a ponta do novo portal de onboarding com 4 squads, diminuindo a taxa de abandono em 45% no 3º trimestre.",
-
         # Checklist Section
         "checklist_title": "Checklist Definitivo de Aprovação no ATS",
         "checklist_subtitle": "Verifique estes 6 pontos indispensáveis antes de submeter sua candidatura a qualquer processo seletivo.",
@@ -318,45 +308,43 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "checklist_item4": "Títulos Clássicos: Mantenha seções padrão como 'Experiência Profissional', 'Formação Acadêmica' e 'Competências'.",
         "checklist_item5": "Métricas Quantitativas: Inclua números, percentuais e resultados de negócio em cada uma das suas experiências.",
         "checklist_item6": "Sem Keyword Stuffing: Insira palavras-chave contextualmente em frases reais, nunca em blocos de texto escondidos.",
-
         # FAQ Section
         "faq_title": "Perguntas Frequentes sobre ATS e Currículos",
         "faq_subtitle": "Tudo o que você precisa saber sobre o funcionamento de robôs de RH e otimização de currículo.",
         "faqs": [
             {
                 "q": "O que é um sistema ATS (Applicant Tracking System)?",
-                "a": "Um ATS é um software corporativo utilizado por equipes de Recursos Humanos e recrutadores para receber, organizar, triar e classificar candidaturas de emprego. O sistema lê o conteúdo do seu currículo e compara suas qualificações com os requisitos da vaga antes de qualquer pessoa avaliar seu perfil."
+                "a": "Um ATS é um software corporativo utilizado por equipes de Recursos Humanos e recrutadores para receber, organizar, triar e classificar candidaturas de emprego. O sistema lê o conteúdo do seu currículo e compara suas qualificações com os requisitos da vaga antes de qualquer pessoa avaliar seu perfil.",
             },
             {
                 "q": "O ATS MatchProof é realmente gratuito?",
-                "a": "Sim! O ATS MatchProof é 100% gratuito, sem necessidade de cadastro, criação de conta ou pagamento. Você pode comparar e otimizar seu currículo contra quantas vagas desejar sem informar dados de cartão de crédito."
+                "a": "Sim! O ATS MatchProof é 100% gratuito, sem necessidade de cadastro, criação de conta ou pagamento. Você pode comparar e otimizar seu currículo contra quantas vagas desejar sem informar dados de cartão de crédito.",
             },
             {
                 "q": "Meus dados e currículo estão seguros e privados?",
-                "a": "Sim. O ATS MatchProof opera sob uma política de retenção zero em banco de dados: o PDF enviado é processado exclusivamente na memória RAM volátil do servidor e descartado imediatamente após a análise. O ATS MatchProof não armazena arquivos, não mantém histórico e não comercializa seus dados. Vale destacar que a análise é realizada por APIs de inteligência artificial de terceiros (como os tiers gratuitos do Google Gemini e Groq); pelos termos padrão do plano gratuito do Google, prompts enviados podem ser utilizados pelo Google para o treinamento e aprimoramento de seus modelos de IA."
+                "a": "Sim. O ATS MatchProof opera sob uma política de retenção zero em banco de dados: o PDF enviado é processado exclusivamente na memória RAM volátil do servidor e descartado imediatamente após a análise. O ATS MatchProof não armazena arquivos, não mantém histórico e não comercializa seus dados. Vale destacar que a análise é realizada por APIs de inteligência artificial de terceiros (como os tiers gratuitos do Google Gemini e Groq); pelos termos padrão do plano gratuito do Google, prompts enviados podem ser utilizados pelo Google para o treinamento e aprimoramento de seus modelos de IA.",
             },
             {
                 "q": "Por que minha nota de compatibilidade ATS deu baixa?",
-                "a": "Uma pontuação menor geralmente indica que faltam palavras-chave específicas exigidas na vaga, que as descrições de experiência estão genéricas sem números de impacto, ou que a senioridade das tecnologias mencionadas difere da vaga. Utilize as sugestões da análise para ajustar esses pontos."
+                "a": "Uma pontuação menor geralmente indica que faltam palavras-chave específicas exigidas na vaga, que as descrições de experiência estão genéricas sem números de impacto, ou que a senioridade das tecnologias mencionadas difere da vaga. Utilize as sugestões da análise para ajustar esses pontos.",
             },
             {
                 "q": "Posso usar modelos visuais com gráficos, barras de nível e colunas duplas?",
-                "a": "Embora pareçam bonitos visualmente, modelos com colunas duplas, barras de progresso de habilidades e caixas de texto flutuantes frequentemente causam erros graves de leitura nos robôs de triagem. Para passar nos filtros, o layout de coluna única limpo é o mais seguro e recomendado."
+                "a": "Embora pareçam bonitos visualmente, modelos com colunas duplas, barras de progresso de habilidades e caixas de texto flutuantes frequentemente causam erros graves de leitura nos robôs de triagem. Para passar nos filtros, o layout de coluna única limpo é o mais seguro e recomendado.",
             },
             {
                 "q": "O que é a Fórmula Google XYZ?",
-                "a": "Popularizada por Laszlo Bock (ex-SVP de Pessoas do Google), a fórmula estrutura cada conquista no formato: 'Realizei [X], medido por [Y], fazendo [Z]'. Essa estrutura evidencia o que você fez, a métrica de sucesso alcançada e o método utilizado."
+                "a": "Popularizada por Laszlo Bock (ex-SVP de Pessoas do Google), a fórmula estrutura cada conquista no formato: 'Realizei [X], medido por [Y], fazendo [Z]'. Essa estrutura evidencia o que você fez, a métrica de sucesso alcançada e o método utilizado.",
             },
             {
                 "q": "Quantas páginas deve ter o meu currículo?",
-                "a": "Para profissionais com até 5 a 7 anos de experiência, 1 página é o ideal. Para profissionais seniores, especialistas ou executivos com mais de 10 anos de carreira relevante, 2 páginas são perfeitamente aceitas. Evite currículos de 3 ou mais páginas."
+                "a": "Para profissionais com até 5 a 7 anos de experiência, 1 página é o ideal. Para profissionais seniores, especialistas ou executivos com mais de 10 anos de carreira relevante, 2 páginas são perfeitamente aceitas. Evite currículos de 3 ou mais páginas.",
             },
             {
                 "q": "O que é 'Keyword Stuffing' e por que devo evitar?",
-                "a": "Keyword stuffing é a prática de repetir palavras-chave de forma artificial (como colar uma lista de termos em letra branca minúscula no rodapé). Os parsers modernos identificam essa tentativa de manipulação com facilidade e os recrutadores descartam imediatamente o candidato."
-            }
+                "a": "Keyword stuffing é a prática de repetir palavras-chave de forma artificial (como colar uma lista de termos em letra branca minúscula no rodapé). Os parsers modernos identificam essa tentativa de manipulação com facilidade e os recrutadores descartam imediatamente o candidato.",
+            },
         ],
-
         # Footer
         "footer_about": "O ATS MatchProof é uma ferramenta de carreira aberta e focada em privacidade, criada para oferecer aos candidatos transparência algorítmica e otimização profissional de currículos.",
         "footer_quick_links": "Links Rápidos",
@@ -365,7 +353,6 @@ TRANSLATIONS: Dict[str, Dict[str, Any]] = {
         "footer_tagline": "Dando aos candidatos transparência de nível corporativo sobre triagens ATS.",
         "footer_privacy": "Privacidade em 1º Lugar (Sem Dados Salvos) • Processamento em Memória",
         "footer_rights": "Todos os direitos reservados.",
-
         # Dedicated Pages Titles & Meta
         "page_privacy_title": "Política de Privacidade | ATS MatchProof",
         "page_terms_title": "Termos de Uso e Serviço | ATS MatchProof",

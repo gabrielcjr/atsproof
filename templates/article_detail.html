@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% set current_title = article.title_pt if lang == 'pt' else article.title_en %}
+    {% set current_desc = article.meta_description_pt if lang == 'pt' else article.meta_description_en %}
+    {% set current_slug = article.slug_pt if lang == 'pt' else article.slug_en %}
+    {% set current_content = article.content_pt if lang == 'pt' else article.content_en %}
+    {% set current_category = article.category_pt if lang == 'pt' else article.category_en %}
+    {% set current_read_time = article.read_time_pt if lang == 'pt' else article.read_time_en %}
+    {% set base_path = '/artigos' if lang == 'pt' else '/articles' %}
+
+    <title>{{ current_title }} | ATS MatchProof</title>
+    <meta name="description" content="{{ current_desc }}">
+
+    <!-- Canonical & Alternates -->
+    <link rel="canonical" href="https://atsproof.website{{ base_path }}/{{ current_slug }}">
+    <link rel="alternate" hreflang="en" href="https://atsproof.website/articles/{{ article.slug_en }}">
+    <link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/{{ article.slug_pt }}">
+    <link rel="alternate" hreflang="x-default" href="https://atsproof.website/articles/{{ article.slug_en }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6883104711604671"
+         crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- JSON-LD Schema: Article & BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "{{ current_title }}",
+          "description": "{{ current_desc }}",
+          "datePublished": "{{ article.published_date }}",
+          "dateModified": "{{ article.published_date }}",
+          "mainEntityOfPage": "https://atsproof.website{{ base_path }}/{{ current_slug }}",
+          "author": {
+            "@type": "Organization",
+            "name": "ATS MatchProof Engineering & Career Team"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "ATS MatchProof",
+            "url": "https://atsproof.website",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://atsproof.website/static/favicon.svg"
+            }
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "{{ t.nav_home }}",
+              "item": "https://atsproof.website/{% if lang == 'pt' %}?lang=pt{% endif %}"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "{{ t.nav_articles }}",
+              "item": "https://atsproof.website{{ base_path }}"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "{{ current_title }}",
+              "item": "https://atsproof.website{{ base_path }}/{{ current_slug }}"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="min-h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800/80 backdrop-blur-md bg-slate-950/60 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">ATS MatchProof</span>
+                    </div>
+                </a>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/artigos{% else %}/articles{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_articles }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a>
+            </nav>
+
+            <!-- Right Nav Actions (Language switcher specific to this article's alternate slug) -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center bg-slate-900/90 p-0.5 rounded-full border border-slate-800 text-xs font-semibold shadow-sm">
+                    <a href="/articles/{{ article.slug_en }}?lang=en" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang != 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇺🇸</span><span class="hidden sm:inline">EN</span>
+                    </a>
+                    <a href="/artigos/{{ article.slug_pt }}?lang=pt" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang == 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇧🇷</span><span class="hidden sm:inline">PT</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout Container -->
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center space-x-2 text-xs text-slate-400 mb-6">
+            <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a>
+            <span>/</span>
+            <a href="{{ base_path }}{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_articles }}</a>
+            <span>/</span>
+            <span class="text-slate-200 truncate max-w-xs">{{ current_title }}</span>
+        </nav>
+
+        <div class="bg-slate-900/80 backdrop-blur-md rounded-3xl p-6 sm:p-12 border border-slate-800 shadow-2xl space-y-8">
+            
+            <!-- Article Header -->
+            <div class="border-b border-slate-800 pb-8 space-y-4">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                        {{ current_category }}
+                    </span>
+                    <span class="text-xs text-slate-400 font-mono">{{ current_read_time }}</span>
+                    <span class="text-slate-600">•</span>
+                    <span class="text-xs text-slate-400 font-mono">Publicado em {{ article.published_date }}</span>
+                </div>
+
+                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+                    {{ current_title }}
+                </h1>
+
+                <p class="text-base sm:text-lg text-slate-300 leading-relaxed font-light">
+                    {{ current_desc }}
+                </p>
+            </div>
+
+            <!-- Article Body Content -->
+            <article class="prose prose-invert prose-indigo max-w-none text-slate-300 leading-relaxed space-y-6 text-sm sm:text-base">
+                {{ current_content | safe }}
+            </article>
+
+            <!-- Mid-article In-feed CTA -->
+            <div class="mt-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-slate-900 border border-indigo-500/30 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+                <div class="space-y-2 text-center sm:text-left">
+                    <h3 class="text-lg sm:text-xl font-bold text-white">{{ t.article_cta_title }}</h3>
+                    <p class="text-xs sm:text-sm text-slate-300">{{ t.article_cta_subtitle }}</p>
+                </div>
+                <a 
+                    href="/{% if lang == 'pt' %}?lang=pt{% endif %}" 
+                    class="whitespace-nowrap px-6 py-3 rounded-xl font-bold text-sm text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition transform active:scale-95"
+                >
+                    {{ t.article_cta_btn }}
+                </a>
+            </div>
+
+            <!-- Related Articles -->
+            {% if related_articles %}
+            <div class="pt-10 border-t border-slate-800 space-y-6">
+                <h3 class="text-xl font-bold text-white">{{ t.article_related_title }}</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {% for rel in related_articles %}
+                    {% set rel_slug = rel.slug_pt if lang == 'pt' else rel.slug_en %}
+                    {% set rel_title = rel.title_pt if lang == 'pt' else rel.title_en %}
+                    <a 
+                        href="{{ base_path }}/{{ rel_slug }}{% if lang == 'pt' %}?lang=pt{% endif %}" 
+                        class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 transition flex flex-col justify-between group"
+                    >
+                        <span class="text-[11px] text-indigo-400 font-semibold mb-1">{{ rel.category_pt if lang == 'pt' else rel.category_en }}</span>
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-200 group-hover:text-indigo-300 transition leading-snug">{{ rel_title }}</h4>
+                        <span class="text-[11px] text-slate-500 font-mono mt-3">Ler artigo →</span>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Return Navigation -->
+            <div class="pt-6 border-t border-slate-800 flex justify-between items-center">
+                <a href="{{ base_path }}{% if lang == 'pt' %}?lang=pt{% endif %}" class="inline-flex items-center space-x-2 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    <span>{% if lang == 'pt' %}Voltar para a Central de Artigos{% else %}Back to Articles Hub{% endif %}</span>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 ATS MatchProof. {{ t.badge_free }} ATS verification engine.</p>
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/artigos{% else %}/articles{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_articles }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400">{{ t.nav_about }}</a>
+                <a href="{% if lang == 'pt' %}/privacidade?lang=pt{% else %}/privacy{% endif %}" class="hover:text-indigo-400">{{ t.nav_privacy }}</a>
+                <a href="{% if lang == 'pt' %}/termos?lang=pt{% else %}/terms{% endif %}" class="hover:text-indigo-400">{{ t.nav_terms }}</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

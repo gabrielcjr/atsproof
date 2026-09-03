@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t.page_articles_title }}</title>
+    <meta name="description" content="{{ t.articles_hub_subtitle }}">
+
+    <!-- Canonical & Alternates -->
+    <link rel="canonical" href="https://atsproof.website/{% if lang == 'pt' %}artigos{% else %}articles{% endif %}">
+    <link rel="alternate" hreflang="en" href="https://atsproof.website/articles">
+    <link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos">
+    <link rel="alternate" hreflang="x-default" href="https://atsproof.website/articles">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6883104711604671"
+         crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- JSON-LD Schema: CollectionPage & BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "{{ t.articles_hub_title }}",
+      "description": "{{ t.articles_hub_subtitle }}",
+      "url": "https://atsproof.website/{% if lang == 'pt' %}artigos{% else %}articles{% endif %}",
+      "publisher": {
+        "@type": "Organization",
+        "name": "ATS MatchProof",
+        "url": "https://atsproof.website"
+      }
+    }
+    </script>
+</head>
+<body class="min-h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-slate-800/80 backdrop-blur-md bg-slate-950/60 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20 group-hover:scale-105 transition">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-indigo-300">ATS MatchProof</span>
+                    </div>
+                </a>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/artigos{% else %}/articles{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_articles }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a>
+            </nav>
+
+            <!-- Right Nav Actions -->
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center bg-slate-900/90 p-0.5 rounded-full border border-slate-800 text-xs font-semibold shadow-sm">
+                    <a href="/articles?lang=en" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang != 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇺🇸</span><span class="hidden sm:inline">EN</span>
+                    </a>
+                    <a href="/artigos?lang=pt" class="px-2.5 py-1 rounded-full transition flex items-center gap-1.5 {% if lang == 'pt' %}bg-indigo-600 text-white shadow-sm{% else %}text-slate-400 hover:text-slate-200{% endif %}">
+                        <span>🇧🇷</span><span class="hidden sm:inline">PT</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Hub Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 text-center">
+        <span class="text-xs font-semibold px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase tracking-wider">
+            {% if lang == 'pt' %}Biblioteca de Carreira & ATS{% else %}Career & ATS Knowledge Base{% endif %}
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mt-4 max-w-3xl mx-auto leading-tight">
+            {{ t.articles_hub_title }}
+        </h1>
+        <p class="text-base sm:text-lg text-slate-400 mt-4 max-w-2xl mx-auto leading-relaxed">
+            {{ t.articles_hub_subtitle }}
+        </p>
+
+        <!-- Search Bar & Filters -->
+        <div class="mt-8 max-w-xl mx-auto">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    id="article-search" 
+                    oninput="filterArticles()"
+                    placeholder="{% if lang == 'pt' %}Buscar por palavras-chave, cargos, ATS (Gupy, Workday)...{% else %}Search articles, roles, keywords, or ATS platforms...{% endif %}"
+                    class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl px-5 py-3.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-lg transition"
+                >
+                <div class="absolute right-4 top-3.5 text-slate-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Articles Grid Section -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for article in articles %}
+            {% set slug = article.slug_pt if lang == 'pt' else article.slug_en %}
+            {% set title = article.title_pt if lang == 'pt' else article.title_en %}
+            {% set summary = article.summary_pt if lang == 'pt' else article.summary_en %}
+            {% set category = article.category_pt if lang == 'pt' else article.category_en %}
+            {% set read_time = article.read_time_pt if lang == 'pt' else article.read_time_en %}
+            {% set base_path = '/artigos' if lang == 'pt' else '/articles' %}
+
+            <div class="article-card bg-slate-900/70 backdrop-blur-md rounded-2xl p-6 border border-slate-800/80 hover:border-indigo-500/50 flex flex-col justify-between shadow-xl transition-all duration-300 hover:-translate-y-1" data-search="{{ title.lower() }} {{ summary.lower() }} {{ category.lower() }}">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between gap-2 text-xs">
+                        <span class="font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                            {{ category }}
+                        </span>
+                        <span class="text-slate-500 font-mono">{{ read_time }}</span>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-white tracking-tight leading-snug hover:text-indigo-300 transition">
+                        <a href="{{ base_path }}/{{ slug }}{% if lang == 'pt' %}?lang=pt{% endif %}">
+                            {{ title }}
+                        </a>
+                    </h2>
+
+                    <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                        {{ summary }}
+                    </p>
+                </div>
+
+                <div class="pt-6 mt-4 border-t border-slate-800/80 flex items-center justify-between">
+                    <span class="text-[11px] text-slate-500 font-mono">{{ article.published_date }}</span>
+                    <a 
+                        href="{{ base_path }}/{{ slug }}{% if lang == 'pt' %}?lang=pt{% endif %}" 
+                        class="inline-flex items-center space-x-1.5 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition"
+                    >
+                        <span>{{ t.btn_read_article }}</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- No Results Fallback -->
+        <div id="no-results" class="hidden text-center py-16">
+            <p class="text-slate-400 text-base">{% if lang == 'pt' %}Nenhum artigo encontrado para sua busca.{% else %}No articles found matching your search term.{% endif %}</p>
+        </div>
+
+        <!-- Call to Action Banner -->
+        <div class="mt-16 p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-indigo-900/40 via-purple-900/30 to-slate-900 border border-indigo-500/30 text-center space-y-4 shadow-2xl">
+            <h3 class="text-2xl sm:text-3xl font-extrabold text-white">
+                {{ t.article_cta_title }}
+            </h3>
+            <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto">
+                {{ t.article_cta_subtitle }}
+            </p>
+            <div class="pt-2">
+                <a 
+                    href="/{% if lang == 'pt' %}?lang=pt{% endif %}" 
+                    class="inline-flex items-center space-x-2 px-8 py-4 rounded-xl font-bold text-base text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-xl shadow-indigo-600/30 transition transform active:scale-95"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <span>{{ t.article_cta_btn }}</span>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-8 text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 ATS MatchProof. {{ t.badge_free }} ATS verification engine.</p>
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
+                <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/artigos{% else %}/articles{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_articles }}</a>
+                <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400">{{ t.nav_guide }}</a>
+                <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400">{{ t.nav_about }}</a>
+                <a href="{% if lang == 'pt' %}/privacidade?lang=pt{% else %}/privacy{% endif %}" class="hover:text-indigo-400">{{ t.nav_privacy }}</a>
+                <a href="{% if lang == 'pt' %}/termos?lang=pt{% else %}/terms{% endif %}" class="hover:text-indigo-400">{{ t.nav_terms }}</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Search Filtering Script -->
+    <script>
+        function filterArticles() {
+            const query = document.getElementById('article-search').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.article-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const searchData = card.getAttribute('data-search') || '';
+                if (searchData.includes(query)) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            const noResults = document.getElementById('no-results');
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
