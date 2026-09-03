@@ -46,6 +46,30 @@ def create_app() -> FastAPI:
     logfire.instrument_fastapi(app, excluded_urls="healthz,health,favicon.ico")
     logfire.instrument_pydantic()
 
+    # OpenTelemetry Tracing to Tempo (if configured)
+    otel_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "").strip()
+    if otel_endpoint:
+        try:
+            from opentelemetry import trace
+            from opentelemetry.sdk.trace import TracerProvider
+            from opentelemetry.sdk.trace.export import BatchSpanProcessor
+            from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+            from opentelemetry.sdk.resources import Resource
+            from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+            from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+
+            service_name = os.getenv("OTEL_SERVICE_NAME", "atsproof-api")
+            resource = Resource.create({"service.name": service_name})
+            provider = TracerProvider(resource=resource)
+            target_endpoint = otel_endpoint if otel_endpoint.endswith("/v1/traces") else f"{otel_endpoint}/v1/traces"
+            provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=target_endpoint)))
+            trace.set_tracer_provider(provider)
+
+            FastAPIInstrumentor.instrument_app(app, tracer_provider=provider, excluded_urls="healthz,favicon.ico")
+            HTTPXClientInstrumentor().instrument(tracer_provider=provider)
+        except Exception as e:
+            print(f"Failed to initialize OpenTelemetry for ATS MatchProof: {e}")
+
     # Initialize rate limiter keyed by true client IP
     limiter = Limiter(key_func=get_client_ip, default_limits=[RATE_LIMIT_POLICY])
     app.state.limiter = limiter
