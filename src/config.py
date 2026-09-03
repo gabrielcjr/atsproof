@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # System Constraints & Boundaries
-MAX_PDF_SIZE_BYTES: int = 120 * 1024  # 120 KB max
+MAX_PDF_SIZE_BYTES: int = 200 * 1024  # 200 KB max
 MAX_PDF_PAGES: int = 3  # 3 pages max
 MAX_TEXT_CHARS: int = 7000  # 7,000 characters with spaces max
 

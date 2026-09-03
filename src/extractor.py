@@ -20,7 +20,7 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
     """
     Extracts text from PDF bytes entirely in RAM with strict safety bounds:
     - Validates %PDF- magic header
-    - Enforces maximum file size ceiling (120 KB max)
+    - Enforces maximum file size ceiling (200 KB max)
     - Enforces maximum page ceiling (3 pages max)
     - Enforces maximum character ceiling (7,000 chars max)
     """
