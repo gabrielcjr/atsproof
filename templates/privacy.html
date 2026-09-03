@@ -91,6 +91,7 @@
             
             <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
                 <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/artigos{% else %}/articles{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_articles }}</a>
                 <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a>
                 <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a>
             </nav>
@@ -315,6 +316,7 @@
             <p>&copy; 2026 ATS MatchProof. {{ t.badge_free }} ATS verification engine.</p>
             <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
                 <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/artigos{% else %}/articles{% endif %}" class="hover:text-indigo-400">{{ t.nav_articles }}</a>
                 <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400">{{ t.nav_guide }}</a>
                 <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400">{{ t.nav_about }}</a>
                 <a href="{% if lang == 'pt' %}/privacidade?lang=pt{% else %}/privacy{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_privacy }}</a>

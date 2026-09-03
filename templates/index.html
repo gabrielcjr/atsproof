@@ -107,6 +107,7 @@
             <!-- Main Nav Links (Desktop) -->
             <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
                 <a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="text-indigo-400 font-semibold">{{ t.nav_home }}</a>
+                <a href="{% if lang == 'pt' %}/artigos{% else %}/articles{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_articles }}</a>
                 <a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a>
                 <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a>
                 <a href="#faq" class="hover:text-indigo-400 transition">{{ t.nav_faq }}</a>
@@ -543,6 +544,7 @@
                     <h4 class="text-xs font-bold uppercase tracking-wider text-slate-200">{{ t.footer_quick_links }}</h4>
                     <ul class="space-y-2 text-xs text-slate-400">
                         <li><a href="/{% if lang == 'pt' %}?lang=pt{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_home }}</a></li>
+                        <li><a href="{% if lang == 'pt' %}/artigos{% else %}/articles{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_articles }}</a></li>
                         <li><a href="{% if lang == 'pt' %}/guia-ats?lang=pt{% else %}/guide{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_guide }}</a></li>
                         <li><a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400 transition">{{ t.nav_about }}</a></li>
                         <li><a href="#faq" class="hover:text-indigo-400 transition">{{ t.nav_faq }}</a></li>

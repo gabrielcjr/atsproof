@@ -8,27 +8,261 @@
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/?lang=en"/>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/?lang=pt"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://atsproof.website/"/>
-        <lastmod>2026-08-20</lastmod>
-        <changefreq>weekly</changefreq>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
 
-    <!-- Guide / Guia ATS -->
+    <!-- Articles Hub / Central de Artigos -->
+    <url>
+        <loc>https://atsproof.website/articles</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Masterclass Guide / Guia ATS -->
     <url>
         <loc>https://atsproof.website/guide</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/guide"/>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/guia-ats"/>
-        <lastmod>2026-08-20</lastmod>
-        <changefreq>monthly</changefreq>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
         <loc>https://atsproof.website/guia-ats</loc>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/guia-ats"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/guide"/>
-        <lastmod>2026-08-20</lastmod>
-        <changefreq>monthly</changefreq>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>weekly</changefreq>
         <priority>0.9</priority>
+    </url>
+
+    <!-- 1. Gupy ATS Guide -->
+    <url>
+        <loc>https://atsproof.website/articles/how-to-pass-gupy-ats</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/how-to-pass-gupy-ats"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/como-passar-ats-gupy"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/como-passar-ats-gupy</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/como-passar-ats-gupy"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/how-to-pass-gupy-ats"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 2. Workday & Taleo Guide -->
+    <url>
+        <loc>https://atsproof.website/articles/how-to-pass-workday-taleo-ats</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/how-to-pass-workday-taleo-ats"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/como-passar-workday-taleo"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/como-passar-workday-taleo</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/como-passar-workday-taleo"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/how-to-pass-workday-taleo-ats"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 3. Google XYZ Examples -->
+    <url>
+        <loc>https://atsproof.website/articles/google-xyz-formula-examples</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/google-xyz-formula-examples"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/exemplos-formula-google-xyz"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/exemplos-formula-google-xyz</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/exemplos-formula-google-xyz"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/google-xyz-formula-examples"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 4. Keywords & Action Verbs -->
+    <url>
+        <loc>https://atsproof.website/articles/action-verbs-keywords-for-resumes</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/action-verbs-keywords-for-resumes"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/palavras-chave-verbos-acao-curriculo"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/palavras-chave-verbos-acao-curriculo</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/palavras-chave-verbos-acao-curriculo"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/action-verbs-keywords-for-resumes"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 5. Tech Resume Guide -->
+    <url>
+        <loc>https://atsproof.website/articles/tech-software-engineer-resume-guide</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/tech-software-engineer-resume-guide"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-tecnologia-programacao"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/curriculo-tecnologia-programacao</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-tecnologia-programacao"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/tech-software-engineer-resume-guide"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 6. Career Change Guide -->
+    <url>
+        <loc>https://atsproof.website/articles/career-change-resume-guide</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/career-change-resume-guide"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-transicao-de-carreira"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/curriculo-transicao-de-carreira</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-transicao-de-carreira"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/career-change-resume-guide"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 7. PM & Scrum Master Guide -->
+    <url>
+        <loc>https://atsproof.website/articles/product-manager-scrum-master-resume</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/product-manager-scrum-master-resume"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-gerente-de-produto-scrum-master"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/curriculo-gerente-de-produto-scrum-master</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-gerente-de-produto-scrum-master"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/product-manager-scrum-master-resume"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 8. Marketing & Sales Guide -->
+    <url>
+        <loc>https://atsproof.website/articles/marketing-sales-resume-guide</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/marketing-sales-resume-guide"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-marketing-vendas"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/curriculo-marketing-vendas</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-marketing-vendas"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/marketing-sales-resume-guide"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 9. PDF Formatting Mistakes -->
+    <url>
+        <loc>https://atsproof.website/articles/pdf-formatting-mistakes-that-fail-ats</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/pdf-formatting-mistakes-that-fail-ats"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/erros-formatacao-pdf-reprovam-ats"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/erros-formatacao-pdf-reprovam-ats</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/erros-formatacao-pdf-reprovam-ats"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/pdf-formatting-mistakes-that-fail-ats"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 10. International Resume Guide -->
+    <url>
+        <loc>https://atsproof.website/articles/international-remote-job-resume-guide</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/international-remote-job-resume-guide"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-vagas-internacionais-remotas"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/curriculo-vagas-internacionais-remotas</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-vagas-internacionais-remotas"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/international-remote-job-resume-guide"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 11. One-Page vs Two-Page Resume -->
+    <url>
+        <loc>https://atsproof.website/articles/one-page-vs-two-page-resume</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/one-page-vs-two-page-resume"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-1-pagina-vs-2-paginas"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/curriculo-1-pagina-vs-2-paginas</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/curriculo-1-pagina-vs-2-paginas"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/one-page-vs-two-page-resume"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- 12. Soft Skills Metrics -->
+    <url>
+        <loc>https://atsproof.website/articles/how-to-showcase-soft-skills-resume</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/how-to-showcase-soft-skills-resume"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/como-destacar-soft-skills-curriculo"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://atsproof.website/artigos/como-destacar-soft-skills-curriculo</loc>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/artigos/como-destacar-soft-skills-curriculo"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/articles/how-to-showcase-soft-skills-resume"/>
+        <lastmod>2026-09-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
     </url>
 
     <!-- About / Sobre Nós -->
@@ -36,7 +270,7 @@
         <loc>https://atsproof.website/about</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/about"/>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/sobre"/>
-        <lastmod>2026-08-20</lastmod>
+        <lastmod>2026-09-03</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
@@ -44,7 +278,7 @@
         <loc>https://atsproof.website/sobre</loc>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/sobre"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/about"/>
-        <lastmod>2026-08-20</lastmod>
+        <lastmod>2026-09-03</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
@@ -54,7 +288,7 @@
         <loc>https://atsproof.website/privacy</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/privacy"/>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/privacidade"/>
-        <lastmod>2026-08-20</lastmod>
+        <lastmod>2026-09-03</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -62,7 +296,7 @@
         <loc>https://atsproof.website/privacidade</loc>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/privacidade"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/privacy"/>
-        <lastmod>2026-08-20</lastmod>
+        <lastmod>2026-09-03</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -72,7 +306,7 @@
         <loc>https://atsproof.website/terms</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/terms"/>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/termos"/>
-        <lastmod>2026-08-20</lastmod>
+        <lastmod>2026-09-03</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
@@ -80,7 +314,7 @@
         <loc>https://atsproof.website/termos</loc>
         <xhtml:link rel="alternate" hreflang="pt" href="https://atsproof.website/termos"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://atsproof.website/terms"/>
-        <lastmod>2026-08-20</lastmod>
+        <lastmod>2026-09-03</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
