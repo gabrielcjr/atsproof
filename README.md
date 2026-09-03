@@ -22,7 +22,7 @@ flowchart TD
     subgraph Security & In-Memory Extraction
         Fast --> Trap{Honeypot Bot Check}
         Trap -->|Bot Detected| Err400[400 Bad Request]
-        Trap -->|Human| Memory[In-Memory BytesIO PDF Extraction\nMax 120KB, 3 Pages, 10k Chars]
+        Trap -->|Human| Memory[In-Memory BytesIO PDF Extraction\nMax 200KB, 3 Pages, 10k Chars]
         Memory --> Prompt[XML Prompt Boundary Isolation\nDefends Against Prompt Injections]
     end
     
@@ -72,7 +72,7 @@ flowchart TD
 
 | Parameter | Limit | Enforcement Mechanism |
 | :--- | :--- | :--- |
-| **Max PDF File Size** | **120 KB** (122,880 bytes) | Client-side validation + server-side byte check |
+| **Max PDF File Size** | **200 KB** (204,800 bytes) | Client-side validation + server-side byte check |
 | **Max PDF Page Count** | **3 pages** | In-memory `pypdf` page iterator |
 | **Max Text Length** | **7,000 characters** (with spaces) | Client counter + server truncation |
 | **IP Rate Limit** | **2 requests / minute** | `slowapi` IP bucket limiter |
