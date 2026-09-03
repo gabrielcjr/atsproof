@@ -120,8 +120,18 @@ class ATSMatcherTests(unittest.TestCase):
         raw_result = ATSMatchResult(
             match_score=80,
             matched_keywords=[
-                "Node.js", "Nest.js", "Redis", "Kubernetes", "AWS EC2", "Git",
-                "Python", "FastAPI", "Django", "React", "PostgreSQL", "MySQL"
+                "Node.js",
+                "Nest.js",
+                "Redis",
+                "Kubernetes",
+                "AWS EC2",
+                "Git",
+                "Python",
+                "FastAPI",
+                "Django",
+                "React",
+                "PostgreSQL",
+                "MySQL",
             ],
             missing_critical_keywords=["MongoDB", "RabbitMQ", "Node.js"],
             experience_gap_feedback="Great fit.",
@@ -343,25 +353,52 @@ class ATSMatcherTests(unittest.TestCase):
         """Ensure homepage includes correct OpenGraph and Twitter card branding."""
         resp_en = client.get("/")
         self.assertEqual(resp_en.status_code, 200)
-        self.assertIn('<meta property="og:site_name" content="ATS MatchProof">', resp_en.text)
+        self.assertIn(
+            '<meta property="og:site_name" content="ATS MatchProof">', resp_en.text
+        )
         self.assertIn('<meta property="og:type" content="website">', resp_en.text)
-        self.assertIn('<meta property="og:image" content="https://atsproof.website/static/og-image.png">', resp_en.text)
-        self.assertIn('<meta name="twitter:card" content="summary_large_image">', resp_en.text)
+        self.assertIn(
+            '<meta property="og:image" content="https://atsproof.website/static/og-image.png">',
+            resp_en.text,
+        )
+        self.assertIn(
+            '<meta name="twitter:card" content="summary_large_image">', resp_en.text
+        )
         self.assertIn("ATS MatchProof | Free ATS Resume", resp_en.text)
 
         resp_pt = client.get("/?lang=pt")
         self.assertEqual(resp_pt.status_code, 200)
-        self.assertIn('<meta property="og:site_name" content="ATS MatchProof">', resp_pt.text)
-        self.assertIn("ATS MatchProof | Verificador de Currículo ATS Gratuito", resp_pt.text)
+        self.assertIn(
+            '<meta property="og:site_name" content="ATS MatchProof">', resp_pt.text
+        )
+        self.assertIn(
+            "ATS MatchProof | Verificador de Currículo ATS Gratuito", resp_pt.text
+        )
 
     def test_opengraph_meta_tags_subpages(self):
         """Ensure subpages contain valid OpenGraph, canonical, and branded titles."""
-        for path in ["/guide", "/guia-ats", "/about", "/sobre", "/privacy", "/privacidade", "/terms", "/termos"]:
+        for path in [
+            "/guide",
+            "/guia-ats",
+            "/about",
+            "/sobre",
+            "/privacy",
+            "/privacidade",
+            "/terms",
+            "/termos",
+        ]:
             resp = client.get(path)
-            self.assertEqual(resp.status_code, 200, f"Path {path} returned status {resp.status_code}")
+            self.assertEqual(
+                resp.status_code, 200, f"Path {path} returned status {resp.status_code}"
+            )
             self.assertIn('property="og:site_name" content="ATS MatchProof"', resp.text)
-            self.assertIn('property="og:image" content="https://atsproof.website/static/og-image.png"', resp.text)
-            self.assertIn('name="twitter:card" content="summary_large_image"', resp.text)
+            self.assertIn(
+                'property="og:image" content="https://atsproof.website/static/og-image.png"',
+                resp.text,
+            )
+            self.assertIn(
+                'name="twitter:card" content="summary_large_image"', resp.text
+            )
             self.assertIn('rel="canonical"', resp.text)
 
     def test_og_image_static_asset(self):
@@ -370,6 +407,35 @@ class ATSMatcherTests(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.headers.get("content-type"), "image/png")
         self.assertGreater(len(resp.content), 5000)
+
+    def test_articles_hub_pages(self):
+        """Ensure /articles and /artigos return 200 with article listings."""
+        resp_en = client.get("/articles")
+        self.assertEqual(resp_en.status_code, 200)
+        self.assertIn("Career &amp; ATS Knowledge Hub", resp_en.text)
+        self.assertIn("How to Beat the Gupy ATS", resp_en.text)
+
+        resp_pt = client.get("/artigos")
+        self.assertEqual(resp_pt.status_code, 200)
+        self.assertIn("Central de Artigos &amp; Recursos ATS", resp_pt.text)
+        self.assertIn("Como Passar no ATS da Gupy", resp_pt.text)
+
+    def test_article_detail_pages(self):
+        """Ensure individual article detail pages load with Schema.org JSON-LD."""
+        resp_en = client.get("/articles/how-to-pass-gupy-ats")
+        self.assertEqual(resp_en.status_code, 200)
+        self.assertIn("How to Beat the Gupy ATS", resp_en.text)
+        self.assertIn('"@type": "Article"', resp_en.text)
+
+        resp_pt = client.get("/artigos/como-passar-ats-gupy")
+        self.assertEqual(resp_pt.status_code, 200)
+        self.assertIn("Como Passar no ATS da Gupy", resp_pt.text)
+        self.assertIn('"@type": "Article"', resp_pt.text)
+
+    def test_article_404_not_found(self):
+        """Ensure requesting a non-existent article slug returns 404."""
+        resp = client.get("/articles/non-existent-slug-xyz")
+        self.assertEqual(resp.status_code, 404)
 
     def test_static_css_and_js_served(self):
         """Ensure modular static CSS and JS files are served with status 200."""
