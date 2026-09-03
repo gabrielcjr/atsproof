@@ -5,7 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const CURRENT_LANG = (document.documentElement.lang || 'en').toLowerCase().startsWith('pt') ? 'pt' : 'en';
-    const MAX_BYTES = 120 * 1024; // 120 KB
+    const MAX_BYTES = 200 * 1024; // 200 KB
 
     const form = document.getElementById('ats-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -53,11 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Verify 120 KB maximum size limit
+        // Verify 200 KB maximum size limit
         if (file.size > MAX_BYTES) {
             showFileError(CURRENT_LANG === 'pt' 
-                ? `Tamanho do arquivo (${(file.size / 1024).toFixed(1)} KB) excede o limite máximo de 120 KB.` 
-                : `File size (${(file.size / 1024).toFixed(1)} KB) exceeds the maximum limit of 120 KB.`
+                ? `Tamanho do arquivo (${(file.size / 1024).toFixed(1)} KB) excede o limite máximo de 200 KB.` 
+                : `File size (${(file.size / 1024).toFixed(1)} KB) exceeds the maximum limit of 200 KB.`
             );
             if (fileInput) fileInput.value = '';
             return;
