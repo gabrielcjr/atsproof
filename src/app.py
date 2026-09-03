@@ -51,22 +51,15 @@ def create_app() -> FastAPI:
     if otel_endpoint:
         try:
             from opentelemetry import trace
-            from opentelemetry.sdk.trace import TracerProvider
-            from opentelemetry.sdk.trace.export import BatchSpanProcessor
             from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-            from opentelemetry.sdk.resources import Resource
-            from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
             from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
+            from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-            service_name = os.getenv("OTEL_SERVICE_NAME", "atsproof-api")
-            resource = Resource.create({"service.name": service_name})
-            provider = TracerProvider(resource=resource)
             target_endpoint = otel_endpoint if otel_endpoint.endswith("/v1/traces") else f"{otel_endpoint}/v1/traces"
-            provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=target_endpoint)))
-            trace.set_tracer_provider(provider)
-
-            FastAPIInstrumentor.instrument_app(app, tracer_provider=provider, excluded_urls="healthz,favicon.ico")
-            HTTPXClientInstrumentor().instrument(tracer_provider=provider)
+            provider = trace.get_tracer_provider()
+            if hasattr(provider, "add_span_processor"):
+                provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=target_endpoint)))
+            HTTPXClientInstrumentor().instrument()
         except Exception as e:
             print(f"Failed to initialize OpenTelemetry for ATS MatchProof: {e}")
 
