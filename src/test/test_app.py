@@ -168,7 +168,7 @@ class ATSMatcherTests(unittest.TestCase):
         )
 
     def test_pdf_size_limit_enforcement(self):
-        """Ensure PDFs over 120 KB are rejected."""
+        """Ensure PDFs over 200 KB are rejected."""
         large_fake_pdf = b"%PDF-1.4" + (b"0" * (MAX_PDF_SIZE_BYTES + 500))
         with self.assertRaises(ValueError) as ctx:
             extract_text_from_pdf_bytes(large_fake_pdf)
@@ -199,7 +199,7 @@ class ATSMatcherTests(unittest.TestCase):
         response = client.get("/")
         self.assertEqual(response.status_code, 200)
         self.assertIn("ATS MatchProof", response.text)
-        self.assertIn("120KB", response.text)
+        self.assertIn("200KB", response.text)
         self.assertIn("3 pages", response.text)
         self.assertIn("7000 chars", response.text)
 
