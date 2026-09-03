@@ -54,9 +54,15 @@ def create_og_image():
         radius=4,
         fill=(255, 255, 255, 255),
     )
-    draw.rectangle([doc_x + 5, doc_y + 8, doc_x + 18, doc_y + 11], fill=(99, 102, 241, 255))
-    draw.rectangle([doc_x + 5, doc_y + 15, doc_x + 18, doc_y + 17], fill=(148, 163, 184, 255))
-    draw.rectangle([doc_x + 5, doc_y + 21, doc_x + 14, doc_y + 23], fill=(148, 163, 184, 255))
+    draw.rectangle(
+        [doc_x + 5, doc_y + 8, doc_x + 18, doc_y + 11], fill=(99, 102, 241, 255)
+    )
+    draw.rectangle(
+        [doc_x + 5, doc_y + 15, doc_x + 18, doc_y + 17], fill=(148, 163, 184, 255)
+    )
+    draw.rectangle(
+        [doc_x + 5, doc_y + 21, doc_x + 14, doc_y + 23], fill=(148, 163, 184, 255)
+    )
     # Green badge on icon
     draw.ellipse(
         [icon_x + 36, icon_y + 34, icon_x + 54, icon_y + 52],
@@ -76,7 +82,12 @@ def create_og_image():
     )
 
     # Brand Title
-    draw.text((icon_x + 72, icon_y + 10), "ATS MatchProof", font=font_brand, fill=(255, 255, 255, 255))
+    draw.text(
+        (icon_x + 72, icon_y + 10),
+        "ATS MatchProof",
+        font=font_brand,
+        fill=(255, 255, 255, 255),
+    )
 
     # Free Badge (Pill)
     badge_x = icon_x + 380
@@ -87,13 +98,25 @@ def create_og_image():
         outline=(16, 185, 129, 200),
         width=1,
     )
-    draw.text((badge_x + 16, icon_y + 18), "100% FREE • NO LOGIN", font=font_badge, fill=(52, 211, 153, 255))
+    draw.text(
+        (badge_x + 16, icon_y + 18),
+        "100% FREE • NO LOGIN",
+        font=font_badge,
+        fill=(52, 211, 153, 255),
+    )
 
     # 4. Main Hero Typography (Left Side)
     hero_y = 175
     draw.text((70, hero_y), "Beat the ATS.", font=font_title, fill=(255, 255, 255, 255))
-    draw.text((70, hero_y + 65), "Land More ", font=font_title_sub, fill=(255, 255, 255, 255))
-    draw.text((375, hero_y + 65), "Interviews.", font=font_title_sub, fill=(129, 140, 248, 255))
+    draw.text(
+        (70, hero_y + 65), "Land More ", font=font_title_sub, fill=(255, 255, 255, 255)
+    )
+    draw.text(
+        (375, hero_y + 65),
+        "Interviews.",
+        font=font_title_sub,
+        fill=(129, 140, 248, 255),
+    )
 
     # Subtitle Paragraph
     desc_line1 = "Instant AI Match Score • Keyword Gap Extraction"
@@ -119,11 +142,15 @@ def create_og_image():
             outline=(51, 65, 85, 255),
             width=1,
         )
-        draw.text((cur_fx + 12, feat_y + 9), label, font=font_tag, fill=(241, 245, 249, 255))
+        draw.text(
+            (cur_fx + 12, feat_y + 9), label, font=font_tag, fill=(241, 245, 249, 255)
+        )
         cur_fx += tw + 36
 
     # Bottom Domain Tag
-    draw.text((70, 560), "https://atsproof.website", font=font_url, fill=(99, 102, 241, 255))
+    draw.text(
+        (70, 560), "https://atsproof.website", font=font_url, fill=(99, 102, 241, 255)
+    )
 
     # 6. Right Side Preview Mockup Card (Card UI Simulation)
     card_x, card_y, card_w, card_h = 710, 110, 430, 465
@@ -148,16 +175,36 @@ def create_og_image():
 
     # Score Circle Indicator
     sc_cx, sc_cy, sc_r = card_x + 75, score_box_y + 52, 38
-    draw.ellipse([sc_cx - sc_r, sc_cy - sc_r, sc_cx + sc_r, sc_cy + sc_r], fill=(2, 6, 23, 255), outline=(16, 185, 129, 255), width=4)
+    draw.ellipse(
+        [sc_cx - sc_r, sc_cy - sc_r, sc_cx + sc_r, sc_cy + sc_r],
+        fill=(2, 6, 23, 255),
+        outline=(16, 185, 129, 255),
+        width=4,
+    )
     draw.text((sc_cx - 24, sc_cy - 18), "94", font=font_score, fill=(52, 211, 153, 255))
 
     # Score Details
-    draw.text((card_x + 130, score_box_y + 26), "ATS Match Score", font=font_card_title, fill=(255, 255, 255, 255))
-    draw.text((card_x + 130, score_box_y + 56), "Strong Interview Match (Top 5%)", font=font_card_sub, fill=(52, 211, 153, 255))
+    draw.text(
+        (card_x + 130, score_box_y + 26),
+        "ATS Match Score",
+        font=font_card_title,
+        fill=(255, 255, 255, 255),
+    )
+    draw.text(
+        (card_x + 130, score_box_y + 56),
+        "Strong Interview Match (Top 5%)",
+        font=font_card_sub,
+        fill=(52, 211, 153, 255),
+    )
 
     # Keyword Chips
     kw_y = card_y + 155
-    draw.text((card_x + 25, kw_y), "MATCHED KEYWORDS (FOUND)", font=font_tag, fill=(148, 163, 184, 255))
+    draw.text(
+        (card_x + 25, kw_y),
+        "MATCHED KEYWORDS (FOUND)",
+        font=font_tag,
+        fill=(148, 163, 184, 255),
+    )
 
     chips = ["Python", "FastAPI", "PostgreSQL", "Docker", "REST APIs", "AWS"]
     cx, cy = card_x + 25, kw_y + 28
@@ -167,13 +214,26 @@ def create_og_image():
         if cx + cw > card_x + card_w - 25:
             cx = card_x + 25
             cy += 36
-        draw.rounded_rectangle([cx, cy, cx + cw, cy + 28], radius=6, fill=(16, 185, 129, 30), outline=(16, 185, 129, 150), width=1)
-        draw.text((cx + 8, cy + 6), "✓ " + chip, font=font_tag, fill=(110, 231, 183, 255))
+        draw.rounded_rectangle(
+            [cx, cy, cx + cw, cy + 28],
+            radius=6,
+            fill=(16, 185, 129, 30),
+            outline=(16, 185, 129, 150),
+            width=1,
+        )
+        draw.text(
+            (cx + 8, cy + 6), "✓ " + chip, font=font_tag, fill=(110, 231, 183, 255)
+        )
         cx += cw + 10
 
     # Google XYZ Tailored Bullet Box
     tailor_y = cy + 48
-    draw.text((card_x + 25, tailor_y), "GOOGLE XYZ REWRITTEN BULLET", font=font_tag, fill=(129, 140, 248, 255))
+    draw.text(
+        (card_x + 25, tailor_y),
+        "GOOGLE XYZ REWRITTEN BULLET",
+        font=font_tag,
+        fill=(129, 140, 248, 255),
+    )
     box_y = tailor_y + 26
     draw.rounded_rectangle(
         [card_x + 25, box_y, card_x + card_w - 25, card_y + card_h - 25],
@@ -183,7 +243,13 @@ def create_og_image():
         width=1,
     )
     bullet_txt = "“Engineered 12+ scalable REST APIs in FastAPI,\nreducing latency by 38% for 150k active users.”"
-    draw.text((card_x + 30, box_y + 12), bullet_txt, font=font_card_sub, fill=(226, 232, 240, 255), spacing=6)
+    draw.text(
+        (card_x + 30, box_y + 12),
+        bullet_txt,
+        font=font_card_sub,
+        fill=(226, 232, 240, 255),
+        spacing=6,
+    )
 
     # Save Image
     out_path = "/home/ubuntu/atsproof/static/og-image.png"

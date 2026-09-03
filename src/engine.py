@@ -19,8 +19,33 @@ from src.prompts import (
 from src.schemas import ATSMatchResult
 
 STOP_WORDS: Set[str] = {
-    "and", "the", "or", "in", "on", "at", "to", "for", "with", "by", "of", "a", "an",
-    "e", "o", "a", "os", "as", "em", "de", "do", "da", "dos", "das", "para", "com", "por"
+    "and",
+    "the",
+    "or",
+    "in",
+    "on",
+    "at",
+    "to",
+    "for",
+    "with",
+    "by",
+    "of",
+    "a",
+    "an",
+    "e",
+    "o",
+    "a",
+    "os",
+    "as",
+    "em",
+    "de",
+    "do",
+    "da",
+    "dos",
+    "das",
+    "para",
+    "com",
+    "por",
 }
 
 
@@ -39,7 +64,10 @@ def is_keyword_in_text(keyword: str, text: str) -> bool:
 
     # 1. Direct whole phrase or regex word boundary check
     escaped_kw = re.escape(kw_lower)
-    if re.search(r"(?:\b|_)" + escaped_kw + r"(?:\b|_)", text_lower) or kw_lower in text_lower:
+    if (
+        re.search(r"(?:\b|_)" + escaped_kw + r"(?:\b|_)", text_lower)
+        or kw_lower in text_lower
+    ):
         return True
 
     # 2. Punctuation stripped check (e.g. Node.js -> nodejs, Nest.js -> nestjs, CI/CD -> cicd)
@@ -55,7 +83,11 @@ def is_keyword_in_text(keyword: str, text: str) -> bool:
             return True
 
     # 4. Multi-word phrase component check (e.g. "Domain-Driven Design (DDD)", "AWS EC2", "RESTful APIs")
-    parts = [re.sub(r"[^a-zA-Z0-9]", "", p).lower() for p in re.split(r"[\s/(),_\-]+", kw_raw) if len(p) >= 2]
+    parts = [
+        re.sub(r"[^a-zA-Z0-9]", "", p).lower()
+        for p in re.split(r"[\s/(),_\-]+", kw_raw)
+        if len(p) >= 2
+    ]
     meaningful_parts = [p for p in parts if p not in STOP_WORDS and len(p) >= 2]
 
     for part in meaningful_parts:
@@ -88,7 +120,9 @@ def sanitize_and_align_keywords(
             continue
 
         # Must have lexical or token presence in both Job Description AND Resume
-        if is_keyword_in_text(normalized, job_desc) and is_keyword_in_text(normalized, resume_text):
+        if is_keyword_in_text(normalized, job_desc) and is_keyword_in_text(
+            normalized, resume_text
+        ):
             seen_matched.add(norm_lower)
             clean_matched.append(normalized)
 
@@ -104,7 +138,9 @@ def sanitize_and_align_keywords(
             continue
 
         # Must have lexical presence in Job Description and NOT in Resume
-        if is_keyword_in_text(normalized, job_desc) and not is_keyword_in_text(normalized, resume_text):
+        if is_keyword_in_text(normalized, job_desc) and not is_keyword_in_text(
+            normalized, resume_text
+        ):
             seen_missing.add(norm_lower)
             clean_missing.append(normalized)
 
