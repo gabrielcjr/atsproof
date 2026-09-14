@@ -121,10 +121,43 @@ ARTICLES: List[Dict[str, Any]] = [
         <p>Use sempre o formato mês e ano com 4 dígitos: <code>Jan 2022 – Presente</code> ou <code>03/2021 – 11/2024</code>. Evite escrever apenas "2022" ou "2 anos", pois o parser não consegue calcular sua senioridade acumulada com exatidão.</p>
         """,
         "content_en": """
-        <p class="lead text-lg text-slate-300 font-medium">Enterprise companies rely on systems like Workday, Oracle Taleo, Greenhouse, and Lever. These platforms process thousands of applications weekly using strict text extraction parsers.</p>
+        <p class="lead text-lg text-slate-300 font-medium">Global enterprises including Amazon, Google, Microsoft, IBM, and multinational financial institutions rely on Tier-1 ATS engines such as <strong>Workday</strong>, <strong>Oracle Taleo</strong>, <strong>Greenhouse</strong>, and <strong>Lever</strong>. These systems process thousands of resumes daily using rigid document parsing modules (such as Sovren or Textkernel).</p>
 
-        <h2 class="text-2xl font-bold text-white mt-8 mb-4">1. Eliminating Extraction Errors in Workday</h2>
-        <p>If an ATS parser fails to read your dates or mixes employment history with personal details, your application will receive a low relevance score. Adhering to single-column layouts and standard chronological headings ensures 100% parsing accuracy.</p>
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">1. Why Enterprise Parsers Fail to Extract Candidate Data</h2>
+        <p>If you've ever uploaded a resume to Workday only to find that it placed your graduation year into the phone number box or merged your employer names with bullet points, you have experienced a catastrophic parsing error. Older enterprise parsers strip away formatting and evaluate the remaining raw text stream sequentially.</p>
+
+        <div class="my-6 overflow-x-auto">
+            <table class="w-full text-left text-sm text-slate-300 border border-slate-800 rounded-xl">
+                <thead class="bg-slate-900 text-white font-bold">
+                    <tr>
+                        <th class="p-3 border-b border-slate-800">Visual Layout Element</th>
+                        <th class="p-3 border-b border-slate-800">Impact on Workday / Taleo</th>
+                        <th class="p-3 border-b border-slate-800">Recommended Alternative</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60 bg-slate-950/40">
+                    <tr>
+                        <td class="p-3 font-semibold text-rose-400">Two-Column Layouts (Canva)</td>
+                        <td class="p-3">Reads horizontally across columns, scrambling chronological job history.</td>
+                        <td class="p-3 text-emerald-400">Strict single-column flow from left-to-right, top-to-bottom.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 font-semibold text-rose-400">Tables and Floating Text Boxes</td>
+                        <td class="p-3">Content within drawing objects is frequently skipped or discarded.</td>
+                        <td class="p-3 text-emerald-400">Plain text with standard H2/H3 semantic headings.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 font-semibold text-rose-400">Icons for Phone & Email</td>
+                        <td class="p-3">Parsers cannot interpret image icons, leading to missing contact data.</td>
+                        <td class="p-3 text-emerald-400">Explicit text labels: "Email: name@example.com".</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">2. Standardizing Dates and Section Titles</h2>
+        <p>Always format employment dates using standard four-digit years and abbreviated months: <code>Jan 2022 – Present</code> or <code>03/2021 – 11/2024</code>. Avoid writing only "2022" or vague durations like "2 years", as the parser cannot accurately compute cumulative seniority and role progression.</p>
+        <p>Stick strictly to universally recognized section headings: <em>"Work Experience"</em>, <em>"Education"</em>, <em>"Technical Skills"</em>, and <em>"Certifications"</em>. Creative titles such as "Where I've Been" or "Toolbox" will cause the parser to misclassify entire sections of your resume.</p>
         """,
     },
     {
@@ -182,10 +215,43 @@ ARTICLES: List[Dict[str, Any]] = [
         </ul>
         """,
         "content_en": """
-        <p class="lead text-lg text-slate-300 font-medium">The Google XYZ formula is the industry-standard structure for impactful resume bullets: <strong>'Accomplished [X], as measured by [Y], by doing [Z]'</strong>.</p>
+        <p class="lead text-lg text-slate-300 font-medium">The Google XYZ formula was pioneered by Laszlo Bock, former Senior Vice President of People Operations at Google. It represents the gold standard for communicating quantifiable professional impact on resumes and LinkedIn profiles.</p>
 
-        <h2 class="text-2xl font-bold text-white mt-8 mb-4">The Formula Breakdown</h2>
-        <p>Every bullet point should clearly communicate the action, the quantifiable business metric, and the tools or methodologies used to achieve it.</p>
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">Understanding the Formula</h2>
+        <div class="p-5 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 my-4">
+            <p class="text-lg font-bold text-white">"Accomplished [X], as measured by [Y], by doing [Z]"</p>
+            <ul class="list-disc pl-5 mt-2 space-y-1 text-sm text-indigo-200">
+                <li><strong>[X] - The Core Achievement:</strong> The business problem or project delivered (beginning with a dynamic past-tense power verb).</li>
+                <li><strong>[Y] - Measurable Evidence:</strong> Revenue generated, cost reduced, hours saved, percentage improvements, or scale achieved.</li>
+                <li><strong>[Z] - Actionable Method:</strong> The exact tools, technologies, leadership frameworks, or strategies you used.</li>
+            </ul>
+        </div>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">Practical Real-World Examples by Function</h2>
+
+        <h3 class="text-lg font-bold text-indigo-400 mt-6 mb-2">Software Engineering & Data Infrastructure</h3>
+        <ul class="space-y-3 text-sm">
+            <li class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                <span class="text-emerald-400 font-semibold">✔️ Optimized:</span> Decreased database query latency by 64% <em>[Y]</em> by implementing a distributed Redis caching layer and indexing PostgreSQL queries <em>[Z]</em>, supporting peak loads of 80,000 concurrent requests <em>[X]</em>.
+            </li>
+            <li class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                <span class="text-emerald-400 font-semibold">✔️ Optimized:</span> Automated CI/CD regression test suites <em>[X]</em>, reducing release cycle deployment time from 4 days to 35 minutes <em>[Y]</em> using Docker and GitHub Actions <em>[Z]</em>.
+            </li>
+        </ul>
+
+        <h3 class="text-lg font-bold text-indigo-400 mt-6 mb-2">B2B Sales & Revenue Operations</h3>
+        <ul class="space-y-3 text-sm">
+            <li class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                <span class="text-emerald-400 font-semibold">✔️ Optimized:</span> Closed 42 new enterprise accounts <em>[X]</em>, driving $2.4M in net new Annual Recurring Revenue (ARR) <em>[Y]</em> through consultative outbound prospecting and executive pitches <em>[Z]</em>.
+            </li>
+        </ul>
+
+        <h3 class="text-lg font-bold text-indigo-400 mt-6 mb-2">Digital Marketing & Growth Acquisition</h3>
+        <ul class="space-y-3 text-sm">
+            <li class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+                <span class="text-emerald-400 font-semibold">✔️ Optimized:</span> Cut Customer Acquisition Cost (CAC) by 32% <em>[Y]</em> by restructuring Google Ads search campaigns and implementing continuous multivariate landing page tests <em>[Z]</em>, increasing MQL pipeline by 45% <em>[X]</em>.
+            </li>
+        </ul>
         """,
     },
     {

@@ -24,9 +24,7 @@
     <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <link rel="alternate icon" href="/favicon.ico">
 
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6883104711604671"
-         crossorigin="anonymous"></script>
+
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -248,8 +246,11 @@
                 <a href="{% if lang == 'pt' %}/sobre?lang=pt{% else %}/about{% endif %}" class="hover:text-indigo-400">{{ t.nav_about }}</a>
                 <a href="{% if lang == 'pt' %}/privacidade?lang=pt{% else %}/privacy{% endif %}" class="hover:text-indigo-400">{{ t.nav_privacy }}</a>
                 <a href="{% if lang == 'pt' %}/termos?lang=pt{% else %}/terms{% endif %}" class="hover:text-indigo-400">{{ t.nav_terms }}</a>
-            </div>
         </div>
     </footer>
+
+    <!-- Google AdSense (Deferred at document end for editorial compliance) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6883104711604671"
+         crossorigin="anonymous"></script>
 </body>
 </html>
