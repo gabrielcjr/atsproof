@@ -295,6 +295,27 @@ ARTICLES: List[Dict[str, Any]] = [
         """,
         "content_en": """
         <p class="lead text-lg text-slate-300 font-medium">Starting bullet points with high-impact power verbs immediately demonstrates ownership and executive presence to recruiters and ATS parsers.</p>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">Action Verbs Ranked by Impact</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                <h3 class="font-bold text-indigo-400 mb-2">Leadership & Strategy</h3>
+                <p class="text-xs text-slate-300">Spearheaded, Orchestrated, Directed, Mobilized, Implemented, Championed, Leveraged, Guided.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                <h3 class="font-bold text-emerald-400 mb-2">Efficiency & Optimization</h3>
+                <p class="text-xs text-slate-300">Automated, Optimized, Reduced, Simplified, Accelerated, Streamlined, Consolidated, Overhauled.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                <h3 class="font-bold text-purple-400 mb-2">Creation & Innovation</h3>
+                <p class="text-xs text-slate-300">Developed, Designed, Conceptualized, Engineered, Modeled, Founded, Pioneered, Published.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+                <h3 class="font-bold text-amber-400 mb-2">Results & Business</h3>
+                <p class="text-xs text-slate-300">Maximized, Exceeded, Negotiated, Closed, Multiplied, Expanded, Captured, Generated.</p>
+            </div>
+        </div>
         """,
     },
     {
@@ -326,6 +347,15 @@ ARTICLES: List[Dict[str, Any]] = [
         """,
         "content_en": """
         <p class="lead text-lg text-slate-300 font-medium">Technical resumes must clearly separate programming languages, frameworks, cloud infrastructure, and databases to pass initial automated filters.</p>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">How to Organize Your Technical Skills Section</h2>
+        <p>Avoid disorganized lists of 40 technologies without context. Group your tools by engineering layers:</p>
+        <ul class="list-disc pl-6 space-y-2 text-slate-300 my-4">
+            <li><strong>Languages:</strong> Python, TypeScript, Go, Java, SQL.</li>
+            <li><strong>Frameworks & Libraries:</strong> FastAPI, React, Node.js, Next.js, Django.</li>
+            <li><strong>Cloud & DevOps:</strong> AWS (ECS, Lambda, S3), Docker, Kubernetes, Terraform, CI/CD.</li>
+            <li><strong>Databases:</strong> PostgreSQL, Redis, MongoDB, DynamoDB.</li>
+        </ul>
         """,
     },
     {
@@ -351,6 +381,9 @@ ARTICLES: List[Dict[str, Any]] = [
         """,
         "content_en": """
         <p class="lead text-lg text-slate-300 font-medium">Career transitions require reframing past accomplishments using transferable core competencies and technical projects to build algorithmic relevance.</p>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">The Strategic Use of Transferable Skills</h2>
+        <p>Skills such as project management, team leadership, data analysis, stakeholder communication, and problem-solving are universal. Reframe your past experiences utilizing the technical terminology of your new target field.</p>
         """,
     },
     {
@@ -428,6 +461,17 @@ ARTICLES: List[Dict[str, Any]] = [
         """,
         "content_en": """
         <p class="lead text-lg text-slate-300 font-medium">Technical PDF formatting errors cause immediate parsing failures, leading to automatic rejection by applicant tracking systems.</p>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">The 7 Primary Mistakes:</h2>
+        <ol class="list-decimal pl-6 space-y-3 text-slate-300 my-4">
+            <li><strong>Two-Column and Canva Layouts:</strong> The robot reads horizontally from left to right, often mixing your job title with your education.</li>
+            <li><strong>Contact Info in Headers/Footers:</strong> Most parsers completely ignore the top and bottom margins of Word documents.</li>
+            <li><strong>Borderless Tables for Alignment:</strong> Parsers treat tables as disjointed, monolithic blocks.</li>
+            <li><strong>Bar Charts for Skill Self-Assessment:</strong> Robots cannot read "4 out of 5 stars in Python" or colored progress bars.</li>
+            <li><strong>Saving an Image as a PDF:</strong> If you cannot select the text with your cursor, the robot sees a 100% blank document.</li>
+            <li><strong>Non-embedded Exotic Fonts:</strong> Stick to universal families like Inter, Roboto, Arial, or Calibri.</li>
+            <li><strong>Excessive Pages:</strong> 3 or 4-page resumes for non-academic professionals dilute the semantic density of the analysis.</li>
+        </ol>
         """,
     },
     {
@@ -457,6 +501,13 @@ ARTICLES: List[Dict[str, Any]] = [
         """,
         "content_en": """
         <p class="lead text-lg text-slate-300 font-medium">Applying to international remote positions requires aligning with US and European hiring standards, omitting photos and personal demographics while highlighting async communication.</p>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">What NEVER to Include on a US Resume:</h2>
+        <ul class="list-disc pl-6 space-y-2 text-slate-300 my-4">
+            <li><strong>Photo:</strong> Anti-discrimination laws in the US mean companies will immediately discard resumes with headshots.</li>
+            <li><strong>Age, Marital Status, or Gender:</strong> Never include your date of birth or relationship status.</li>
+            <li><strong>Full Residential Address:</strong> Only state <code>City, Country (Timezone: GMT-3 / EST)</code>.</li>
+        </ul>
         """,
     },
     {
@@ -486,6 +537,13 @@ ARTICLES: List[Dict[str, Any]] = [
         """,
         "content_en": """
         <p class="lead text-lg text-slate-300 font-medium">For professionals under 7 years of experience, a single page is standard. For senior leaders with 8+ years of relevant experience, a 2-page resume is widely accepted by ATS scanners.</p>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">The Practical Length Rule</h2>
+        <ul class="list-disc pl-6 space-y-2 text-slate-300 my-4">
+            <li><strong>1 Page:</strong> Students, recent graduates, and professionals with up to 5-7 years of industry experience.</li>
+            <li><strong>2 Pages:</strong> Senior professionals, technical specialists, managers, and directors with 8-10+ years of relevant career history.</li>
+            <li><strong>3+ Pages:</strong> Highly discouraged for the corporate market (only acceptable for academic CVs).</li>
+        </ul>
         """,
     },
     {
@@ -520,6 +578,18 @@ ARTICLES: List[Dict[str, Any]] = [
         """,
         "content_en": """
         <p class="lead text-lg text-slate-300 font-medium">Never list soft skills as isolated buzzwords. Embed them inside active work accomplishments that demonstrate real-world leadership, collaboration, and stakeholder negotiation.</p>
+
+        <h2 class="text-2xl font-bold text-white mt-8 mb-4">How to Prove Soft Skills in Practice:</h2>
+        <div class="space-y-4 my-4">
+            <div class="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                <span class="text-rose-400 font-bold">❌ Cliché:</span> "Excellent leadership and mentoring skills."<br>
+                <span class="text-emerald-400 font-bold">✔️ Proven:</span> "Led and mentored a cross-functional team of 7 engineers, resulting in the promotion of 2 members to senior roles and a 22% increase in sprint delivery velocity."
+            </div>
+            <div class="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                <span class="text-rose-400 font-bold">❌ Cliché:</span> "Strong negotiation and conflict resolution abilities."<br>
+                <span class="text-emerald-400 font-bold">✔️ Proven:</span> "Negotiated and aligned diverging technical scopes across 3 executive boards, unlocking a $1.2M strategic project with zero schedule delays."
+            </div>
+        </div>
         """,
     },
 ]
