@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: gacarneirojrx/atsproof:bb5317f75a4354414a4f6e721c27db90cd34c416
+          image: gacarneirojrx/atsproof:79a8fcf8faae8cffd2f1504c27c6aa8e0ea81d65
           imagePullPolicy: Always
           envFrom:
             - secretRef:
