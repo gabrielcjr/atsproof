@@ -42,6 +42,54 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         req_cookie = request.cookies.get("lang", "en")
         return "pt" if req_cookie.lower().startswith("pt") else "en"
 
+    def _render_page(
+        request: Request,
+        template_name: str,
+        resolved_lang: str,
+        extra_context: Optional[dict] = None,
+    ):
+        """Renders a page template with translations and sets the language cookie."""
+        t = get_translations(resolved_lang)
+        ctx = {"t": t, "lang": resolved_lang}
+        if extra_context:
+            ctx.update(extra_context)
+        response = templates.TemplateResponse(
+            request=request,
+            name=template_name,
+            context=ctx,
+        )
+        response.set_cookie(
+            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
+        )
+        return response
+
+    def _render_error(
+        request: Request,
+        resolved_lang: str,
+        error_title: str,
+        error_message: str,
+        error_type: str = "validation",
+        status_code: int = status.HTTP_400_BAD_REQUEST,
+        suggestion: Optional[str] = None,
+    ):
+        """Renders the partials/error.html HTMX partial with unified error context."""
+        t = get_translations(resolved_lang)
+        ctx = {
+            "t": t,
+            "lang": resolved_lang,
+            "error_title": error_title,
+            "error_message": error_message,
+            "error_type": error_type,
+        }
+        if suggestion:
+            ctx["suggestion"] = suggestion
+        return templates.TemplateResponse(
+            request=request,
+            name="partials/error.html",
+            context=ctx,
+            status_code=status_code,
+        )
+
     # -------------------------------------------------------------
     # Health Check & Diagnostics
     # -------------------------------------------------------------
@@ -60,23 +108,16 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     async def index(request: Request, lang: Optional[str] = None):
         """Serves the main ATS matcher application in chosen language."""
         resolved_lang = _resolve_language(request, lang)
-        t = get_translations(resolved_lang)
-
-        response = templates.TemplateResponse(
-            request=request,
-            name="index.html",
-            context={
-                "t": t,
-                "lang": resolved_lang,
+        return _render_page(
+            request,
+            "index.html",
+            resolved_lang,
+            {
                 "max_pdf_kb": MAX_PDF_SIZE_BYTES // 1024,
                 "max_pages": MAX_PDF_PAGES,
                 "max_chars": MAX_TEXT_CHARS,
             },
         )
-        response.set_cookie(
-            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
-        )
-        return response
 
     @router.api_route("/guide", methods=["GET", "HEAD"], response_class=HTMLResponse)
     @router.api_route("/guia-ats", methods=["GET", "HEAD"], response_class=HTMLResponse)
@@ -91,20 +132,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             else "en"
         )
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
-        t = get_translations(resolved_lang)
-
-        response = templates.TemplateResponse(
-            request=request,
-            name="guide.html",
-            context={
-                "t": t,
-                "lang": resolved_lang,
-            },
-        )
-        response.set_cookie(
-            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
-        )
-        return response
+        return _render_page(request, "guide.html", resolved_lang)
 
     @router.api_route("/about", methods=["GET", "HEAD"], response_class=HTMLResponse)
     @router.api_route("/sobre", methods=["GET", "HEAD"], response_class=HTMLResponse)
@@ -112,20 +140,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         """Serves the About Us & Engineering transparency page."""
         path_hint = "pt" if "sobre" in request.url.path else "en"
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
-        t = get_translations(resolved_lang)
-
-        response = templates.TemplateResponse(
-            request=request,
-            name="about.html",
-            context={
-                "t": t,
-                "lang": resolved_lang,
-            },
-        )
-        response.set_cookie(
-            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
-        )
-        return response
+        return _render_page(request, "about.html", resolved_lang)
 
     @router.api_route("/privacy", methods=["GET", "HEAD"], response_class=HTMLResponse)
     @router.api_route(
@@ -135,20 +150,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         """Serves the Privacy Policy page compliant with Google AdSense and LGPD/GDPR."""
         path_hint = "pt" if "privacidade" in request.url.path else "en"
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
-        t = get_translations(resolved_lang)
-
-        response = templates.TemplateResponse(
-            request=request,
-            name="privacy.html",
-            context={
-                "t": t,
-                "lang": resolved_lang,
-            },
-        )
-        response.set_cookie(
-            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
-        )
-        return response
+        return _render_page(request, "privacy.html", resolved_lang)
 
     @router.api_route("/terms", methods=["GET", "HEAD"], response_class=HTMLResponse)
     @router.api_route("/termos", methods=["GET", "HEAD"], response_class=HTMLResponse)
@@ -156,20 +158,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         """Serves the Terms of Service page."""
         path_hint = "pt" if "termos" in request.url.path else "en"
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
-        t = get_translations(resolved_lang)
-
-        response = templates.TemplateResponse(
-            request=request,
-            name="terms.html",
-            context={
-                "t": t,
-                "lang": resolved_lang,
-            },
-        )
-        response.set_cookie(
-            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
-        )
-        return response
+        return _render_page(request, "terms.html", resolved_lang)
 
     @router.api_route("/articles", methods=["GET", "HEAD"], response_class=HTMLResponse)
     @router.api_route("/artigos", methods=["GET", "HEAD"], response_class=HTMLResponse)
@@ -177,22 +166,10 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         """Serves the Career & ATS Knowledge Hub listing page."""
         path_hint = "pt" if "artigos" in request.url.path else "en"
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
-        t = get_translations(resolved_lang)
         all_articles = get_all_articles()
-
-        response = templates.TemplateResponse(
-            request=request,
-            name="articles.html",
-            context={
-                "t": t,
-                "lang": resolved_lang,
-                "articles": all_articles,
-            },
+        return _render_page(
+            request, "articles.html", resolved_lang, {"articles": all_articles}
         )
-        response.set_cookie(
-            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
-        )
-        return response
 
     @router.api_route(
         "/articles/{slug}", methods=["GET", "HEAD"], response_class=HTMLResponse
@@ -204,28 +181,18 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         """Serves an individual in-depth career/ATS article."""
         path_hint = "pt" if "artigos" in request.url.path else "en"
         resolved_lang = _resolve_language(request, lang, default_lang=path_hint)
-        t = get_translations(resolved_lang)
 
         article = get_article_by_slug(slug)
         if not article:
             raise HTTPException(status_code=404, detail="Article not found")
 
         related = get_related_articles(article["id"], limit=3)
-
-        response = templates.TemplateResponse(
-            request=request,
-            name="article_detail.html",
-            context={
-                "t": t,
-                "lang": resolved_lang,
-                "article": article,
-                "related_articles": related,
-            },
+        return _render_page(
+            request,
+            "article_detail.html",
+            resolved_lang,
+            {"article": article, "related_articles": related},
         )
-        response.set_cookie(
-            key="lang", value=resolved_lang, max_age=31536000, samesite="lax"
-        )
-        return response
 
     # -------------------------------------------------------------
     # Static & Verification Assets
@@ -295,7 +262,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
     ):
         """
         Analyzes uploaded resume against job description.
-        Enforces honeypot check, in-memory PDF extraction, dual-LLM fallback, and i18n.
+        Enforces honeypot check, bounded in-memory PDF extraction, dual-LLM fallback, and i18n.
         """
         resolved_lang = _resolve_language(request, lang)
         t = get_translations(resolved_lang)
@@ -303,94 +270,68 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
         # 1. Anti-bot honeypot check
         if honeypot and honeypot.strip():
             logger.warning("Bot honeypot triggered on /analyze submission.")
-            return templates.TemplateResponse(
-                request=request,
-                name="partials/error.html",
-                context={
-                    "t": t,
-                    "lang": resolved_lang,
-                    "error_title": t["error_default_title"],
-                    "error_message": t["error_bot_msg"],
-                    "error_type": "client",
-                },
+            return _render_error(
+                request,
+                resolved_lang,
+                error_title=t["error_default_title"],
+                error_message=t["error_bot_msg"],
+                error_type="client",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         # 2. Validate Job Description text
         sanitized_jd = (job_description or "").strip()
         if not sanitized_jd:
-            return templates.TemplateResponse(
-                request=request,
-                name="partials/error.html",
-                context={
-                    "t": t,
-                    "lang": resolved_lang,
-                    "error_title": t["jd_col_title"],
-                    "error_message": t["error_jd_empty"],
-                    "error_type": "validation",
-                },
+            return _render_error(
+                request,
+                resolved_lang,
+                error_title=t["jd_col_title"],
+                error_message=t["error_jd_empty"],
+                error_type="validation",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
         if len(sanitized_jd) > MAX_TEXT_CHARS:
-            return templates.TemplateResponse(
-                request=request,
-                name="partials/error.html",
-                context={
-                    "t": t,
-                    "lang": resolved_lang,
-                    "error_title": t["jd_col_title"],
-                    "error_message": t["error_jd_too_long"].format(
-                        max_chars=MAX_TEXT_CHARS
-                    ),
-                    "error_type": "validation",
-                },
+            return _render_error(
+                request,
+                resolved_lang,
+                error_title=t["jd_col_title"],
+                error_message=t["error_jd_too_long"].format(max_chars=MAX_TEXT_CHARS),
+                error_type="validation",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-        # 3. Read & Validate Uploaded Resume PDF (strictly in-memory)
+        # 3. Read & Validate Uploaded Resume PDF (strictly bounded in-memory read)
         try:
-            pdf_bytes = await resume.read()
+            pdf_bytes = await resume.read(MAX_PDF_SIZE_BYTES + 1)
             if not pdf_bytes:
-                return templates.TemplateResponse(
-                    request=request,
-                    name="partials/error.html",
-                    context={
-                        "t": t,
-                        "lang": resolved_lang,
-                        "error_title": t["upload_col_title"],
-                        "error_message": t["error_pdf_empty"],
-                        "error_type": "validation",
-                    },
+                return _render_error(
+                    request,
+                    resolved_lang,
+                    error_title=t["upload_col_title"],
+                    error_message=t["error_pdf_empty"],
+                    error_type="validation",
                     status_code=status.HTTP_400_BAD_REQUEST,
                 )
 
-            resume_text = extract_text_from_pdf_bytes(pdf_bytes)
+            resume_text = extract_text_from_pdf_bytes(pdf_bytes, lang=resolved_lang)
         except ValueError as ve:
-            return templates.TemplateResponse(
-                request=request,
-                name="partials/error.html",
-                context={
-                    "t": t,
-                    "lang": resolved_lang,
-                    "error_title": t["upload_col_title"],
-                    "error_message": str(ve),
-                    "error_type": "validation",
-                },
+            return _render_error(
+                request,
+                resolved_lang,
+                error_title=t["upload_col_title"],
+                error_message=str(ve),
+                error_type="validation",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
             logger.error(f"Unexpected file reading error: {e}")
-            return templates.TemplateResponse(
-                request=request,
-                name="partials/error.html",
-                context={
-                    "t": t,
-                    "lang": resolved_lang,
-                    "error_title": t["upload_col_title"],
-                    "error_message": t["error_pdf_read"],
-                    "error_type": "validation",
-                },
+            return _render_error(
+                request,
+                resolved_lang,
+                error_title=t["upload_col_title"],
+                error_message=t["error_pdf_read"],
+                error_type="validation",
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -414,18 +355,14 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
             )
         except Exception as e:
             logger.error(f"Analysis engine failure: {e}")
-            return templates.TemplateResponse(
-                request=request,
-                name="partials/error.html",
-                context={
-                    "t": t,
-                    "lang": resolved_lang,
-                    "error_title": t["error_high_demand_title"],
-                    "error_message": t["error_high_demand_msg"],
-                    "error_type": "server",
-                    "suggestion": t["error_suggestion_retry"],
-                },
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            return _render_error(
+                request,
+                resolved_lang,
+                error_title=t["error_high_demand_title"],
+                error_message=t["error_high_demand_msg"],
+                error_type="server",
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                suggestion=t["error_suggestion_retry"],
             )
 
     return router

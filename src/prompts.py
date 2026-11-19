@@ -2,6 +2,8 @@
 System prompts, Google XYZ bullet tailoring directives, and prompt injection defense templates.
 """
 
+import re
+
 SYSTEM_INSTRUCTION: str = """You are an impartial, elite corporate Applicant Tracking System (ATS) verification engine and senior technical recruiter.
 Your task is to analyze candidate resumes against job descriptions with high precision, identifying skill overlaps, missing keywords, and experience gaps.
 
@@ -43,6 +45,21 @@ JSON_SCHEMA_DESCRIPTION: str = """{
 }"""
 
 
+def _sanitize_xml_boundary_tags(text: str) -> str:
+    """
+    Escapes or strips adversarial XML boundary tags inside untrusted user input
+    to prevent breaking out of <resume_text> or <job_description_text> isolation blocks.
+    """
+    if not text:
+        return ""
+    pattern = re.compile(
+        r"</?\s*(?:resume_text|job_description_text)\b[^>]*>", re.IGNORECASE
+    )
+    return pattern.sub(
+        lambda m: m.group(0).replace("<", "&lt;").replace(">", "&gt;"), text
+    )
+
+
 def build_user_prompt(
     resume_text: str, job_description: str, language: str = "en"
 ) -> str:
@@ -50,6 +67,9 @@ def build_user_prompt(
     Constructs an adversarial-resistant user prompt isolating untrusted inputs
     within strict XML boundaries, with language targeting, Substantivo de Ação, and mandatory metrification.
     """
+    safe_resume = _sanitize_xml_boundary_tags(resume_text)
+    safe_jd = _sanitize_xml_boundary_tags(job_description)
+
     if language and language.lower().startswith("pt"):
         lang_directive = "\nLANGUAGE DIRECTIVE: Output all written commentary, summary_verdict, experience_gap_feedback, and suggested_optimized_bullet texts in Portuguese (pt-BR). For bullet tailoring in Portuguese, format every accomplishment strictly using Substantivos de Ação in an impersonal/documentary style (e.g., 'Aceleração de 90%...', 'Redução de 35%...', 'Eliminação de 100%...', 'Automação de...', 'Aumento de 20%...', 'Economia de R$...')."
     else:
@@ -66,10 +86,10 @@ Evaluate:
 6. Strategic summary verdict
 
 <resume_text>
-{resume_text}
+{safe_resume}
 </resume_text>
 
 <job_description_text>
-{job_description}
+{safe_jd}
 </job_description_text>
 """

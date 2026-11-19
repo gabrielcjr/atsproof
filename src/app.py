@@ -20,13 +20,19 @@ else:
 
 
 def get_client_ip(request) -> str:
-    """Extracts the true client IP address behind reverse proxies."""
+    """
+    Extracts the true client IP address behind reverse proxies safely.
+    Prioritizes X-Real-IP set by trusted Nginx proxy, or the last hop in X-Forwarded-For
+    to prevent client-side X-Forwarded-For spoofing.
+    """
+    real_ip = request.headers.get("X-Real-IP")
+    if real_ip and real_ip.strip():
+        return real_ip.strip()
     forwarded = request.headers.get("X-Forwarded-For")
     if forwarded:
-        return forwarded.split(",")[0].strip()
-    real_ip = request.headers.get("X-Real-IP")
-    if real_ip:
-        return real_ip.strip()
+        hops = [ip.strip() for ip in forwarded.split(",") if ip.strip()]
+        if hops:
+            return hops[-1]
     if request.client and request.client.host:
         return request.client.host
     return "127.0.0.1"
@@ -51,14 +57,22 @@ def create_app() -> FastAPI:
     if otel_endpoint:
         try:
             from opentelemetry import trace
-            from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+            from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+                OTLPSpanExporter,
+            )
             from opentelemetry.instrumentation.httpx import HTTPXClientInstrumentor
             from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-            target_endpoint = otel_endpoint if otel_endpoint.endswith("/v1/traces") else f"{otel_endpoint}/v1/traces"
+            target_endpoint = (
+                otel_endpoint
+                if otel_endpoint.endswith("/v1/traces")
+                else f"{otel_endpoint}/v1/traces"
+            )
             provider = trace.get_tracer_provider()
             if hasattr(provider, "add_span_processor"):
-                provider.add_span_processor(BatchSpanProcessor(OTLPSpanExporter(endpoint=target_endpoint)))
+                provider.add_span_processor(
+                    BatchSpanProcessor(OTLPSpanExporter(endpoint=target_endpoint))
+                )
             HTTPXClientInstrumentor().instrument()
         except Exception as e:
             print(f"Failed to initialize OpenTelemetry for ATS MatchProof: {e}")

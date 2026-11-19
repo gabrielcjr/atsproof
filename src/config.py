@@ -19,6 +19,8 @@ MAX_TEXT_CHARS: int = 7000  # 7,000 characters with spaces max
 rate_per_min = os.getenv("RATE_LIMIT_PER_MINUTE", "2")
 RATE_LIMIT_POLICY: str = os.getenv("RATE_LIMIT_POLICY", f"{rate_per_min}/minute")
 MAX_CONCURRENT_REQUESTS: int = int(os.getenv("MAX_CONCURRENT_REQUESTS", "3"))
+LLM_CALL_TIMEOUT_SECONDS: float = float(os.getenv("LLM_CALL_TIMEOUT_SECONDS", "25.0"))
+SEMAPHORE_TIMEOUT_SECONDS: float = float(os.getenv("SEMAPHORE_TIMEOUT_SECONDS", "15.0"))
 
 
 # API Keys (Loaded from environment)

@@ -34,7 +34,7 @@ jobs:
           pip install pytest pytest-cov
 
       - name: Run Pytest
-        run: pytest || true
+        run: pytest
 
   publish:
     name: Build & Push ATSProof to Docker Hub

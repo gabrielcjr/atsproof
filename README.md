@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8.svg)](https://tailwindcss.com/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-A **100% free**, **zero-account**, **privacy-first** ATS (Applicant Tracking System) verification engine. Built with **Python FastAPI**, **HTMX**, and **Tailwind CSS**, featuring an automatic **Multi-Key Dual-AI Failover Architecture** (Google Gemini 3.6 Flash + Groq LLaMA 3.3 70B).
+A **100% free**, **zero-account**, **privacy-first** ATS (Applicant Tracking System) verification engine. Built with **Python FastAPI**, **HTMX**, and **Tailwind CSS**, featuring an automatic **Multi-Key Dual-AI Failover Architecture** (Google Gemini 2.5 Flash + Groq LLaMA 3.3 70B).
 
 Compare your resume against any job description in seconds: extract skills, identify missing keywords, evaluate experience gaps, and generate high-impact, recruiter-tailored bullet points using the **Google XYZ format**.
 
@@ -22,12 +22,12 @@ flowchart TD
     subgraph Security & In-Memory Extraction
         Fast --> Trap{Honeypot Bot Check}
         Trap -->|Bot Detected| Err400[400 Bad Request]
-        Trap -->|Human| Memory[In-Memory BytesIO PDF Extraction\nMax 200KB, 3 Pages, 10k Chars]
+        Trap -->|Human| Memory[In-Memory BytesIO PDF Extraction\nMax 200KB, 3 Pages, 7k Chars]
         Memory --> Prompt[XML Prompt Boundary Isolation\nDefends Against Prompt Injections]
     end
     
     subgraph Multi-Engine Fallback Pipeline
-        Prompt --> Primary[Primary Engine: Google Gemini 3.6 Flash\nStructured JSON Schema]
+        Prompt --> Primary[Primary Engine: Google Gemini 2.5 Flash\nStructured JSON Schema]
         Primary -->|Success| Out[ATS Match Result]
         Primary -->|429 / Rate Limit / Timeout| Fallback[Failover Engine: Groq LLaMA 3.3 70B\nJSON Object Mode]
         Fallback -->|Success| Out
@@ -40,7 +40,7 @@ flowchart TD
 ```
 
 ### 1. 🔄 Multi-Key Free Tier Failover (100% Cashflow Positive)
-- **Primary Engine**: Google GenAI SDK (`gemini-3.6-flash` / `gemini-2.5-flash-lite`) utilizing native structured schema output (`response_schema`).
+- **Primary Engine**: Google GenAI SDK (`gemini-2.5-flash` / `gemini-2.5-flash-lite`) utilizing native structured schema output (`response_schema`).
 - **Failover Engine**: Groq SDK (`llama-3.3-70b-versatile` / `llama-3.1-8b-instant`) utilizing JSON schema mode.
 - Seamlessly catches rate limits (`429 Resource Exhausted`), outages, or timeouts from Google and routes instantly to Groq with zero downtime.
 
@@ -54,12 +54,12 @@ flowchart TD
 - No resumes, job descriptions, or personally identifiable information (PII) are stored on disk or in a database.
 
 ### 4. 🛡️ Defensive Prompt Injection & Abuse Protection
-- **XML Tag Isolation**: Untrusted inputs are wrapped inside `<resume_text>` and `<job_description_text>` tags.
+- **XML Tag Isolation**: Untrusted inputs are wrapped inside `<resume_text>` and `<job_description_text>` tags with XML tag sanitization.
 - **Instruction Neutralization**: System instructions strictly command the AI to ignore any adversarial prompts or overrides embedded in uploaded files.
-- **Rate Limiting**: Integrated `slowapi` rate limiter (default: 5 requests/minute per IP).
-- **Concurrency Throttling**: Global concurrency semaphore prevents burst quota exhaustion.
+- **Rate Limiting**: Integrated `slowapi` rate limiter (default: 2 requests/minute per IP) hardened against `X-Forwarded-For` spoofing.
+- **Concurrency Throttling**: Global concurrency semaphore with bounded wait and per-call LLM timeouts prevents burst quota exhaustion.
 - **Bot Honeypot Trap**: Invisible field detects and blocks automated scrapers.
-- **Security Headers**: Enforces `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy`, and `Permissions-Policy`.
+- **Security Headers**: Enforces `Content-Security-Policy`, `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `Referrer-Policy`, and `Permissions-Policy`.
 
 ### 5. 💰 Monetization-Ready Responsive Layout
 - Modern dark-mode UI with sleek glassmorphism and animated match progress rings.

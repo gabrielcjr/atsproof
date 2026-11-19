@@ -1,12 +1,16 @@
 import asyncio
 import json
+import math
 import re
-from typing import List, Set, Tuple
+import unicodedata
+from typing import Dict, List, Optional, Set, Tuple
 
 import logfire
 
 from src.config import (
+    LLM_CALL_TIMEOUT_SECONDS,
     MAX_CONCURRENT_REQUESTS,
+    SEMAPHORE_TIMEOUT_SECONDS,
     get_gemini_api_key,
     get_groq_api_key,
     logger,
@@ -34,7 +38,6 @@ STOP_WORDS: Set[str] = {
     "an",
     "e",
     "o",
-    "a",
     "os",
     "as",
     "em",
@@ -49,54 +52,98 @@ STOP_WORDS: Set[str] = {
 }
 
 
+def _strip_accents(s: str) -> str:
+    """Normalizes Unicode text by stripping combining diacritical marks (e.g. gestão -> gestao)."""
+    return "".join(
+        c for c in unicodedata.normalize("NFD", s) if unicodedata.category(c) != "Mn"
+    )
+
+
+def _has_token_boundary(token: str, text: str) -> bool:
+    """Checks if token appears in text bounded by non-word characters (supporting symbols like C++, .NET, Node.js)."""
+    if not token:
+        return False
+    escaped = re.escape(token)
+    return bool(re.search(r"(?<![a-zA-Z0-9_])" + escaped + r"(?![a-zA-Z0-9_])", text))
+
+
 def is_keyword_in_text(keyword: str, text: str) -> bool:
     """
     Generalized lexical & token presence matcher (zero hardcoded dictionaries).
     Validates whether a keyword, acronym, or its component tokens exist in the text.
-    Works universally across tech, business, medical, and multi-lingual domains.
+    Works universally across tech, business, medical, and multi-lingual (EN/PT) domains.
     """
     if not keyword or not text:
         return False
 
     kw_raw = keyword.strip()
-    kw_lower = kw_raw.lower()
-    text_lower = text.lower()
+    kw_norm = _strip_accents(kw_raw).lower()
+    text_norm = _strip_accents(text).lower()
 
-    # 1. Direct whole phrase or regex word boundary check
-    escaped_kw = re.escape(kw_lower)
-    if (
-        re.search(r"(?:\b|_)" + escaped_kw + r"(?:\b|_)", text_lower)
-        or kw_lower in text_lower
-    ):
+    # 1. Direct whole phrase with strict token boundary check (prevents 'Java' matching 'JavaScript' or 'Go' matching 'good')
+    if _has_token_boundary(kw_norm, text_norm):
         return True
 
-    # 2. Punctuation stripped check (e.g. Node.js -> nodejs, Nest.js -> nestjs, CI/CD -> cicd)
-    kw_clean = re.sub(r"[^a-zA-Z0-9]", "", kw_lower)
-    text_clean = re.sub(r"[^a-zA-Z0-9]", "", text_lower)
-    if kw_clean and len(kw_clean) >= 3 and kw_clean in text_clean:
+    # 2. Punctuation-stripped token match (e.g. Node.js <-> nodejs, Nest.js <-> NestJS, CI/CD <-> cicd)
+    kw_clean = re.sub(r"[^a-z0-9]", "", kw_norm)
+    text_tokens_clean = {
+        re.sub(r"[^a-z0-9]", "", tok)
+        for tok in re.split(r"[\s,;()\[\]{}\"'|]+", text_norm)
+        if tok
+    }
+    # Also collapse slash/hyphen/dot separated pairs in text (e.g. "ci/cd" -> "cicd", "node.js" -> "nodejs")
+    for compound in re.findall(r"[a-z0-9]+(?:[./\-][a-z0-9]+)+", text_norm):
+        text_tokens_clean.add(re.sub(r"[^a-z0-9]", "", compound))
+
+    if kw_clean and len(kw_clean) >= 3 and kw_clean in text_tokens_clean:
         return True
 
-    # 3. Acronym search (e.g. capitalized acronyms like DDD, GA4, AWS, GCP, SQS, CI/CD)
-    acronym_match = re.findall(r"\b[A-Z0-9]{2,}\b", kw_raw)
+    # 3. Acronym search (e.g. capitalized acronyms like DDD, GA4, AWS, GCP, SQS, NGS, CI/CD)
+    raw_without_parens = _strip_accents(kw_raw)
+    acronym_match = re.findall(r"\b[A-Z0-9]{2,}\b", raw_without_parens)
     for acr in acronym_match:
-        if re.search(r"\b" + re.escape(acr.lower()) + r"\b", text_lower):
+        if _has_token_boundary(acr.lower(), text_norm):
             return True
 
-    # 4. Multi-word phrase component check (e.g. "Domain-Driven Design (DDD)", "AWS EC2", "RESTful APIs")
+    # 4. Multi-word phrase component check (e.g. "Domain-Driven Design (DDD)", "AWS EC2", "HubSpot CRM")
+    # Strip parenthetical acronym suffixes if present so we can check core phrase or individual components
     parts = [
-        re.sub(r"[^a-zA-Z0-9]", "", p).lower()
-        for p in re.split(r"[\s/(),_\-]+", kw_raw)
-        if len(p) >= 2
+        re.sub(r"[^a-z0-9]", "", p) for p in re.split(r"[\s/(),_\-]+", kw_norm) if p
     ]
     meaningful_parts = [p for p in parts if p not in STOP_WORDS and len(p) >= 2]
 
+    if not meaningful_parts:
+        return False
+
+    matched_parts = 0
     for part in meaningful_parts:
-        if len(part) <= 2:
-            if re.search(r"\b" + re.escape(part) + r"\b", text_lower):
-                return True
-        else:
-            if part in text_lower or (len(part) >= 3 and part in text_clean):
-                return True
+        if _has_token_boundary(part, text_norm) or (
+            len(part) >= 3 and part in text_tokens_clean
+        ):
+            matched_parts += 1
+        elif (
+            len(part) >= 5
+            and part.endswith("s")
+            and _has_token_boundary(part[:-1], text_norm)
+        ):
+            matched_parts += 1
+
+    if len(meaningful_parts) == 1:
+        return matched_parts == 1
+
+    # Require majority of meaningful tokens (or first primary head token for 2-word vendor/cloud pairs like "AWS EC2")
+    required_matches = math.ceil(len(meaningful_parts) * 0.6)
+    if matched_parts >= required_matches:
+        return True
+
+    # Special case for 2-token compound where first token is a specific proper technical identifier (e.g. "AWS EC2" matching "AWS")
+    if (
+        len(meaningful_parts) == 2
+        and len(meaningful_parts[0]) >= 3
+        and _has_token_boundary(meaningful_parts[0], text_norm)
+        and meaningful_parts[0] in {a.lower() for a in acronym_match}
+    ):
+        return True
 
     return False
 
@@ -115,7 +162,7 @@ def sanitize_and_align_keywords(
 
     for kw in result.matched_keywords or []:
         normalized = kw.strip()
-        norm_lower = normalized.lower()
+        norm_lower = _strip_accents(normalized).lower()
         if not normalized or norm_lower in seen_matched:
             continue
 
@@ -133,7 +180,7 @@ def sanitize_and_align_keywords(
 
     for kw in result.missing_critical_keywords or []:
         normalized = kw.strip()
-        norm_lower = normalized.lower()
+        norm_lower = _strip_accents(normalized).lower()
         if not normalized or norm_lower in seen_missing or norm_lower in seen_matched:
             continue
 
@@ -152,19 +199,41 @@ def sanitize_and_align_keywords(
 # Concurrency semaphore to throttle active LLM calls
 concurrency_semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
+# Cached SDK clients keyed by API key
+_gemini_clients: Dict[str, object] = {}
+_groq_clients: Dict[str, object] = {}
+
+
+def _get_gemini_client(api_key: str):
+    from google import genai
+
+    client = _gemini_clients.get(api_key)
+    if client is None:
+        client = genai.Client(api_key=api_key)
+        _gemini_clients[api_key] = client
+    return client
+
+
+def _get_groq_client(api_key: str):
+    from groq import AsyncGroq
+
+    client = _groq_clients.get(api_key)
+    if client is None:
+        client = AsyncGroq(api_key=api_key)
+        _groq_clients[api_key] = client
+    return client
+
 
 async def call_gemini_primary(
     resume_text: str, job_desc: str, language: str = "en"
 ) -> ATSMatchResult:
     """
-    Primary Engine: Google GenAI using official SDK and native JSON schema output.
+    Primary Engine: Google GenAI using official async SDK and native JSON schema output.
     """
     api_key = get_gemini_api_key()
-
-    from google import genai
     from google.genai import types
 
-    client = genai.Client(api_key=api_key)
+    client = _get_gemini_client(api_key)
     prompt_content = build_user_prompt(resume_text, job_desc, language=language)
 
     candidate_models = [
@@ -172,31 +241,30 @@ async def call_gemini_primary(
         "gemini-2.5-flash-lite",
         "gemini-flash-latest",
         "gemini-flash-lite-latest",
-        "gemini-2.0-flash",
     ]
-    last_err = None
+    last_err: Optional[Exception] = None
 
     with logfire.span("Gemini Primary Engine", language=language):
         for model_name in candidate_models:
             try:
                 with logfire.span("Gemini Call", model=model_name):
-
-                    def _run_gemini(m=model_name):
-                        return client.models.generate_content(
-                            model=m,
+                    gen_config = types.GenerateContentConfig(
+                        system_instruction=SYSTEM_INSTRUCTION,
+                        response_mime_type="application/json",
+                        response_schema=ATSMatchResult,
+                        automatic_function_calling=types.AutomaticFunctionCallingConfig(
+                            disable=True
+                        ),
+                        temperature=0.2,
+                    )
+                    response = await asyncio.wait_for(
+                        client.aio.models.generate_content(
+                            model=model_name,
                             contents=prompt_content,
-                            config=types.GenerateContentConfig(
-                                system_instruction=SYSTEM_INSTRUCTION,
-                                response_mime_type="application/json",
-                                response_schema=ATSMatchResult,
-                                automatic_function_calling=types.AutomaticFunctionCallingConfig(
-                                    disable=True
-                                ),
-                                temperature=0.2,
-                            ),
-                        )
-
-                    response = await asyncio.to_thread(_run_gemini)
+                            config=gen_config,
+                        ),
+                        timeout=LLM_CALL_TIMEOUT_SECONDS,
+                    )
                     if response and response.text:
                         data = json.loads(response.text)
                         logfire.info("Gemini analysis succeeded", model=model_name)
@@ -217,13 +285,10 @@ async def call_groq_fallback(
     resume_text: str, job_desc: str, language: str = "en"
 ) -> Tuple[ATSMatchResult, str]:
     """
-    Fallback Engine: Groq Free Tier open-weight models using JSON object mode.
+    Fallback Engine: Groq Free Tier open-weight models using AsyncGroq and JSON object mode.
     """
     api_key = get_groq_api_key()
-
-    from groq import Groq
-
-    client = Groq(api_key=api_key)
+    client = _get_groq_client(api_key)
 
     system_content = f"{SYSTEM_INSTRUCTION}\n\nRespond strictly with a single valid JSON object matching this schema:\n{JSON_SCHEMA_DESCRIPTION}"
     prompt_content = build_user_prompt(resume_text, job_desc, language=language)
@@ -231,27 +296,25 @@ async def call_groq_fallback(
     candidate_models = [
         "llama-3.3-70b-versatile",
         "llama-3.1-8b-instant",
-        "mixtral-8x7b-32768",
     ]
-    last_err = None
+    last_err: Optional[Exception] = None
 
     with logfire.span("Groq Failover Engine", language=language):
         for model_name in candidate_models:
             try:
                 with logfire.span("Groq Call", model=model_name):
-
-                    def _run_groq(m=model_name):
-                        return client.chat.completions.create(
-                            model=m,
+                    response = await asyncio.wait_for(
+                        client.chat.completions.create(
+                            model=model_name,
                             messages=[
                                 {"role": "system", "content": system_content},
                                 {"role": "user", "content": prompt_content},
                             ],
                             response_format={"type": "json_object"},
                             temperature=0.2,
-                        )
-
-                    response = await asyncio.to_thread(_run_groq)
+                        ),
+                        timeout=LLM_CALL_TIMEOUT_SECONDS,
+                    )
                     raw_content = response.choices[0].message.content
                     if raw_content:
                         clean_text = raw_content.strip()
@@ -289,10 +352,20 @@ async def analyze_with_fallback(
 ) -> Tuple[ATSMatchResult, str]:
     """
     Coordinates primary Gemini call with automatic failover to Groq.
-    Enforces concurrency limits, validates keyword presence against the JD,
-    and returns (ATSMatchResult, white_label_engine_name).
+    Enforces bounded concurrency wait + per-call timeouts, validates keyword presence
+    against the JD, and returns (ATSMatchResult, white_label_engine_name).
     """
-    async with concurrency_semaphore:
+    try:
+        await asyncio.wait_for(
+            concurrency_semaphore.acquire(), timeout=SEMAPHORE_TIMEOUT_SECONDS
+        )
+    except asyncio.TimeoutError:
+        logger.warning("Concurrency semaphore acquisition timed out.")
+        raise RuntimeError(
+            "ATS verification services are experiencing high concurrency. Please try again shortly."
+        )
+
+    try:
         with logfire.span("Dual Engine Match Analysis", language=language):
             # 1. Attempt Primary Engine (Google Gemini)
             try:
@@ -324,3 +397,5 @@ async def analyze_with_fallback(
                 raise RuntimeError(
                     "ATS verification services temporarily unavailable. Please try again shortly."
                 )
+    finally:
+        concurrency_semaphore.release()
