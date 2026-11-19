@@ -14,9 +14,10 @@ from src.config import (
     MAX_TEXT_CHARS,
     logger,
 )
+from src.i18n import get_translations
 
 
-def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
+def extract_text_from_pdf_bytes(pdf_bytes: bytes, lang: str = "en") -> str:
     """
     Extracts text from PDF bytes entirely in RAM with strict safety bounds:
     - Validates %PDF- magic header
@@ -24,15 +25,17 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
     - Enforces maximum page ceiling (3 pages max)
     - Enforces maximum character ceiling (7,000 chars max)
     """
+    t = get_translations(lang)
+
     if len(pdf_bytes) > MAX_PDF_SIZE_BYTES:
         raise ValueError(
-            f"PDF file size ({len(pdf_bytes) / 1024:.1f} KB) exceeds the maximum allowed limit of {MAX_PDF_SIZE_BYTES // 1024} KB."
+            t["error_pdf_size"].format(
+                size_kb=len(pdf_bytes) / 1024, max_kb=MAX_PDF_SIZE_BYTES // 1024
+            )
         )
 
     if not pdf_bytes.startswith(b"%PDF-"):
-        raise ValueError(
-            "Invalid file format. Uploaded file is not a valid PDF document."
-        )
+        raise ValueError(t["error_pdf_invalid"])
 
     try:
         stream = io.BytesIO(pdf_bytes)
@@ -40,11 +43,13 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
 
         num_pages = len(reader.pages)
         if num_pages == 0:
-            raise ValueError("The uploaded PDF has no readable pages.")
+            raise ValueError(t["error_pdf_no_pages"])
 
         if num_pages > MAX_PDF_PAGES:
             raise ValueError(
-                f"PDF has {num_pages} pages. Maximum allowed is {MAX_PDF_PAGES} pages."
+                t["error_pdf_max_pages"].format(
+                    num_pages=num_pages, max_pages=MAX_PDF_PAGES
+                )
             )
 
         extracted_text_parts = []
@@ -61,9 +66,7 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
         full_text = re.sub(r"\n{3,}", "\n\n", full_text)
 
         if not full_text:
-            raise ValueError(
-                "Could not extract any readable text from this PDF. It might be scanned or image-only."
-            )
+            raise ValueError(t["error_pdf_no_text"])
 
         if len(full_text) > MAX_TEXT_CHARS:
             full_text = full_text[:MAX_TEXT_CHARS]
@@ -73,4 +76,4 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
         raise
     except Exception as e:
         logger.error(f"PDF extraction error: {e}")
-        raise ValueError(f"Failed to process PDF: {str(e)}")
+        raise ValueError(t["error_pdf_process"].format(error=str(e)))
