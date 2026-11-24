@@ -97,8 +97,8 @@ cd atsproof
 python3 -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies (use requirements-dev.txt for pytest & linters)
+pip install -r requirements-dev.txt
 ```
 
 ### 2. Configure API Keys
@@ -201,14 +201,14 @@ atsproof/
 
 ---
 
-## 🚢 Production Deployment (Nginx + FastAPI on Port 80)
+## 🚢 Production Deployment (Uvicorn on Port 8000)
 
-The application includes a unified Docker setup that runs **Nginx reverse proxy** and **Uvicorn/FastAPI** inside the **same container**, exposing port 80 directly with gzip compression and client rate header forwarding.
+The container runs a hardened, non-root single-worker **Uvicorn/FastAPI** service on port `8000`, designed to sit behind the host Nginx reverse proxy or Kubernetes/K3s Ingress. Running a single worker per pod ensures in-memory rate limiting and concurrency throttling are exact per replica.
 
 ### Quick Start with Docker Compose
 
 ```bash
-# Build and launch on port 80
+# Build and launch on port 8000 (127.0.0.1:8000)
 make compose-up
 
 # View live container logs
@@ -227,15 +227,15 @@ docker compose up -d --build
 ### Standalone Docker Deployment
 
 ```bash
-# Build the unified image
+# Build the image
 make docker-build
 
-# Run container on port 80 with .env configuration
+# Run container on 127.0.0.1:8000 with .env configuration
 make docker-run
 ```
 
 Visit:
-👉 **`http://localhost`** (Port 80)
+👉 **`http://127.0.0.1:8000`**
 
 ---
 

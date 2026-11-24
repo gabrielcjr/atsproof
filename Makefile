@@ -17,7 +17,7 @@ APP_NAME := ats_matcher
 DOCKER_IMAGE := ats-matcher:latest
 PORT ?= 8001
 
-.PHONY: help install dev start prod test test-unit clean stop docker-build docker-run docker-stop compose-up compose-down compose-logs run-check-flake8 run-check-black run-fix-black run-check-isort run-fix-isort run-fix-autoflake run-check-linters run-fix-linters
+.PHONY: help install dev start prod test test-unit clean stop docker-build docker-run docker-stop compose-up compose-down compose-logs build-css docker-test docker-lint run-check-flake8 run-check-black run-fix-black run-check-isort run-fix-isort run-fix-autoflake run-check-linters run-fix-linters
 
 # Default target: display colorized help
 help:
@@ -50,9 +50,9 @@ help:
 install:
 	@echo "==> Creating virtual environment..."
 	@test -d $(VENV) || python3 -m venv $(VENV)
-	@echo "==> Installing project dependencies..."
+	@echo "==> Installing project & dev dependencies..."
 	@$(PIP) install --upgrade pip
-	@$(PIP) install -r requirements.txt
+	@$(PIP) install -r requirements-dev.txt
 	@test -f .env || cp .env.example .env
 	@echo "==> Setup complete! Update .env with your API keys if needed."
 
@@ -63,8 +63,18 @@ dev:
 
 # Run local production server
 prod:
-	@echo "==> Starting ATS MatchProof in production mode (2 workers) on port 8000..."
-	@$(UVICORN) main:app --host 0.0.0.0 --port 8000 --workers 2
+	@echo "==> Starting ATS MatchProof in production mode (1 worker) on port 8000..."
+	@$(UVICORN) main:app --host 0.0.0.0 --port 8000 --workers 1
+
+build-css:
+	@echo "==> Compiling static/css/tailwind.css..."
+	@docker run --rm -v "$(CURDIR)":/work -w /work node:20-alpine sh -c "npx --yes tailwindcss@3.4.17 -c ./tailwind.config.js -i ./static/css/input.css -o ./static/css/tailwind.css --minify"
+
+docker-test:
+	@docker run --rm -v "$(CURDIR)":/app -w /app python:3.11-slim sh -c "pip install -q --root-user-action=ignore -r requirements-dev.txt && python -m pytest -v -p no:cacheprovider"
+
+docker-lint:
+	@docker run --rm -v "$(CURDIR)":/app -w /app python:3.11-slim sh -c "pip install -q --root-user-action=ignore -r requirements-dev.txt && python -m flake8 . --config .flake8 --count --show-source --statistics && python -m black --check . --config pyproject.toml && python -m isort --check-only . --settings-file pyproject.toml"
 
 start: prod
 

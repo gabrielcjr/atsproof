@@ -16,10 +16,24 @@ spec:
       labels:
         app: atsproof
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: web
           image: gacarneirojrx/atsproof:240add01b7b6915e304ec0d8127e597e6c8a1478
           imagePullPolicy: Always
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           envFrom:
             - secretRef:
                 name: atsproof-secret
@@ -33,6 +47,9 @@ spec:
           ports:
             - containerPort: 8000
               name: http
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests:
               cpu: 50m
@@ -52,6 +69,10 @@ spec:
               port: 8000
             initialDelaySeconds: 5
             periodSeconds: 10
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
 ---
 apiVersion: v1
 kind: Service
