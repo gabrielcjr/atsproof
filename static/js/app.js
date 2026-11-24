@@ -202,12 +202,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 if (resultsContainer) {
-                    resultsContainer.innerHTML = `
-                        <div class="rounded-2xl bg-rose-950/40 border border-rose-500/30 p-6 backdrop-blur-md shadow-2xl">
-                            <h3 class="text-lg font-bold text-rose-200">${CURRENT_LANG === 'pt' ? 'Falha na Requisição' : 'Request Failed'}</h3>
-                            <p class="text-sm text-rose-300 mt-2">${err.message || 'Connection failed'}.</p>
-                        </div>
-                    `;
+                    const card = document.createElement('div');
+                    card.className = 'rounded-2xl bg-rose-950/40 border border-rose-500/30 p-6 backdrop-blur-md shadow-2xl';
+                    const titleEl = document.createElement('h3');
+                    titleEl.className = 'text-lg font-bold text-rose-200';
+                    titleEl.textContent = CURRENT_LANG === 'pt' ? 'Falha na Requisição' : 'Request Failed';
+                    const msgEl = document.createElement('p');
+                    msgEl.className = 'text-sm text-rose-300 mt-2';
+                    msgEl.textContent = `${(err && err.message) ? err.message : 'Connection failed'}.`;
+                    card.appendChild(titleEl);
+                    card.appendChild(msgEl);
+                    resultsContainer.replaceChildren(card);
                     resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             } finally {

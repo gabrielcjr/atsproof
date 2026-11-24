@@ -245,6 +245,6 @@
 
     <!-- Hidden JSON Payload for Client-Side Report Export -->
     <script id="ats-report-data" type="application/json">
-{{ result_json | safe }}
+{{ result_payload | tojson }}
     </script>
 </div>

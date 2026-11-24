@@ -2,11 +2,11 @@
 FastAPI route definitions for the ATS Matcher application.
 """
 
-import json
 import os
 from typing import Optional
 
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from slowapi import Limiter
@@ -314,7 +314,9 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                     status_code=status.HTTP_400_BAD_REQUEST,
                 )
 
-            resume_text = extract_text_from_pdf_bytes(pdf_bytes, lang=resolved_lang)
+            resume_text = await run_in_threadpool(
+                extract_text_from_pdf_bytes, pdf_bytes, resolved_lang
+            )
         except ValueError as ve:
             return _render_error(
                 request,
@@ -349,7 +351,7 @@ def create_router(templates: Jinja2Templates, limiter: Limiter) -> APIRouter:
                     "t": t,
                     "lang": resolved_lang,
                     "result": result,
-                    "result_json": json.dumps(result_payload),
+                    "result_payload": result_payload,
                     "provider": provider_name,
                 },
             )
