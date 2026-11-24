@@ -26,7 +26,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: web
-          image: gacarneirojrx/atsproof:240add01b7b6915e304ec0d8127e597e6c8a1478
+          image: gacarneirojrx/atsproof:80cc268e09345d13a260d1f396369e1aef72d67b
           imagePullPolicy: Always
           securityContext:
             allowPrivilegeEscalation: false
