@@ -4,6 +4,9 @@ Automated unit and integration test suite for ATS MatchProof.
 
 import asyncio
 import io
+import json
+import re
+import time
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -593,6 +596,155 @@ class ATSMatcherTests(unittest.TestCase):
             self.assertIn("Failover Mode", provider)
             self.assertEqual(res.matched_keywords, ["Python"])
             self.assertEqual(res.missing_critical_keywords, ["Rust"])
+
+    def test_results_script_json_xss_escaped(self):
+        """Ensure JSON embedded in results.html escapes </script> breakout payloads."""
+        xss_payload = "</script><img src=x onerror=alert(1)>"
+        mock_result = ATSMatchResult(
+            match_score=80,
+            matched_keywords=["Python"],
+            missing_critical_keywords=[],
+            experience_gap_feedback="Solid fit.",
+            tailoring_suggestions=[],
+            summary_verdict=xss_payload,
+        )
+
+        async def _mock_analyze(*args, **kwargs):
+            return mock_result, "ATS DeepScan Engine • Active"
+
+        with (
+            patch(
+                "src.routes.extract_text_from_pdf_bytes",
+                return_value="Python developer",
+            ),
+            patch("src.routes.analyze_with_fallback", side_effect=_mock_analyze),
+        ):
+            files = {"resume": ("resume.pdf", create_dummy_pdf(1), "application/pdf")}
+            data = {"job_description": "Python developer", "honeypot": ""}
+            resp = client.post("/analyze", files=files, data=data)
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertNotIn("</script><img", resp.text)
+        self.assertIn("\\u003c/script\\u003e", resp.text)
+        match = re.search(
+            r'<script id="ats-report-data" type="application/json">\s*(.*?)\s*</script>',
+            resp.text,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(match)
+        parsed = json.loads(match.group(1))
+        self.assertEqual(parsed["summary_verdict"], xss_payload)
+
+    def test_client_ip_ignores_untrusted_proxy_headers_and_handles_multihop(self):
+        """Ensure proxy headers are ignored from untrusted peers and parsed right-to-left for trusted proxies."""
+        untrusted_req = SimpleNamespace(
+            headers={
+                "X-Forwarded-For": "1.1.1.1",
+                "X-Real-IP": "8.8.8.8",
+            },
+            client=SimpleNamespace(host="203.0.113.99"),
+        )
+        self.assertEqual(get_client_ip(untrusted_req), "203.0.113.99")
+
+        multihop_req = SimpleNamespace(
+            headers={"X-Forwarded-For": "9.9.9.9, 198.51.100.77, 10.0.0.5"},
+            client=SimpleNamespace(host="10.42.0.1"),
+        )
+        self.assertEqual(get_client_ip(multihop_req), "198.51.100.77")
+
+        real_ip_only = SimpleNamespace(
+            headers={"X-Real-IP": "198.51.100.42"},
+            client=SimpleNamespace(host="127.0.0.1"),
+        )
+        self.assertEqual(get_client_ip(real_ip_only), "198.51.100.42")
+
+    def test_request_body_limit_middleware_rejects_oversized_payload(self):
+        """Ensure payloads exceeding MAX_REQUEST_BODY_BYTES are rejected with HTTP 413 and security headers."""
+        oversized = b"%PDF-1.4" + (b"A" * (600 * 1024))
+        files = {"resume": ("huge.pdf", oversized, "application/pdf")}
+        data = {"job_description": "Python Backend Engineer", "honeypot": ""}
+        resp = client.post("/analyze", files=files, data=data)
+        self.assertEqual(resp.status_code, 413)
+        self.assertIn("Request Too Large", resp.text)
+        self.assertEqual(resp.headers.get("X-Content-Type-Options"), "nosniff")
+        self.assertIn("Content-Security-Policy", resp.headers)
+
+    def test_pdf_corrupted_error_hides_internal_details(self):
+        """Ensure corrupted PDF errors return generic localized text without internal pypdf details."""
+        corrupted = b"%PDF-1.4\n%%corrupted_internal_marker"
+        with self.assertRaises(ValueError) as ctx_en:
+            extract_text_from_pdf_bytes(corrupted, lang="en")
+        self.assertIn("Failed to process the uploaded PDF", str(ctx_en.exception))
+        self.assertNotIn("corrupted_internal_marker", str(ctx_en.exception))
+        self.assertNotIn("EOF", str(ctx_en.exception))
+
+        with self.assertRaises(ValueError) as ctx_pt:
+            extract_text_from_pdf_bytes(corrupted, lang="pt")
+        self.assertIn("Falha ao processar o arquivo PDF enviado", str(ctx_pt.exception))
+
+    def test_analysis_total_timeout_budget(self):
+        """Ensure total analysis latency is bounded by ANALYSIS_TOTAL_TIMEOUT_SECONDS."""
+
+        async def _slow_llm(*args, **kwargs):
+            await asyncio.sleep(2.0)
+            return ATSMatchResult(
+                match_score=50,
+                matched_keywords=[],
+                missing_critical_keywords=[],
+                experience_gap_feedback="",
+                tailoring_suggestions=[],
+                summary_verdict="",
+            )
+
+        with (
+            patch("src.engine.ANALYSIS_TOTAL_TIMEOUT_SECONDS", 0.3),
+            patch("src.engine.call_gemini_primary", side_effect=_slow_llm),
+            patch("src.engine.call_groq_fallback", side_effect=_slow_llm),
+        ):
+            start = time.monotonic()
+            with self.assertRaises(RuntimeError):
+                asyncio.run(
+                    analyze_with_fallback("Python dev", "Python dev needed", "en")
+                )
+            elapsed = time.monotonic() - start
+            self.assertLess(elapsed, 1.5)
+
+    def test_score_recalibrated_when_hallucinated_keywords_stripped(self):
+        """Ensure match_score is adjusted downward when hallucinated matched keywords are stripped."""
+        jd = "Looking for Kubernetes, Terraform, Go, and PostgreSQL."
+        resume = "Frontend developer skilled in HTML and CSS."
+        inflated = ATSMatchResult(
+            match_score=92,
+            matched_keywords=["React", "GraphQL", "Docker"],
+            missing_critical_keywords=["Kubernetes", "Terraform", "Go", "PostgreSQL"],
+            experience_gap_feedback="Mismatch.",
+            tailoring_suggestions=[],
+            summary_verdict="Mismatch.",
+        )
+        sanitized = sanitize_and_align_keywords(inflated, resume, jd)
+        self.assertEqual(sanitized.matched_keywords, [])
+        self.assertLessEqual(sanitized.match_score, 25)
+
+    def test_tailwind_compiled_css_and_strict_csp(self):
+        """Ensure compiled Tailwind CSS is served and CDN/unsafe-eval are removed."""
+        resp_index = client.get("/")
+        self.assertEqual(resp_index.status_code, 200)
+        self.assertNotIn("cdn.tailwindcss.com", resp_index.text)
+        self.assertIn("/static/css/tailwind.css", resp_index.text)
+        csp = resp_index.headers.get("Content-Security-Policy", "")
+        self.assertNotIn("'unsafe-eval'", csp)
+        self.assertNotIn("cdn.tailwindcss.com", csp)
+
+        resp_css = client.get("/static/css/tailwind.css")
+        self.assertEqual(resp_css.status_code, 200)
+        self.assertGreater(len(resp_css.text), 1000)
+
+    def test_app_js_no_unescaped_err_message_innerhtml(self):
+        """Ensure static/js/app.js renders error messages safely via textContent."""
+        js_resp = client.get("/static/js/app.js")
+        self.assertEqual(js_resp.status_code, 200)
+        self.assertNotIn("${err.message", js_resp.text)
+        self.assertIn("textContent", js_resp.text)
 
 
 if __name__ == "__main__":
