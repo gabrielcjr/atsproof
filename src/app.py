@@ -7,8 +7,17 @@ from fastapi.templating import Jinja2Templates
 from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 
-from src.config import RATE_LIMIT_POLICY
-from src.middleware import add_security_headers, create_rate_limit_handler
+from src.config import (
+    MAX_REQUEST_BODY_BYTES,
+    RATE_LIMIT_POLICY,
+    RATE_LIMIT_STORAGE_URI,
+)
+from src.middleware import (
+    RequestBodyLimitMiddleware,
+    add_security_headers,
+    create_rate_limit_handler,
+    get_client_ip,
+)
 from src.routes import create_router
 
 # Configure Pydantic Logfire for observability
@@ -17,25 +26,6 @@ if logfire_token:
     logfire.configure(token=logfire_token, send_to_logfire=True)
 else:
     logfire.configure(send_to_logfire=False)
-
-
-def get_client_ip(request) -> str:
-    """
-    Extracts the true client IP address behind reverse proxies safely.
-    Prioritizes X-Real-IP set by trusted Nginx proxy, or the last hop in X-Forwarded-For
-    to prevent client-side X-Forwarded-For spoofing.
-    """
-    real_ip = request.headers.get("X-Real-IP")
-    if real_ip and real_ip.strip():
-        return real_ip.strip()
-    forwarded = request.headers.get("X-Forwarded-For")
-    if forwarded:
-        hops = [ip.strip() for ip in forwarded.split(",") if ip.strip()]
-        if hops:
-            return hops[-1]
-    if request.client and request.client.host:
-        return request.client.host
-    return "127.0.0.1"
 
 
 def create_app() -> FastAPI:
@@ -78,7 +68,11 @@ def create_app() -> FastAPI:
             print(f"Failed to initialize OpenTelemetry for ATS MatchProof: {e}")
 
     # Initialize rate limiter keyed by true client IP
-    limiter = Limiter(key_func=get_client_ip, default_limits=[RATE_LIMIT_POLICY])
+    limiter = Limiter(
+        key_func=get_client_ip,
+        default_limits=[RATE_LIMIT_POLICY],
+        storage_uri=RATE_LIMIT_STORAGE_URI,
+    )
     app.state.limiter = limiter
 
     # Template renderer
@@ -94,7 +88,12 @@ def create_app() -> FastAPI:
     rate_limit_handler = create_rate_limit_handler(templates)
     app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
-    # Middleware
+    # Middleware (RequestBodyLimitMiddleware registered first so add_security_headers wraps 413 too)
+    app.add_middleware(
+        RequestBodyLimitMiddleware,
+        templates=templates,
+        max_body_bytes=MAX_REQUEST_BODY_BYTES,
+    )
     app.middleware("http")(add_security_headers)
 
     # Routes

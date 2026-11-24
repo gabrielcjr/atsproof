@@ -76,4 +76,4 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes, lang: str = "en") -> str:
         raise
     except Exception as e:
         logger.error(f"PDF extraction error: {e}")
-        raise ValueError(t["error_pdf_process"].format(error=str(e)))
+        raise ValueError(t["error_pdf_process"])
