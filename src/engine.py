@@ -2,12 +2,14 @@ import asyncio
 import json
 import math
 import re
+import time
 import unicodedata
 from typing import Dict, List, Optional, Set, Tuple
 
 import logfire
 
 from src.config import (
+    ANALYSIS_TOTAL_TIMEOUT_SECONDS,
     LLM_CALL_TIMEOUT_SECONDS,
     MAX_CONCURRENT_REQUESTS,
     SEMAPHORE_TIMEOUT_SECONDS,
@@ -157,6 +159,9 @@ def sanitize_and_align_keywords(
     - missing_critical_keywords: must have evidence in Job Description AND NOT in Resume.
     - Eliminates any fabricated, hallucinated, or unrequested resume skills from matched_keywords.
     """
+    orig_matched_count = len(result.matched_keywords or [])
+    orig_missing_count = len(result.missing_critical_keywords or [])
+
     clean_matched: List[str] = []
     seen_matched: Set[str] = set()
 
@@ -193,6 +198,33 @@ def sanitize_and_align_keywords(
 
     result.missing_critical_keywords = clean_missing
 
+    # Recalibrate match_score only when keyword alignment removed items
+    if (
+        len(clean_matched) != orig_matched_count
+        or len(clean_missing) != orig_missing_count
+    ):
+        total_clean = len(clean_matched) + len(clean_missing)
+        if total_clean > 0:
+            keyword_ratio_score = round((len(clean_matched) / total_clean) * 100)
+            if len(clean_matched) == 0 and len(clean_missing) > 0:
+                result.match_score = min(result.match_score, 25)
+            else:
+                blended = round(0.4 * result.match_score + 0.6 * keyword_ratio_score)
+                if (
+                    len(clean_matched) < orig_matched_count
+                    and len(clean_missing) == orig_missing_count
+                ):
+                    result.match_score = max(0, min(result.match_score, blended))
+                elif (
+                    len(clean_missing) < orig_missing_count
+                    and len(clean_matched) == orig_matched_count
+                ):
+                    result.match_score = min(100, max(result.match_score, blended))
+                else:
+                    result.match_score = max(0, min(100, blended))
+        elif orig_matched_count > 0 and len(clean_matched) == 0:
+            result.match_score = min(result.match_score, 30)
+
     return result
 
 
@@ -224,8 +256,21 @@ def _get_groq_client(api_key: str):
     return client
 
 
+def _remaining_timeout(deadline: Optional[float]) -> Optional[float]:
+    """Computes bounded per-call timeout against an optional monotonic deadline."""
+    if deadline is None:
+        return LLM_CALL_TIMEOUT_SECONDS
+    remaining = deadline - time.monotonic()
+    if remaining <= 0.5:
+        return None
+    return min(LLM_CALL_TIMEOUT_SECONDS, remaining)
+
+
 async def call_gemini_primary(
-    resume_text: str, job_desc: str, language: str = "en"
+    resume_text: str,
+    job_desc: str,
+    language: str = "en",
+    deadline: Optional[float] = None,
 ) -> ATSMatchResult:
     """
     Primary Engine: Google GenAI using official async SDK and native JSON schema output.
@@ -246,6 +291,12 @@ async def call_gemini_primary(
 
     with logfire.span("Gemini Primary Engine", language=language):
         for model_name in candidate_models:
+            call_timeout = _remaining_timeout(deadline)
+            if call_timeout is None:
+                last_err = last_err or asyncio.TimeoutError(
+                    "Primary engine time budget exhausted."
+                )
+                break
             try:
                 with logfire.span("Gemini Call", model=model_name):
                     gen_config = types.GenerateContentConfig(
@@ -263,7 +314,7 @@ async def call_gemini_primary(
                             contents=prompt_content,
                             config=gen_config,
                         ),
-                        timeout=LLM_CALL_TIMEOUT_SECONDS,
+                        timeout=call_timeout,
                     )
                     if response and response.text:
                         data = json.loads(response.text)
@@ -282,7 +333,10 @@ async def call_gemini_primary(
 
 
 async def call_groq_fallback(
-    resume_text: str, job_desc: str, language: str = "en"
+    resume_text: str,
+    job_desc: str,
+    language: str = "en",
+    deadline: Optional[float] = None,
 ) -> Tuple[ATSMatchResult, str]:
     """
     Fallback Engine: Groq Free Tier open-weight models using AsyncGroq and JSON object mode.
@@ -301,6 +355,12 @@ async def call_groq_fallback(
 
     with logfire.span("Groq Failover Engine", language=language):
         for model_name in candidate_models:
+            call_timeout = _remaining_timeout(deadline)
+            if call_timeout is None:
+                last_err = last_err or asyncio.TimeoutError(
+                    "Fallback engine time budget exhausted."
+                )
+                break
             try:
                 with logfire.span("Groq Call", model=model_name):
                     response = await asyncio.wait_for(
@@ -313,7 +373,7 @@ async def call_groq_fallback(
                             response_format={"type": "json_object"},
                             temperature=0.2,
                         ),
-                        timeout=LLM_CALL_TIMEOUT_SECONDS,
+                        timeout=call_timeout,
                     )
                     raw_content = response.choices[0].message.content
                     if raw_content:
@@ -352,13 +412,16 @@ async def analyze_with_fallback(
 ) -> Tuple[ATSMatchResult, str]:
     """
     Coordinates primary Gemini call with automatic failover to Groq.
-    Enforces bounded concurrency wait + per-call timeouts, validates keyword presence
-    against the JD, and returns (ATSMatchResult, white_label_engine_name).
+    Enforces a strict total request time budget, bounded concurrency wait, per-call timeouts,
+    validates keyword presence against the JD, and returns (ATSMatchResult, white_label_engine_name).
     """
+    total_deadline = time.monotonic() + ANALYSIS_TOTAL_TIMEOUT_SECONDS
+    sem_timeout = min(
+        SEMAPHORE_TIMEOUT_SECONDS, max(0.05, total_deadline - time.monotonic())
+    )
+
     try:
-        await asyncio.wait_for(
-            concurrency_semaphore.acquire(), timeout=SEMAPHORE_TIMEOUT_SECONDS
-        )
+        await asyncio.wait_for(concurrency_semaphore.acquire(), timeout=sem_timeout)
     except asyncio.TimeoutError:
         logger.warning("Concurrency semaphore acquisition timed out.")
         raise RuntimeError(
@@ -367,11 +430,26 @@ async def analyze_with_fallback(
 
     try:
         with logfire.span("Dual Engine Match Analysis", language=language):
-            # 1. Attempt Primary Engine (Google Gemini)
+            remaining_after_sem = total_deadline - time.monotonic()
+            if remaining_after_sem <= 0.05:
+                raise RuntimeError(
+                    "ATS verification services temporarily unavailable. Please try again shortly."
+                )
+
+            primary_budget = remaining_after_sem * 0.65
+            primary_deadline = time.monotonic() + primary_budget
+
+            # 1. Attempt Primary Engine (Google Gemini) within reserved budget
             try:
                 logger.info("Dispatching analysis to primary engine...")
-                result = await call_gemini_primary(
-                    resume_text, job_desc, language=language
+                result = await asyncio.wait_for(
+                    call_gemini_primary(
+                        resume_text,
+                        job_desc,
+                        language=language,
+                        deadline=primary_deadline,
+                    ),
+                    timeout=max(0.05, primary_deadline - time.monotonic()),
                 )
                 result = sanitize_and_align_keywords(result, resume_text, job_desc)
                 return result, "ATS DeepScan Engine • Active"
@@ -381,11 +459,23 @@ async def analyze_with_fallback(
                 )
                 logfire.warn("Primary engine failed, triggering failover", error=str(e))
 
-            # 2. Attempt Secondary Failover Engine (Groq Open-Weight)
+            # 2. Attempt Secondary Failover Engine (Groq Open-Weight) with remaining budget
+            remaining_for_fallback = total_deadline - time.monotonic()
+            if remaining_for_fallback <= 0.05:
+                raise RuntimeError(
+                    "ATS verification services temporarily unavailable. Please try again shortly."
+                )
+
             try:
                 logger.info("Dispatching analysis to secondary failover engine...")
-                result, _ = await call_groq_fallback(
-                    resume_text, job_desc, language=language
+                result, _ = await asyncio.wait_for(
+                    call_groq_fallback(
+                        resume_text,
+                        job_desc,
+                        language=language,
+                        deadline=total_deadline,
+                    ),
+                    timeout=max(0.05, remaining_for_fallback),
                 )
                 result = sanitize_and_align_keywords(result, resume_text, job_desc)
                 return result, "ATS DeepScan Engine (Failover Mode)"
